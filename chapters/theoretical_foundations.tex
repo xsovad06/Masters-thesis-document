@@ -1,0 +1,46 @@
+\kap[chapter:theoretical-foundation]{Theoretical foundations}
+This chapter provides an overview of the theoretical foundations of the proposed automated neural networks (\NN\) learning approach for human skeleton detection. It introduces the key concepts of \NN\-s, convolutional neural network  (\CNN\), region-based convolutional neural network  (\RCNN\), and transformation models of \NN\-s. Additionally, it explores existing \NN\-s for human pose detection, including Posenet, Movenet, and MMPose.
+
+\pkap[section:neural-network]{Neural Network}
+\NN\-s  are computational models inspired by the structure and function of the human brain. They consist of interconnected layers of artificial neurons that process and transform information. \NN\-s  have demonstrated remarkable capabilities in various tasks, including image recognition, natural language processing, and machine translation.
+
+\pkap[section:cnn]{Convolutional Neural Network}
+\CNN\-s are a type of NN architecture that excels at processing and analyzing visual data, such as images and videos. They are particularly well-suited for skeleton detection due to their ability to extract local features from the input data. CNNs typically consist of a series of convolutional layers, each of which applies a filter or kernel to the input data to extract features. The filters are learned during the training process, allowing the CNN to learn the patterns and relationships that are important for skeleton detection.
+
+CNNs have several advantages for skeleton detection:
+
+\startitemize[1]
+    \item {\bf Translation Invariance:} CNNs are invariant to small translations in the input data. This is important for skeleton detection, as the human body can be in different positions in an image or video.
+    \item {\bf Feature Learning:} CNNs can learn complex features from the input data, which is essential for accurate skeleton detection.
+    \item {\bf Parameter Sharing:} CNNs share weights across different positions in the input data. This reduces the number of parameters in the network, making it more efficient and easier to train.
+\stopitemize
+
+CNNs have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task.
+
+\pkap[section:rcnn]{Region-based Convolutional Neural Network}
+\RCNN\-s  are a type of \NN\ architecture that excels at object detection and localization. They typically follow a two-stage process:
+
+\startitemize[1]
+    \item {\bf Region Proposal:} An initial set of regions of interest  (\ROI\) is proposed in the input image.
+    \item {\bf Feature Extraction and Classification:} For each ROI, a feature vector is extracted using a \CNN\ and classified as containing the object or not.
+\stopitemize
+
+\pkap[section:transformation-models]{Transformation Models of \NN\-s}
+Transformation models aim to improve the performance and efficiency of \NN\-s by transforming the input or output data. These models can be used to reduce the dimensionality of the data, improve the interpretability of the model, or adapt the model to specific tasks.
+
+\pkap[section:existing-nns]{Existing \NN\-s for Human Pose Estimation}
+Several \NN\ architectures have been developed for skeleton detection. Here are three notable examples:
+
+\startitemize[n]
+    \item {\bf Posenet} (Mediapipe): A lightweight and efficient \NN\ for human pose estimation. It uses a single-stage architecture and can run on mobile devices.
+    \item {\bf Movenet} (TensorFlow): A multimodal \NN\ that combines pose estimation, hand tracking, and object tracking. It offers a variety of models with different tradeoffs between accuracy and speed.
+    \item {\bf MMPose} (Open-MMLab): A modular and extensible library for pose estimation. It provides a wide range of models and training tools.
+\stopitemize
+
+\pkap[section:chapter-summary]{Chapter Summary}
+This chapter introduced the key concepts of \NN\-s, \RCNN\-s, transformation models, and existing \NN\-s for human pose estimation. These concepts provide the theoretical foundation for the proposed automated \NN\ learning approach.
+
+% Introduction to NN
+% RCNN  Region-based Convolutional Neural Network vs CNN Convolutional Neural Network
+% Investigation of existing NNs for skeleton detection
+% NN transformation models

@@ -1,0 +1,77 @@
+%
+\usemodule[ctx-thesis-v0.991]
+\usemodule[bib.sty-v2.78]
+
+\setupthesis[en+sk,mendelu,pef,none][	% language,university,faculty,department
+  type={dp},             % bp=bachelor, dp=diploma, pp=PhD, zp=final thesis,  sp=seminar work,  pr=protocol/report, pt=project, doc=documentation; for more abbreviations, see the Documentation.
+  authorname={Damián},	 % your name
+  authorsurname={Sova},  % your surname
+  authordegree={Bc.},	   % your academic degree
+  % authorgender={M},     % M=male, F=female; not necessary for English
+  supervisor={doc. Ing. Oldřich Trenz, Ph.D.},  % name, surname and degree of your thesis supervisor
+  titleen={Automated neural network learning for higher accuracy human skeleton detection under realistic conditions}, 	               % title in English
+  title={Automatizované učenie neurónových sietí na presnejšiu detekciu ľudskej kostry v~reálnych podmienkach},                           % title in the second language
+  keywordsen={image processing, pose estimation, human skeleton detection},
+  keywords={spracovanie obrazu, odhadovanie pózy, detekcia ľudskej kostry},
+  acknowledgement={I would like to thank the supervisor doc. Ing. Oldřich Trenz, Ph.D. for the time and provided advice. Next I~would like to thank to the consultant RNDr. Michal Procházka, Ph.D. from visioncraft s.r.o. for regular consultantions which led the direction of this work. Last but not least, thank you friends and family for your support.},
+  abstracten={},		 % abstract in English
+  abstract={},		   % abstract in the second language
+  location={Brno},	 % location
+%  year={2021},		   % year, the default is the current year
+ thesisassignmentform={assignment/diploma-thesis-topic-1.pdf,assignment/diploma-thesis-topic-2.pdf},  % file(s) with thesis assignment
+]
+
+\setupinteraction[state=start]
+\setupinteraction[color=black,style=bold]
+\startthesis
+\startbodymatter
+
+\input{chapters/abbreviations}
+
+\input{chapters/introduction}
+
+\input{chapters/theoretical_foundations}
+
+\input{chapters/practical_part}
+
+\input{chapters/conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%% \def\refname{}
+
+\bbib
+This is the room for references, learn BIB.STY, the style for references.
+\ebib
+
+\stopbodymatter
+
+%%%%%%%%%%%%%%%%%%%%%%%% The variant where lists become as a part of the work and they are not put in Appendices.
+
+\setupsectionblock[backmatter][before={\setuplist[kap][before={}]}]
+
+\startbackmatter
+
+\THESIScompletelistof{tables}
+\THESIScompletelistof{figures}
+\THESIScompletelistof{abbreviations}
+\THESIScompletelistof{codes}
+
+\stopbackmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%% The variant where lists does not become as a part of the work but they are put in Appendices.
+%%%%%%%%%%%%%%%%%%%%%%%% For enabling the _following_ four commands, erase the percent sign.
+%%%%%%%%%%%%%%%%%%%%%%%% Put the percent sign for disabling the _previous_ four commands.
+
+\startappendices
+
+\cast{Appendices}
+%\THESIScompletelistof{tables}
+%\THESIScompletelistof{figures}
+%\THESIScompletelistof{abbreviations}
+%\THESIScompletelistof{codes}
+
+\stopappendices
+
+\stopthesis
+
+\endinput		
+
