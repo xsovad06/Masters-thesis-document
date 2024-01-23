@@ -1,5 +1,16 @@
 \kap{Introduction}
-Motivation and basic objectives of the work
 
-Current state and problem to be addressed
+\pkap[section:motivation]{Motivation and Basic Objectives of the Work}
+The field of {\em computer vision} has witnessed rapid evolution, serving as the foundation for understanding visual information in images and videos (\scc Szeliski, 2010). Within this context, the accurate {\em detection} of the {\em human skeleton} holds immense potential for applications ranging from autonomous systems to healthcare. The motivation driving this master's thesis is to {\em enhance} the {\em precision} of human skeleton detection under {\em realistic} conditions through the application of {\em automated} neural network learning.
+
+The primary objectives of this work can be delineated as follows:
+
+\startitemize
+    \item {\bf Technical Challenges in Neural Network Training:} Training a neural network (\NN\) for human skeleton detection is inherently challenging. It necessitates the availability of hardware capable of capturing the human body's spatial position through sensors placed on key body points, which are crucial for the detection process. Acquiring sensor data is essential for constructing a comprehensive training dataset for the \NN\. However, the generation of training data often occurs in controlled "laboratory conditions," using props and actors (\scc Yang, 2018). Consequently, the creation of such a model becomes resource-intensive, requiring significant investments in time, computational resources, human effort, and hardware. Furthermore, the model's accuracy is constrained by the level of correlation between simulated activities and real-world conditions in the detected scenario.
+    \item {\bf Refinement of Neural Networks for Skeleton Detection:} Existing models for human skeleton detection exhibit limited accuracy for specific use cases due to training in artificially created conditions (\scc Toshev et al., 2014). The proposed approach involves leveraging existing \NN\ models and combining their functionalities without intervention or retraining. To construct a training dataset, real-world data, such as videos capturing falls in nursing homes, will be used. Existing \NN\ models will extract information about the skeleton from these data, which will then be utilized to train a new model with the aim of enhancing accuracy.
+    \item (Optional) {\bf Dimensional Enhancement for Improved Detection:} In scenarios where body position is not clearly visible, particularly when extracting skeleton data from videos without body position sensor data, inaccurate detection may occur. To address this, the training dataset will be expanded into a three-dimensional space using a lidar sensor on the iPhone 14 PRO. The addition of a third dimension aims to refine skeleton detection in situations where only two-dimensional data are available.
+\stopitemize
+
+\pkap[section:current-state]{Current State and Problem to Be Addressed}
+At present, there is a notable gap in tools and methodologies dedicated to training models for human skeleton detection, utilizing pre-existing models (\scc Yang et al., 2016). While various tools exist for model optimization, compression, and transfer learning to different models, there is a lack of knowledge regarding approaches that integrate existing \NN\s for training entirely new models. This thesis aims to bridge this gap by exploring the combination of existing neural networks to train a novel model specifically for human skeleton detection, addressing the current limitations in accuracy and practicality associated with conventional training methodologies.
 
