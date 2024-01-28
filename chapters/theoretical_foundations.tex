@@ -2,29 +2,29 @@
 This chapter provides an overview of the theoretical foundations of the proposed automated \NN\-s learning approach for human skeleton detection. It introduces the key concepts of \NN\-s, convolutional neural network  (\CNN\), region-based convolutional neural network  (\RCNN\), and transformation models of \NN\-s. Additionally, it explores existing \NN\-s for human pose estimation, including {\em Posenet}, {\em Movenet}, and {\em MMPose}.
 
 \pkap[section:neural-network]{Neural Network}
-\NN-s, inspired by the structure and function of the {\em human brain}, are computational models comprising {\em interconnected} layers of artificial {\em neurons} responsible for processing and transforming information. Demonstrating remarkable capabilities, \NN-s have proven effective in diverse tasks, including image recognition, natural language processing, and machine translation. A~schematic representation of a simple \NN\ is presented in \in{Figure}[nn-schema], illustrating individual layers of neurons interconnected with their neighbors. The initial layer is commonly referred to as the {\em input layer}, followed by {\em hidden layers}, and concluding with the {\em output layer}. In practical usage, data, such as an image in the form of a vector where values represent individual pixels, is input into the initial layer for analysis. The \NN\ processes this information, ultimately yielding a result in the form of a single value or vector, dependent on the nature of the problem—be it a classification or regression task. Across various fields, \NN-s have consistently demonstrated their robustness, excelling in tasks such as classification, prediction, filtering, optimization, pattern recognition, and function approximation (\scc Simoneau et al., 1998).
+\NN\-s, inspired by the structure and function of the {\em human brain}, are computational models comprising {\em interconnected} layers of artificial {\em neurons} responsible for processing and transforming information. Demonstrating remarkable capabilities, \NN\-s have proven effective in diverse tasks, including image recognition, natural language processing, and machine translation. A~schematic representation of a simple \NN\ is presented in \in{Figure}[nn-schema], illustrating individual layers of neurons interconnected with their neighbors. The initial layer is commonly referred to as the {\em input layer}, followed by {\em hidden layers}, and concluding with the {\em output layer}. In practical usage, data, such as an image in the form of a vector where values represent individual pixels, is input into the initial layer for analysis. The \NN\ processes this information, ultimately yielding a result in the form of a single value or vector, dependent on the nature of the problem—be it a classification or regression task. Across various fields, \NN\-s have consistently demonstrated their robustness, excelling in tasks such as classification, prediction, filtering, optimization, pattern recognition, and function approximation (\scc Simoneau et al., 1998).
 \obrazek{nn-schema}{Example neural network schema. Source: (Nielsen, 2015)}{figures/neural-network-schema.png}{width=\makeupwidth}
 
 \ppkap[subsection:nn-works]{How Neural Network Works}
 
-A~\NN\, inspired by the human brain, is a computational system organized into layers of artificial neurons (\scc Nielsen, 2015). Each connection between neurons has a {\em weight}, representing the strength of influence (\scc Goodfellow et al., 2016). The network learns by adjusting these weights during training, where it processes input data through layers, utilizes {\em activation functions} to determine neuron firing, and iteratively adjusts weights based on the difference between predicted and actual outcomes (\scc Nielsen, 2015; \scc Goodfellow et al., 2016; \scc Mazur, 2015). The forward pass involves making predictions, while the backward pass compares predictions to actual results, adjusting weights to minimize {\em errors} (\scc Mazur, 2015). This learning process enables the neural network to recognize patterns and make accurate decisions in tasks like {\em image recognition} or {\em language processing} (\scc Goodfellow et al., 2016).
+A~\NN\, inspired by the human brain, is a computational system organized into layers of artificial neurons (\scc Nielsen, 2015). Each connection between neurons has a {\em weight}, representing the strength of influence (\scc Goodfellow et al., 2016). The network learns by adjusting these weights during training, where it processes input data through layers, utilizes {\em activation functions} to determine neuron \uv{firing}, and iteratively adjusts weights based on the difference between predicted and actual outcomes (\scc Nielsen, 2015; \scc Goodfellow et al., 2016; \scc Mazur, 2015). The forward pass involves making predictions, while the backward pass compares predictions to actual results, adjusting weights to minimize {\em errors} (\scc Mazur, 2015). This learning process enables the neural network to recognize patterns and make accurate decisions in tasks like {\em image recognition} or {\em language processing} (\scc Goodfellow et al., 2016).
 
 \pkap[section:cnn]{Convolutional Neural Network}
-\CNN\-s are a type of \NN\ architecture that excels at processing and analyzing visual data, such as images and videos. They are particularly well-suited for skeleton detection due to their ability to {\em extract} local features from the input data. \CNN\-s typically consist of a series of {\em convolutional layers}, each of which applies a {\em filter} or {\em kernel} to the input data to extract {\em features}. The filters are learned during the training process, allowing the \CNN\ to learn the patterns and relationships that are important for skeleton detection (\scc Liu, 2016).
+\CNN\-s are a type of \NN\ architecture that excels at processing and analyzing visual data, such as images and videos. They are particularly well-suited for skeleton detection due to their ability to {\em extract} local features from the input data. \CNN\-s typically consist of a series of {\em convolutional layers}, each of which applies a {\em filter} or {\em kernel} to the input data to extract {\em features}. The filters are learned during the training process, allowing the \CNN\ to learn the patterns and relationships that are important for skeleton detection (\scc Singh, 2019).
 
 \CNN\-s have several advantages for skeleton detection (\scc Huang, 2022):
 
 \startitemize[1]
     \item {\bf Translation Invariance:} \CNN\-s are invariant to small translations in the input data. This is important for skeleton detection, as the human body can be in {\em different positions} in an image or video.
-    \item {\bf Feature Learning:} \CNN\-s can learn complex features from the input data, which is essential for accurate skeleton detection.
-    \item {\bf Parameter Sharing:} \CNN\-s share weights across different positions in the input data. This reduces the number of parameters in the network, making it more efficient and easier to train.
+    \item {\bf Feature Learning:} \CNN\-s can learn {\em complex features} from the input data, which is essential for accurate skeleton detection.
+    \item {\bf Parameter Sharing:} \CNN\-s share {\em weights} across different positions in the input data. This reduces the number of parameters in the network, making it more efficient and easier to train.
 \stopitemize
 
-\CNN\-s have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task (\scc Liu, 2016\; \scc Huang, 2022).
+\CNN\-s have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task (\scc Singh, 2019\; \scc Huang, 2022).
 
 \ppkap[subsection:cnn-works]{How Convolutional Layers Work}
 
-Each convolutional layer in a CNN takes an input image and applies a filter to it to extract features. The filter is a small matrix of weights that slides across the input image, producing a feature map at each position. The feature map is a representation of the input image that highlights the patterns that are relevant to the task at hand.
+Each convolutional layer in a CNN takes an input image and applies a filter to it to extract features. The filter is a small matrix of weights that slides across the input image, producing a feature map at each position. The feature map is a representation of the input image that highlights the patterns that are relevant to the task at hand (\scc Agarwal et al., 2019).
 
 For example, in the case of human skeleton detection, a filter might be used to extract features that are indicative of human joints, such as the elbows, knees, and wrists. The feature map produced by this filter would highlight the locations of these joints in the input image.
 
@@ -32,19 +32,19 @@ For example, in the case of human skeleton detection, a filter might be used to 
 
 After the convolutional layers extract features, pooling layers are often used to reduce the dimensionality of the feature maps. This helps to reduce the computational cost of the network and also helps to make the network more invariant to small changes in the input data.
 
-Pooling layers work by dividing the feature map into smaller regions and then taking the maximum or average value of each region. This produces a smaller feature map that still contains the most important features from the original image.
+Pooling layers work by dividing the feature map into smaller regions and then taking the maximum or average value of each region. This produces a smaller feature map that still contains the most important features from the original image (\scc Agarwal et al., 2019).
 
 \ppkap[subsection:cnn-fully-connected-layers]{Fully Connected Layers}
 
 Once the feature maps have been extracted and pooled, they are passed through a series of fully connected layers. These layers are similar to the artificial neurons that are found in traditional neural networks. They take an input vector and produce an output vector.
 
-In the case of human skeleton detection, the fully connected layers are used to classify the detected features as either human joints or background. The output vector from the final fully connected layer is a probability distribution over the possible classes.
+In the case of human skeleton detection, the fully connected layers are used to classify the detected features as either human joints or background. The output vector from the final fully connected layer is a probability distribution over the possible classes (\scc Agarwal et al., 2019).
 
 \ppkap[subsection:cnn-training]{Training the CNN}
 
 The CNN is trained using a process called supervised learning. This involves providing the network with a dataset of labeled images, where each image is labeled with the positions of the human joints. The network then learns to associate the features extracted from the images with the corresponding labels.
 
-The training process involves adjusting the weights of the filters and connections in the network. This is done using an algorithm called backpropagation, which iteratively updates the weights to minimize the error between the network's predictions and the ground truth labels.
+The training process involves adjusting the weights of the filters and connections in the network. This is done using an algorithm called backpropagation, which iteratively updates the weights to minimize the error between the network's predictions and the ground truth labels (\scc Agarwal et al., 2019).
 
 \ppkap[subsection:cnn-example-usage]{Example of CNN Usage}
 
@@ -54,7 +54,7 @@ To illustrate how a CNN is used for human skeleton detection, consider a scenari
 
 While CNNs have achieved significant success in human skeleton detection, there are still some limitations to these methods. One limitation is that CNNs can be computationally expensive, especially when dealing with high-resolution images or videos. Additionally, CNNs can be sensitive to noise and occlusions, which can make it difficult to accurately detect skeletons in real-world scenarios.
 
-Researchers are continuing to develop new methods to improve the accuracy and efficiency of CNNs for human skeleton detection. These methods include using deeper networks, exploring new architectures, and developing more efficient training algorithms.
+Researchers are continuing to develop new methods to improve the accuracy and efficiency of CNNs for human skeleton detection. These methods include using deeper networks, exploring new architectures, and developing more efficient training algorithms (\scc Agarwal et al., 2019).
 
 \pkap[section:rcnn]{Region-based Convolutional Neural Network}
 \RCNN\-s  are a type of \NN\ architecture that excels at object detection and localization. They typically follow a two-stage process:
