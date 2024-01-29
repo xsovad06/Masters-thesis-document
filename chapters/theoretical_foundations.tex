@@ -10,7 +10,7 @@ This chapter provides an overview of the theoretical foundations of the proposed
 A~\NN\, inspired by the human brain, is a computational system organized into layers of artificial neurons (\scc Nielsen, 2015). Each connection between neurons has a {\em weight}, representing the strength of influence (\scc Goodfellow et al., 2016). The network learns by adjusting these weights during training, where it processes input data through layers, utilizes {\em activation functions} to determine neuron \uv{firing}, and iteratively adjusts weights based on the difference between predicted and actual outcomes (\scc Nielsen, 2015; \scc Goodfellow et al., 2016; \scc Mazur, 2015). The forward pass involves making predictions, while the backward pass compares predictions to actual results, adjusting weights to minimize {\em errors} (\scc Mazur, 2015). This learning process enables the neural network to recognize patterns and make accurate decisions in tasks like {\em image recognition} or {\em language processing} (\scc Goodfellow et al., 2016).
 
 \pkap[section:cnn]{Convolutional Neural Network}
-\CNN\-s are a type of \NN\ architecture that excels at processing and analyzing visual data, such as images and videos. They are particularly well-suited for skeleton detection due to their ability to {\em extract} local features from the input data. \CNN\-s typically consist of a series of {\em convolutional layers}, each of which applies a {\em filter} or {\em kernel} to the input data to extract {\em features}. The filters are learned during the training process, allowing the \CNN\ to learn the patterns and relationships that are important for skeleton detection (\scc Singh, 2019).
+\CNN\-s are a type of \NN\ architecture that excels at processing and analyzing visual data, such as images and videos. They are particularly well-suited for skeleton detection due to their ability to {\em extract} local features from the input data. \CNN\-s typically consist of a series of {\em convolutional layers}, each of which applies a {\em filter} or {\em kernel} to the input data to extract {\em features}. The filters are learned during the training process, allowing the \CNN\ to learn the patterns and relationships that are important for skeleton detection (\scc Singh, 2019). For better understanding of the \CNN\ architecture see example \in{Figure}[cnn-schema].
 
 \CNN\-s have several advantages for skeleton detection (\scc Huang, 2022):
 
@@ -21,6 +21,7 @@ A~\NN\, inspired by the human brain, is a computational system organized into la
 \stopitemize
 
 \CNN\-s have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task (\scc Singh, 2019\; \scc Huang, 2022).
+\obrazek{cnn-schema}{A simple classification architecture by CNN. Source: (Koushik, 2023)}{figures/cnn-schema.png}{width=\makeupwidth}
 
 \ppkap[subsection:cnn-works]{How Convolutional Layers Work}
 
@@ -48,7 +49,7 @@ The training process involves adjusting the weights of the filters and connectio
 
 \ppkap[subsection:cnn-example-usage]{Example of CNN Usage}
 
-To illustrate how a CNN is used for human skeleton detection, consider a scenario where a CNN is tasked with detecting human skeletons in a video stream. The CNN would first extract features from each frame of the video using its convolutional layers. Then, it would use these features to predict the positions of the human joints in the frame. Finally, the network would track the movements of the joints over time to create a representation of the human skeleton.
+To illustrate how a CNN is used for human skeleton detection, consider a scenario where a CNN is tasked with detecting human skeletons in a video stream. The CNN would first extract features from each frame of the video using its convolutional layers. Then, it would use these features to predict the positions of the human joints in the frame.
 
 \ppkap[subsection:cnn-limitations]{Limitations of Current Methods}
 
@@ -57,15 +58,17 @@ While CNNs have achieved significant success in human skeleton detection, there 
 Researchers are continuing to develop new methods to improve the accuracy and efficiency of CNNs for human skeleton detection. These methods include using deeper networks, exploring new architectures, and developing more efficient training algorithms (\scc Agarwal et al., 2019).
 
 \pkap[section:rcnn]{Region-based Convolutional Neural Network}
-\RCNN\-s  are a type of \NN\ architecture that excels at object detection and localization. They typically follow a two-stage process:
+\RCNN\-s are a class of deep \CNN\-s that have been widely used for object detection and localization. They are typically characterized by a two-stage pipeline that involves region proposal and region classification (\scc Ren et al., 2015). In the \in{Figure}[rcnn-stages] is displayed possible detection scenario of the \RCNN\.
+\obrazek{rcnn-stages}{RCNN stages. Source: (Girshick, 2016)}{figures/rcnn-stages.png}{width=\makeupwidth}
 
 \startitemize[1]
-    \item {\bf Region Proposal:} An initial set of regions of interest  (\ROI\) is proposed in the input image.
-    \item {\bf Feature Extraction and Classification:} For each ROI, a feature vector is extracted using a \CNN\ and classified as containing the object or not.
+    \item {\bf Region Proposal:} The first stage of an \RCNN\ involves generating a set of region proposals, which are candidate bounding boxes for objects in the input image. These proposals are typically generated using a selective search algorithm (\scc He et al., 2015) that identifies regions that are likely to contain objects based on their visual saliency and spatial context (\scc Girshick et al., 2016).
+    \item {\bf Feature Extraction and Classification:} The second stage of an \RCNN\ involves classifying each region proposal as either containing the object or not (\scc Ren et al., 2015). This is accomplished by using a CNN to extract feature vectors from each proposal and then applying a classifier to determine whether the features are indicative of the object (\scc Girshick et al., 2016).
 \stopitemize
 
-\pkap[section:transformation-models]{Transformation Models of \NN\-s}
-Transformation models aim to improve the performance and efficiency of \NN\-s by transforming the input or output data. These models can be used to reduce the dimensionality of the data, improve the interpretability of the model, or adapt the model to specific tasks.
+The original \RCNN\ architecture has been criticized for its computational inefficiency, as it involves two separate stages of processing (\scc Ren et al., 2015). To address this issue, researchers developed Faster R-CNN, which integrates the region proposal and region classification stages into a single network (\scc Ren et al., 2015). This significantly reduces the computational cost and improves the overall performance of the system (\scc He et al., 2015).
+% \pkap[section:transformation-models]{Transformation Models of \NN\-s}
+% Transformation models aim to improve the performance and efficiency of \NN\-s by transforming the input or output data. These models can be used to reduce the dimensionality of the data, improve the interpretability of the model, or adapt the model to specific tasks.
 
 \pkap[section:existing-nns]{Existing \NN\-s for Human Pose Estimation}
 Several \NN\ architectures have been developed for skeleton detection. Here are three notable examples:
@@ -92,6 +95,6 @@ The ouput structure of the {\em MMPose} model can be found in \in{Figure}[mmpose
 This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s, transformation models, and existing models for human pose estimation. These concepts provide the theoretical foundation for the proposed automated \NN\ learning approach.
 
 % Introduction to NN
-% RCNN  Region-based Convolutional Neural Network vs CNN Convolutional Neural Network
+% \RCNN\  Region-based Convolutional Neural Network vs CNN Convolutional Neural Network
 % Investigation of existing NNs for skeleton detection
 % NN transformation models
