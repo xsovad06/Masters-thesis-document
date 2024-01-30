@@ -43,13 +43,13 @@ In the case of human skeleton detection, the fully connected layers are used to 
 
 \ppkap[subsection:cnn-training]{Training the CNN}
 
-The CNN is trained using a process called supervised learning. This involves providing the network with a dataset of labeled images, where each image is labeled with the positions of the human joints. The network then learns to associate the features extracted from the images with the corresponding labels.
+The CNN is trained using a process called {\em supervised learning} (\scc Liu, 2012). This involves providing the network with a dataset of labeled images, where each image is labeled with the positions of the human joints. The network then learns to associate the features extracted from the images with the corresponding labels.
 
-The training process involves adjusting the weights of the filters and connections in the network. This is done using an algorithm called backpropagation, which iteratively updates the weights to minimize the error between the network's predictions and the ground truth labels (\scc Agarwal et al., 2019).
+The training process involves adjusting the weights of the filters and connections in the network. This is done using an algorithm called backpropagation (\scc Mazur, 2015), which iteratively updates the weights to minimize the error between the network's predictions and the ground truth labels (\scc Agarwal et al., 2019).
 
 \ppkap[subsection:cnn-example-usage]{Example of CNN Usage}
 
-To illustrate how a CNN is used for human skeleton detection, consider a scenario where a CNN is tasked with detecting human skeletons in a video stream. The CNN would first extract features from each frame of the video using its convolutional layers. Then, it would use these features to predict the positions of the human joints in the frame.
+To illustrate how a CNN is used for human skeleton detection, consider a scenario where a CNN is tasked with detecting human skeletons in a video stream. The CNN would first extract features from each frame of the video using its convolutional layers. Then, it would use these features to predict the positions of the human joints in the frame. This predictions can be used for various analysis of the human body movements in the video.
 
 \ppkap[subsection:cnn-limitations]{Limitations of Current Methods}
 
@@ -71,7 +71,7 @@ The original \RCNN\ architecture has been criticized for its computational ineff
 % Transformation models aim to improve the performance and efficiency of \NN\-s by transforming the input or output data. These models can be used to reduce the dimensionality of the data, improve the interpretability of the model, or adapt the model to specific tasks.
 
 \pkap[section:existing-nns]{Existing \NN\-s for Human Pose Estimation}
-Several \NN\ architectures have been developed for skeleton detection. Here are three notable examples:
+Several \NN\ architectures have been developed for skeleton detection. This thesis explores three notable examples, each with a dedicated section in this chapter:
 
 \startitemize[n]
     \item {\bf Posenet} (Mediapipe): A~lightweight and efficient \NN\ for human pose estimation. It uses a single-stage architecture and can run on mobile devices.
@@ -80,7 +80,35 @@ Several \NN\ architectures have been developed for skeleton detection. Here are 
 \stopitemize
 
 \pkap[section:posenet]{Posenet}
-The ouput structure of the {\em Posenet} model can be found in \in{Figure}[posenet-skeleton].
+{\em Pose_landmark} (\Posenet\) is a model from the MediaPipe family that is used to detect keypoints or pose landmarks on human bodies in images and videos. It is a \CNN\-based model that uses a {\em two-stage} pipeline to first detect person {\em bounding boxes} and then refine the detections by {\em estimating} the positions of {\bf 33} keypoints on each detected person (\scc GoogleAI, 2024). The ouput structure of the {\em Posenet} model can be found in \in{Figure}[posenet-skeleton].
+
+The first stage of the pipeline, the person detection stage, uses a Single Shot MultiBox Detector (\SSD\) to generate bounding boxes around people in the input image. The SSD is a lightweight and efficient CNN architecture that is well-suited for real-time applications (\scc GoogleAI, 2024).
+
+The second stage of the pipeline, the pose estimation stage, uses a \CNN\ to refine the person detections by estimating the positions of 33 keypoints on each detected person. The keypoints are typically located on the joints of the human body, such as the elbows, knees, and wrists (\scc GoogleAI, 2024).
+
+The \Posenet\ model is trained on a large COCO dataset (\scc Tsung-Yi, 2015) with images and videos of people performing a variety of actions. This training data helps the model to learn to identify the keypoints on human bodies in a variety of poses and orientations. In the Table below can be found some of the key features of the \Posenet\ model.
+
+\TABULKA[][tab:posenet-features]{Posenet model features}
+    \setupTABLE[c][each][offset=3dd]
+    \setupTABLE[frame=off]
+    \setupTABLE[r][1][topframe=on,bottomframe=on]
+    \setupTABLE[c][each][leftframe=on]
+    \setupTABLE[c][1][leftframe=off]
+    \bTR
+        \bTD Feature\eTD\bTD    Description\eTD\eTR
+    \bTR
+        \bTD Input\eTD\bTD	    RGB image or video frame\eTD\eTR
+    \bTR
+        \bTD Output\eTD\bTD	    List of pose landmarks for each person detected in the input\eTD\eTR
+    \bTR
+        \bTD Landmarks\eTD\bTD	33 keypoints on each person\eTD\eTR
+    \bTR
+        \bTD Accuracy\eTD\bTD	Up to 83\% accuracy on the COCO dataset\eTD\eTR
+    \bTR
+        \bTD Realtime\eTD\bTD	Yes\eTD\eTR
+
+The \Posenet\ model is a powerful tool for tracking and analyzing human movements in real-time. It has a wide range of applications, including {\em activity recognition}, {\em gesture recognition}, {\em healthcare}, {\em virtual reality}, {\em augmented reality}.
+
 \obrazek{posenet-skeleton}{Posenet skeleton structure with IDs to each keypoint}{figures/posenet-detection-structure.png}{width=\makeupwidth}
 
 \pkap[section:movenet]{Movenet}
