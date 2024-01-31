@@ -3,7 +3,7 @@ This chapter provides an overview of the theoretical foundations of the proposed
 
 \pkap[section:neural-network]{Neural Network}
 \NN\-s, inspired by the structure and function of the {\em human brain}, are computational models comprising {\em interconnected} layers of artificial {\em neurons} responsible for processing and transforming information. Demonstrating remarkable capabilities, \NN\-s have proven effective in diverse tasks, including image recognition, natural language processing, and machine translation. A~schematic representation of a simple \NN\ is presented in \in{Figure}[nn-schema], illustrating individual layers of neurons interconnected with their neighbors. The initial layer is commonly referred to as the {\em input layer}, followed by {\em hidden layers}, and concluding with the {\em output layer}. In practical usage, data, such as an image in the form of a vector where values represent individual pixels, is input into the initial layer for analysis. The \NN\ processes this information, ultimately yielding a result in the form of a single value or vector, dependent on the nature of the problem—be it a classification or regression task. Across various fields, \NN\-s have consistently demonstrated their robustness, excelling in tasks such as classification, prediction, filtering, optimization, pattern recognition, and function approximation (\scc Simoneau et al., 1998).
-\obrazek{nn-schema}{Example neural network schema. Source: (Nielsen, 2015)}{figures/neural-network-schema.png}{width=\makeupwidth}
+\obrazek{nn-schema}{Example neural network schema. Source: (\\scc Nielsen, 2015)}{figures/neural-network-schema.png}{width=\makeupwidth}
 
 \ppkap[subsection:nn-works]{How Neural Network Works}
 
@@ -21,7 +21,7 @@ A~\NN\, inspired by the human brain, is a computational system organized into la
 \stopitemize
 
 \CNN\-s have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task (\scc Singh, 2019\; \scc Huang, 2022).
-\obrazek{cnn-schema}{A simple classification architecture by CNN. Source: (Koushik, 2023)}{figures/cnn-schema.png}{width=\makeupwidth}
+\obrazek{cnn-schema}{A simple classification architecture by CNN. Source: (\\scc Koushik, 2023)}{figures/cnn-schema.png}{width=\makeupwidth}
 
 \ppkap[subsection:cnn-works]{How Convolutional Layers Work}
 
@@ -53,20 +53,20 @@ To illustrate how a CNN is used for human skeleton detection, consider a scenari
 
 \ppkap[subsection:cnn-limitations]{Limitations of Current Methods}
 
-While CNNs have achieved significant success in human skeleton detection, there are still some limitations to these methods. One limitation is that CNNs can be computationally expensive, especially when dealing with high-resolution images or videos. Additionally, CNNs can be sensitive to noise and occlusions, which can make it difficult to accurately detect skeletons in real-world scenarios.
+While CNNs have achieved significant success in human skeleton detection, there are still some limitations to these methods. One limitation is that CNNs can be {\em computationally expensive}, especially when dealing with {\em high-resolution} images or videos. Additionally, CNNs can be sensitive to {\em noise} and {\em occlusions}, which can make it difficult to accurately detect skeletons in real-world scenarios.
 
 Researchers are continuing to develop new methods to improve the accuracy and efficiency of CNNs for human skeleton detection. These methods include using deeper networks, exploring new architectures, and developing more efficient training algorithms (\scc Agarwal et al., 2019).
 
 \pkap[section:rcnn]{Region-based Convolutional Neural Network}
-\RCNN\-s are a class of deep \CNN\-s that have been widely used for object detection and localization. They are typically characterized by a two-stage pipeline that involves region proposal and region classification (\scc Ren et al., 2015). In the \in{Figure}[rcnn-stages] is displayed possible detection scenario of the \RCNN\.
-\obrazek{rcnn-stages}{RCNN stages. Source: (Girshick, 2016)}{figures/rcnn-stages.png}{width=\makeupwidth}
+\RCNN\-s are a class of deep \CNN\-s that have been widely used for object detection and localization. They are typically characterized by a {\em two-stage} pipeline that involves {\em region proposal} and {\em region classification} (\scc Ren et al., 2015). In the \in{Figure}[rcnn-stages] is displayed possible detection scenario of the \RCNN\.
+\obrazek{rcnn-stages}{RCNN stages. Source: (\\scc Girshick, 2016)}{figures/rcnn-stages.png}{width=\makeupwidth}
 
 \startitemize[1]
-    \item {\bf Region Proposal:} The first stage of an \RCNN\ involves generating a set of region proposals, which are candidate bounding boxes for objects in the input image. These proposals are typically generated using a selective search algorithm (\scc He et al., 2015) that identifies regions that are likely to contain objects based on their visual saliency and spatial context (\scc Girshick et al., 2016).
-    \item {\bf Feature Extraction and Classification:} The second stage of an \RCNN\ involves classifying each region proposal as either containing the object or not (\scc Ren et al., 2015). This is accomplished by using a CNN to extract feature vectors from each proposal and then applying a classifier to determine whether the features are indicative of the object (\scc Girshick et al., 2016).
+    \item {\bf Region Proposal:} The first stage of an \RCNN\ involves generating a set of region proposals, which are candidate {\em bounding boxes} for objects in the input image. These proposals are typically generated using a {\em selective search algorithm} (\scc He et al., 2015) that identifies regions that are likely to contain objects based on their visual saliency and spatial context (\scc Girshick et al., 2016).
+    \item {\bf Feature Extraction and Classification:} The second stage of an \RCNN\ involves classifying each region proposal as either {\em containing} the object or {\em not} (\scc Ren et al., 2015). This is accomplished by using a \CNN\ to extract feature vectors from each proposal and then applying a classifier to determine whether the features are indicative of the object (\scc Girshick et al., 2016).
 \stopitemize
 
-The original \RCNN\ architecture has been criticized for its computational inefficiency, as it involves two separate stages of processing (\scc Ren et al., 2015). To address this issue, researchers developed Faster R-CNN, which integrates the region proposal and region classification stages into a single network (\scc Ren et al., 2015). This significantly reduces the computational cost and improves the overall performance of the system (\scc He et al., 2015).
+The original \RCNN\ architecture has been criticized for its computational {\em inefficiency}, as it involves two separate stages of processing (\scc Ren et al., 2015). To address this issue, researchers developed {\em Faster R-CNN}, which integrates the region proposal and region classification stages into a {\em single network} (\scc Ren et al., 2015). This significantly reduces the computational cost and improves the overall performance of the system (\scc He et al., 2015).
 % \pkap[section:transformation-models]{Transformation Models of \NN\-s}
 % Transformation models aim to improve the performance and efficiency of \NN\-s by transforming the input or output data. These models can be used to reduce the dimensionality of the data, improve the interpretability of the model, or adapt the model to specific tasks.
 
@@ -109,7 +109,7 @@ The \Posenet\ model is trained on a large COCO dataset (\scc Tsung-Yi, 2015) wit
 
 The \Posenet\ model is a powerful tool for tracking and analyzing human movements in real-time. It has a wide range of applications, including {\em activity recognition}, {\em gesture recognition}, {\em healthcare}, {\em virtual reality}, {\em augmented reality}.
 
-\obrazek{posenet-skeleton}{Posenet skeleton structure with IDs to each keypoint}{figures/posenet-detection-structure.png}{width=\makeupwidth}
+\obrazek{posenet-skeleton}{Posenet skeleton structure with IDs to each keypoint. The skeleton representation plays a crucial role in introducing the unified format as described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]. Source: (\\scc GoogleAI, 2024).}{figures/posenet-detection-structure.png}{width=\makeupwidth}
 
 \pkap[section:movenet]{Movenet}
 The ouput structure of the {\em Movenet} model can be found in \in{Figure}[movenet-skeleton].
