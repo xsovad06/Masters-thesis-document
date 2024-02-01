@@ -114,7 +114,7 @@ The \PoseNet\ model is trained on a large COCO dataset (\scc Tsung-Yi, 2015) wit
     \bTR
         \bTD Speed\eTD\bTD	    10 - 20 FPS\eTD\eTR
 
-\obrazek{posenet-skeleton}{PoseNet skeleton structure with IDs to each keypoint. The skeleton representation plays a crucial role in introducing the unified format as described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]. Source: (\\scc PoseNet, 2024).}{figures/posenet-detection-structure.png}{width=36cc}
+\obrazek{posenet-skeleton}{PoseNet skeleton structure with IDs to each keypoint. The skeleton representation plays a crucial role in introducing the unified format as described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]. Source: (\\scc PoseNet, 2024).}{figures/posenet-detection-structure.png}{width=34cc}
 
 % ------- Section ------- %
 \pkap[section:movenet]{MoveNet}
@@ -150,16 +150,45 @@ The pose refinement process is repeated multiple times to improve the accuracy o
     \bTR
         \bTD Speed\eTD\bTD	    Up to 30 FPS\eTD\eTR
 
-\obrazek{movenet-skeleton}{MoveNet skeleton structure with IDs to each keypoint. This model simplifies the pose detection process compared to the PoseNet described in \\in{section}[posenet-skeleton] on \\at{page}[posenet-skeleton], which contributes to its superior performance. As a result, the MoveNet detection results do not contribute significantly to the accuracy of the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format].}{figures/movenet-detection-structure.png}{width=36cc}
+\obrazek{movenet-skeleton}{MoveNet skeleton structure with IDs to each keypoint. This model simplifies the pose detection process compared to the PoseNet described in \\in{section}[posenet-skeleton] on \\at{page}[posenet-skeleton], which contributes to its superior performance. As a result, the MoveNet detection results do not contribute significantly to the accuracy of the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format].}{figures/movenet-detection-structure.png}{width=34cc}
 
 % ------- Section ------- %
 \pkap[section:mmpose]{MMPose}
-The ouput structure of the {\em MMPose} model can be found in \in{Figure}[mmpose-skeleton].
-\obrazek{mmpose-skeleton}{MMPose skeleton structure with IDs of used keypoint in the further processing. For simplicity, the small blue points do not have ID ensuring good visibility. Additionally, the blue keypoints have been omitted to achieve the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]}{figures/mmpose-detection-structure.png}{width=38cc,height=40cc}
+This section describes the model and architecture used for multiple humans pose estimation in the {\em MMPose} library (\scc MMPose, 2020). The model is based on a \CNN\ that is trained on a large dataset of images and their corresponding ground truth human poses. The network is able to predict the positions of {\bf 133} {\em keypoints} on the human body, including the head, shoulders, elbows, wrists, hips, knees, and ankles. The ouput structure of the {\em MMPose} model can be found in \in{Figure}[mmpose-skeleton].
 
-% ------- Section ------- %
-\pkap[section:chapter-summary]{Chapter Summary}
-This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. These concepts provide the theoretical foundation for the proposed automated \NN\ learning approach.
+The model is divided into {\em two} main stages. The first stage detects human bodies in the input image. This is done using a {\em Faster R-CNN} detector, which is a {\em two-stage} object detection network. The detector first extracts a set of {\em region proposals} from the image, and then {\em classifies} each proposal as either a {\em human} or {\em not} (\scc Ke et al., 2019).
+
+The second stage estimates the poses of the detected human bodies. This is done using a {\em top-down} pose estimation network, which is a \CNN\ that takes as input the bounding boxes of the detected bodies and outputs a set of heatmaps that represent the probability of each keypoint being located at each pixel in the image (\scc Ke et al., 2019).
+
+The top-down pose estimation network is based on the {\em HRNet} architecture, which is a deep \CNN\ that is designed for human pose estimation. The network consists of a series of {\em residual blocks}, each of which consists of two convolutional layers with a {\em stride} of 1 followed by two convolutional layers with a stride of 2. This allows the network to capture both local and global information in the image (\scc Ke et al., 2019).
+
+The human pose estimation results are then evaluated using the COCO WholeBody metric (\scc Jin et al., 2020; \scc Xe et al., 2022), which is a measure of the accuracy of the predicted keypoints.
+
+\TABULKA[][tab:mmpose-features]{MMPose model features}
+    \setupTABLE[r][1][style=bold]
+    \setupTABLE[c][each][offset=3dd]
+    \setupTABLE[frame=off]
+    \setupTABLE[r][1][topframe=on,bottomframe=on]
+    \setupTABLE[c][each][leftframe=on]
+    \setupTABLE[c][1][leftframe=off]
+    \bTR
+        \bTD Feature\eTD\bTD    Description\eTD\eTR
+    \bTR
+        \bTD Input\eTD\bTD	    RGB image or video frame\eTD\eTR
+    \bTR
+        \bTD Output\eTD\bTD	    List of pose landmarks for each person detected in the input\eTD\eTR
+    \bTR
+        \bTD Landmarks\eTD\bTD	133 keypoints\eTD\eTR
+    \bTR
+        \bTD Accuracy\eTD\bTD   76.3\% on the COCO WholeBody dataset\eTD\eTR
+    \bTR
+        \bTD Speed\eTD\bTD	    Requires a powerful GPU for real-time use\eTD\eTR
+
+\obrazek{mmpose-skeleton}{MMPose skeleton structure with IDs of used keypoint in the further processing. For simplicity, the small blue points do not have ID ensuring good visibility. Additionally, the blue keypoints have been omitted to achieve the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]}{figures/mmpose-detection-structure.png}{width=36cc,height=41cc}
+
+% % ------- Section ------- %
+% \pkap[section:chapter-summary]{Chapter Summary}
+% This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. These concepts provide the theoretical foundation for the proposed automated \NN\ learning approach.
 
 % Introduction to NN
 % \RCNN\  Region-based Convolutional Neural Network vs CNN Convolutional Neural Network
