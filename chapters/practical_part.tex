@@ -1,10 +1,33 @@
 \kap[chapter:practical-part]{Practical part}
-In this chapter, we will comprehensively examine the various stages involved in training a new model for human pose estimation. The initial phase entails the preparation of a custom dataset, followed by the utilization of an existing model outlined in \in{Section}[section:existing-nns] on \at{page}[section:existing-nns]. Subsequently, a unified format for pose estimation is introduced to aggregate results from each model. Finally, the complete new model is trained using the prepared annotated dataset.
+In this chapter, we will comprehensively examine the various stages involved in training a new model for human pose estimation. The initial phase entails the preparation of a custom dataset, followed by the utilization of an existing models outlined in \in{Section}[section:existing-nns] on \at{page}[section:existing-nns]. Subsequently, a unified format for pose estimation is introduced to aggregate results from each model. Finally, the complete new model is trained using the prepared annotated dataset. Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] at the end of this chapter.
 
 \pkap[section:dataset]{Dataset}
 
 \pkap[section:unified-format]{Created Unified Format}
-The {\em unified format} structure can be found in \in{Figure}[unified-format-structure].
+A highly cost-effective method of obtaining a custom dataset with real-life footage data is to leverage existing \NN\-s to generate labels. This approach enables the training of a new model specifically tailored to the target detection task. To develop a novel model with the desired functionality, multiple models can be employed for label generation. However, for effective training, a unified format is required to aggregate the results of these individual models. This section precisely addresses the concept of a unified format introduced in this thesis, capitalizing on the strengths of existing models. As explained in the previous chapter, each model estimates a different number of keypoints, emphasizing different qualities. Refer to \in{Table}[tab:format-comparison] for a comprehensive understanding of these differences.
+
+The rationale behind the unified format is to identify commonalities among individual formats and address their variations. Essentially, the common format is based on {\bf MoveNet}, which comprises {\bf 17} keypoints, excluding {\em hands} and {\em feet} estimation compared to the unified format. {\bf PoseNet} introduces an additional eyes keypoints (compared to unified format) that needs elimination, while {\bf MMPose} includes {\bf 107} unnecessary keypoints, particularly detailed facial keypoints and non-crucial hand keypoints (individual joints of each finger). The unified format optimally encompasses {\bf 27} keypoints, providing satisfactory detail for hands, feet, and face. Refer to \in{Figure}[unified-format-structure] for a visual representation of the structure. You can see that the format is very simple and straightforward. It offers basic pose representation with sufficient detail to both hands and feet.
+
+Another crucial aspect is the accurate aggregation of individual model estimations, encompassing both the coordinates of keypoints and their visibility values. To address this, we introduce a weighted average, mitigating weaknesses in faster models such as MoveNet and PoseNet. Given that these models are designed for real-time estimation, and we utilize the "lightning" model version for PoseNet, accuracy is inherently limited. Detailed values for the weighted average are available in \in{Table}[tab:format-comparison]. The assignment of the highest weight to the {\bf MMPose} model is justified by its superior accuracy on our custom dataset. This approach ensures the uniformity of estimations made by individual models across the entire dataset, as prepared in the previous section.
+
+\TABULKA[][tab:format-comparison]{Comparison of the individual models detection format}
+    \setupTABLE[r][1][style=bold]
+    \setupTABLE[c][each][offset=3dd]
+    \setupTABLE[frame=off]
+    \setupTABLE[r][1][topframe=on,bottomframe=on]
+    \setupTABLE[c][each][leftframe=on]
+    \setupTABLE[c][1][leftframe=off]
+    \setupTABLE[c][2,3,4][align=middle]
+    \bTR
+        \bTD Model\eTD\bTD      Keypoints\eTD\bTD  Multi-person detection\eTD\bTD  Weight\eTD\eTR
+    \bTR
+        \bTD PoseNet\eTD\bTD    33\eTD\bTD  No\eTD\bTD  0.3\eTD\eTR
+    \bTR
+        \bTD MoveNet\eTD\bTD    17\eTD\bTD  No\eTD\bTD  0.2\eTD\eTR
+    \bTR
+        \bTD MMPose\eTD\bTD     133\eTD\bTD  Yes\eTD\bTD  0.5\eTD\eTR
+
+
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}
 
 \pkap[section:experiments]{Experiments and Results}
