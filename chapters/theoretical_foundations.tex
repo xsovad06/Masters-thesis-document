@@ -79,10 +79,11 @@ The original \RCNN\ architecture has been criticized for its computational {\em 
 Several \NN\ architectures have been developed for skeleton detection. This thesis explores three notable examples, each with a dedicated section in this chapter:
 
 \startitemize[n]
-    \item {\bf PoseNet} (Mediapipe): A~lightweight and efficient \NN\ for human pose estimation. It uses a single-stage architecture and can run on mobile devices.
-    \item {\bf MoveNet} (TensorFlow): A~multimodal \NN\ that combines pose estimation, hand tracking, and object tracking. It offers a variety of models with different tradeoffs between accuracy and speed.
-    \item {\bf MMPose} (Open-MMLab): A~modular and extensible library for pose estimation. It provides a wide range of models and training tools.
+    \item {\bf PoseNet:} Lightweight and efficient \CNN\ for real-time single person detection.
+    \item {\bf MoveNet:} Family of lightweight models for real-time human pose estimation on mobile devices. Used the {\em lightning} version for single person detection.
+    \item {\bf MMPose:} Library uses a \CNN\ for multiple human pose estimation.
 \stopitemize
+
 
 % ------- Section ------- %
 \pkap[section:posenet]{PoseNet}
