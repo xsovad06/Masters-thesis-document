@@ -14,7 +14,7 @@ A~\NN\, inspired by the human brain, is a computational system organized into la
 \pkap[section:cnn]{Convolutional Neural Network}
 \CNN\-s are a type of \NN\ architecture that excels at processing and analyzing visual data, such as images and videos. They are particularly well-suited for skeleton detection due to their ability to {\em extract} local features from the input data. \CNN\-s typically consist of a series of {\em convolutional layers}, each of which applies a {\em filter} or {\em kernel} to the input data to extract {\em features}. The filters are learned during the training process, allowing the \CNN\ to learn the patterns and relationships that are important for skeleton detection (\scc Singh, 2019). For better understanding of the \CNN\ architecture see example \in{Figure}[cnn-schema].
 
-\CNN\-s have several advantages for skeleton detection (\scc Huang, 2022):
+\CNN\-s have several advantages for skeleton detection (\scc Ce et al., 2020):
 
 \startitemize[1]
     \item {\bf Translation Invariance:} \CNN\-s are invariant to small translations in the input data. This is important for skeleton detection, as the human body can be in {\em different positions} in an image or video.
@@ -22,7 +22,7 @@ A~\NN\, inspired by the human brain, is a computational system organized into la
     \item {\bf Parameter Sharing:} \CNN\-s share {\em weights} across different positions in the input data. This reduces the number of parameters in the network, making it more efficient and easier to train.
 \stopitemize
 
-\CNN\-s have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task (\scc Singh, 2019\; \scc Huang, 2022).
+\CNN\-s have become the dominant architecture for skeleton detection, and they have significantly improved the accuracy of this task (\scc Singh, 2019\; \scc Ce et al., 2020).
 \obrazek{cnn-schema}{A simple classification architecture by CNN. Source: (\\scc Koushik, 2023)}{figures/cnn-schema.png}{width=\makeupwidth}
 
 \ppkap[subsection:cnn-works]{How Convolutional Layers Work}
@@ -188,8 +188,8 @@ The human pose estimation results are then evaluated using the COCO WholeBody me
 \obrazek{mmpose-skeleton}{MMPose skeleton structure with IDs of used keypoint in the further processing. For simplicity, the small blue points do not have ID ensuring good visibility. Additionally, the blue keypoints have been omitted to achieve the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]}{figures/mmpose-detection-structure.png}{width=36cc,height=41cc}
 
 % % ------- Section ------- %
-% \pkap[section:chapter-summary]{Chapter Summary}
-% This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. These concepts provide the theoretical foundation for the proposed automated \NN\ learning approach.
+\pkap[section:chapter-summary]{Chapter Summary}
+This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. \CNN\-s excel in processing visual data for skeleton detection, while \RCNN\-s, including Faster \RCNN\, enhance efficiency through a two-stage pipeline for object detection, alongside existing \NN\ models like PoseNet, MoveNet, and MMPose, achieving high accuracy in real-time human pose estimation.
 
 % Introduction to NN
 % \RCNN\  Region-based Convolutional Neural Network vs CNN Convolutional Neural Network
