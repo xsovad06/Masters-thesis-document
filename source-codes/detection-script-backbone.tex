@@ -1,0 +1,27 @@
+\startbuffer[src:detection-script-backbone]
+\startPY
+def main():
+    # Process program arguments
+    parse_arguments()
+
+    # Model loading and initialisation
+    model_init()
+
+    # Frame stream processing according to given input type
+    if input_type in ['webcam', 'video']:
+        process_video_detection()
+
+    elif input_type == 'image':
+        process_image_detection()
+
+    elif input_type == 'directory':
+        # Process every file in the directory
+        for file in directory_file_list:
+            if input_type == 'video':
+                process_video_detection()
+
+            elif input_type == 'image':
+                process_image_detection()
+
+\stopPY
+\stopbuffer

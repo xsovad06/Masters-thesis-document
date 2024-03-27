@@ -1,10 +1,10 @@
-\kap[chapter:theoretical-foundation]{Theoretical foundations}
+\kap[chapter:theoretical-foundation]{Theoretical Foundations}
 This chapter provides an overview of the theoretical foundations of the proposed automated \NN\-s learning approach for human skeleton detection. It introduces the key concepts of \NN\-s, convolutional neural network  (\CNN\), region-based convolutional neural network  (\RCNN\), and transformation models of \NN\-s. Additionally, it explores existing \NN\-s for human pose estimation, including {\em PoseNet}, {\em MoveNet}, and {\em MMPose}.
 
 % ------- Section ------- %
 \pkap[section:neural-network]{Neural Network}
 \NN\-s, inspired by the structure and function of the {\em human brain}, are computational models comprising {\em interconnected} layers of artificial {\em neurons} responsible for processing and transforming information. Demonstrating remarkable capabilities, \NN\-s have proven effective in diverse tasks, including image recognition, natural language processing, and machine translation. A~schematic representation of a simple \NN\ is presented in \in{Figure}[nn-schema], illustrating individual layers of neurons interconnected with their neighbors. The initial layer is commonly referred to as the {\em input layer}, followed by {\em hidden layers}, and concluding with the {\em output layer}. In practical usage, data, such as an image in the form of a vector where values represent individual pixels, is input into the initial layer for analysis. The \NN\ processes this information, ultimately yielding a result in the form of a single value or vector, dependent on the nature of the problem—be it a classification or regression task. Across various fields, \NN\-s have consistently demonstrated their robustness, excelling in tasks such as classification, prediction, filtering, optimization, pattern recognition, and function approximation (\scc Simoneau et al., 1998).
-\obrazek{nn-schema}{Example neural network schema. Source: (\\scc Nielsen, 2015)}{figures/neural-network-schema.png}{width=\makeupwidth}
+\obrazek{nn-schema}{Example neural network schema. A very simple structure introducing the input layer with 6 dimentions followed by the 2 hidden layers. First having 4 dimensions and the second with 3 dimenstions. Finally, the output layer has only 1 dimension. This mean, that the multidimensional input given to the \\NN\\ is generalised and expressed just by one number. This is the key koncept for classification models. Source: (\\scc Nielsen, 2015)}{figures/neural-network-schema.png}{width=\makeupwidth}
 
 \ppkap[subsection:nn-works]{How Neural Network Works}
 
@@ -155,7 +155,7 @@ The pose refinement process is repeated multiple times to improve the accuracy o
 
 % ------- Section ------- %
 \pkap[section:mmpose]{MMPose}
-This section describes the model and architecture used for multiple humans pose estimation in the {\em MMPose} library (\scc MMPose, 2020). The model is based on a \CNN\ that is trained on a large dataset of images and their corresponding ground truth human poses. The network is able to predict the positions of {\bf 133} {\em keypoints} on the human body, including the head, shoulders, elbows, wrists, hips, knees, and ankles. The ouput structure of the {\em MMPose} model can be found in \in{Figure}[mmpose-skeleton].
+This section describes the model and architecture used for multiple humans pose estimation in the {\em MMPose} library (\scc MMPose, 2020). The model is based on a \CNN\ that is trained on a large dataset of images and their corresponding ground truth human poses. The network is able to predict the positions of {\bf 133} {\em keypoints} on the human body. In addition to {\bf 17} {\em body} keypoints, model detects {\bf 68} {\em face} keypoints, {\bf 21} {\em lefthand} keypoints, {\bf 21} {\em righthand} keypoints, {\bf 6} {\em feet} keypoints. The ouput structure of the {\em MMPose} model can be found in \in{Figure}[mmpose-skeleton].
 
 The model is divided into {\em two} main stages. The first stage detects human bodies in the input image. This is done using a {\em Faster R-CNN} detector, which is a {\em two-stage} object detection network. The detector first extracts a set of {\em region proposals} from the image, and then {\em classifies} each proposal as either a {\em human} or {\em not} (\scc Ke et al., 2019).
 
@@ -188,5 +188,38 @@ The human pose estimation results are then evaluated using the COCO WholeBody me
 \obrazek{mmpose-skeleton}{MMPose skeleton structure with IDs of used keypoint in the further processing. For simplicity, the small blue points do not have ID ensuring good visibility. Additionally, the blue keypoints have been omitted to achieve the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format]}{figures/mmpose-detection-structure.png}{width=36cc,height=41cc}
 
 % % ------- Section ------- %
+\pkap[section:chapter-metrics]{Metrics}
+In this section, we take a closer look at how to effectively measure the models accuracy with respect to the pose estimation.
+
+% ------- Sub-section ------- %
+\ppkap[subsection:ape]{Average Percentage Error}
+The Average Percentage Error (\APE\) is a metric commonly used to evaluate the accuracy of human pose detection models. It measures the average difference between the predicted keypoint locations and their corresponding ground truth locations in a pose annotation(for each human instance separately, then average all instances).
+
+The \APE\ is calculated for each individual pose prediction in a dataset. Here's the breakdown:
+
+\startitemize[n]
+    \item {\bf Distance Calculation:} The Euclidean distance between each predicted keypoint and its corresponding ground truth keypoint is calculated.
+    \item {\bf Averaging:} The individual distances are then averaged across all keypoints for a single pose.
+    \item {\bf Normalization:} To account for image size variations, the average distance is normalized by the maximum dimension (width or height) of the image containing the pose. This normalization is achieved by dividing the average distance by the maximum dimension obtained from the bounding box information in the ground truth data.
+    \item {\bf Percentage Conversion:} Finally, the normalized average distance is multiplied by 100 to express the error as a percentage.
+\stopitemize
+
+A lower APE value indicates a more accurate pose prediction. Ideally, the APE should be as close to 0\% as possible. However, the acceptable APE threshold depends on the specific application and the level of precision required.
+
+Here is the list of advantages:
+\startitemize[1]
+    \item {\bf Simple to understand:} \APE\ provides a clear and interpretable measure of error.
+    \item {\bf Image size agnostic:} Normalization by image size allows for fair comparison across images of varying resolutions.
+\stopitemize
+
+And here are some limitations of the \APE\ metric:
+\startitemize[1]
+    \item {\bf Limited information:} \APE\ only considers the average distance between keypoints, neglecting potential outliers or specific joint errors.
+    \item {\bf Normalization dependence:} The accuracy of normalization depends on the quality of bounding box information.
+\stopitemize
+
+APE is a valuable metric for evaluating human pose detection models. However, it is recommended to use \APE\ in conjunction with other evaluation metrics, such as {\bf Precision-Recall} (PR) curves or {\bf Object Keypoint Similarity} (OKS), to obtain a more comprehensive understanding of the model performance.
+
+% % ------- Section ------- %
 \pkap[section:chapter-summary]{Chapter Summary}
-This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. \CNN\-s excel in processing visual data for skeleton detection, while \RCNN\-s, including Faster \RCNN\, enhance efficiency through a two-stage pipeline for object detection, alongside existing \NN\ models like PoseNet, MoveNet, and MMPose, achieving high accuracy in real-time human pose estimation.
+This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. \CNN\-s excel in processing visual data for skeleton detection, while \RCNN\-s, including Faster \RCNN\, enhance efficiency through a two-stage pipeline for object detection, alongside existing \NN\ models like PoseNet, MoveNet, and MMPose, achieving high accuracy in real-time human pose estimation. Finally, the key concepts of the detection evaluation were explored namely \APE\ and the \OKS\ metrics.

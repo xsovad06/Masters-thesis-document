@@ -1,7 +1,45 @@
 \kap[chapter:practical-part]{Practical part}
-In this chapter, we will comprehensively examine the various stages involved in training a new model for human pose estimation. The initial phase entails the preparation of a custom dataset, followed by the utilization of an existing models outlined in \in{Section}[section:existing-nns] on \at{page}[section:existing-nns]. Subsequently, a unified format for pose estimation is introduced to aggregate results from each model. Finally, the complete new model is trained using the prepared annotated dataset. Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] at the end of this chapter.
+In this chapter, we will comprehensively examine the various stages involved in training a new model for human pose estimation. The initial phase entails the preparation of a custom dataset, followed by the utilization of an existing models outlined in \in{Section}[section:existing-nns] on \at{page}[section:existing-nns]. Subsequently, a unified format for pose estimation is introduced to aggregate results from each model.
+
+dataset. Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] at the end of this chapter.
+
+\pkap[section:individual-models-detection]{Individual Models detection}
+This section introduces an approach to the individual models detection implementation. It shows the key concepts and tools for creating complex detection scripts in {\bf Python} programming language.
+
+For the implementation the main tool is the Python and its libraries. In the initial step of creating the detection scripts for individual model, the following libraries were used:
+
+\startitemize[n]
+    \item PoseNet:
+        \startitemize[1]
+            \item {\bf {\em Mediapipe}} - A library containing the PoseNet model and tools for drawing the detections on image.
+        \stopitemize
+    \item MoveNet:
+        \startitemize[1]
+            \item {\bf {\em Tensorflow}} - A library used for working with the structures representing the image data.
+            \item {\bf {\em Tensorflow Hub}} - A repository of trained machine learning models.
+        \stopitemize
+    \item MMPose:
+        \startitemize[1]
+            \item {\bf {\em MMCV}} - A foundational library for computer vision research.
+            \item {\bf {\em MMPOSE}} - An open-source toolbox for pose estimation based on {\bf PyTorch}.
+            \item {\bf {\em MMDET}} - An open-source object detection toolbox based on {\bf PyTorch}.
+        \stopitemize
+\stopitemize
+
+The main idea behind all detection scripts is to provide very similar interface with the same funcionality. Each detection model uses different resources, meaning that the detection part itself is different for every case and needs to be implemented separately. Similarly, the model initialization parts is different. However, the script skeleton is the same for every model. The scripts use the common custom functions which are gathered to the {\em utils} package. These are the methods for manipulation with the images to provide the same frame formats for every model. Then there are helper functions for processing the script arguments like handling the processed file paths, output file names, exporting the detections to JSON files etc. Additionally, the functions for drawing the keypoints and skeletons on detedted human instances for MoveNet model for which there is no library with this functionality unlike the other two models. See the script structure in the following code:
+
+\sourcecode{Simplified detection script backbone. Containing the common code base used for each of the detection models. Accorging to a given program arguments, the scrit processes files of differrent type. Accepts the image and video files. If the given input is a directory, the script loops through the all video and image files and executes the detection on them. Finally, every detection is saved into a JSON file.}{}{src:detection-script-backbone}{}
 
 \pkap[section:dataset]{Dataset}
+In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for the unified detection format evaluation. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated. Finally, the specified custom dataset with healthcare usecases will be described.
+
+As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation} subset. The total (\APE\) was equal to {\bf 4.37\%}. This metric was calculated only on the matching instances of the predicted annotations with respect to the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into an account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances wer obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the bounding box ovelap. The treshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou].
+
+\obrazek{iou}{Calculation of the Intersection over Union}{figures/iou.png}{width=\makeupwidth}
+
+There was also made an evaluation on the \APE\ metric just for the {\bf MMPose} model because only this model provides us with the bounding boxes in the detection. The total \APE\ was: {\bf 1.29\%} which provided us with the information about the model precision on individual keypoints of detected instance. This information will be used for setting up the weights for weighted average in the process of unified format creation in the following \in{section}[section:unified-format] on \at{page}[section:unified-format].
+
+Because of the fact, that the human pose estimation is very complex task, it is required to use multiple metrics to expres the perfomance of the detection models. For this reason additionally, the mean squeare error is evaulated as well.
 
 \pkap[section:unified-format]{Created Unified Format}
 A~highly cost-effective method of obtaining a custom dataset with real-life footage data is to leverage existing \NN\-s to generate labels. This approach enables the training of a new model specifically tailored to the target detection task. To develop a novel model with the desired functionality, multiple models can be employed for label generation. However, for effective training, a unified format is required to aggregate the results of these individual models. This section precisely addresses the concept of a unified format introduced in this thesis, capitalizing on the strengths of existing models. As explained in the previous chapter, each model estimates a different number of keypoints, emphasizing different qualities. Refer to \in{Table}[tab:format-comparison] for a comprehensive understanding of these differences.
@@ -29,7 +67,7 @@ The weighted average is not applied in scenarios involving the processing of key
     \bTR
         \bTD MMPose\eTD\bTD     133\eTD\bTD  Yes\eTD\bTD  0.5\eTD\eTR
     \bTR
-        \bTD Unified F.\eTD\bTD     27\eTD\bTD  Yes\eTD\bTD  --\eTD\eTR
+        \bTD Unified Format\eTD\bTD     27\eTD\bTD  Yes\eTD\bTD  --\eTD\eTR
 
 
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}

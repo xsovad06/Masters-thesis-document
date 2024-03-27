@@ -1,6 +1,7 @@
 %
 \usemodule[ctx-thesis-v0.991]
 \usemodule[bib.sty-v2.78]
+\usemodule[vim]
 
 \setupthesis[en+sk,mendelu,pef,none][	% language,university,faculty,department
   type={dp},             % bp=bachelor, dp=diploma, pp=PhD, zp=final thesis,  sp=seminar work,  pr=protocol/report, pt=project, doc=documentation; for more abbreviations, see the Documentation.
@@ -25,6 +26,19 @@
 % \setupinteraction[color=black,style=bold]
 \startthesis
 \startbodymatter
+
+\setuptyping[tab=3]
+\definevimtyping
+[PY]
+[
+  syntax=python,
+  numbering=yes,
+]
+
+% Source codes
+\input{source-codes/detection-script-backbone}
+
+% Chapters
 
 \input{chapters/abbreviations}
 
