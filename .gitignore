@@ -13,6 +13,9 @@
 *-blx.bib
 *.run.xml
 
+## Vim generated files
+*.vimout
+
 ## Mac file system file
 .DS_Store
 
