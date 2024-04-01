@@ -27,16 +27,31 @@
 \startthesis
 \startbodymatter
 
-\setuptyping[tab=3]
+% Preparing language highlighting used for source code
+\setuptyping[]
 \definevimtyping
 [PY]
 [
   syntax=python,
+  tab=6,
   numbering=yes,
+  style=small,
+]
+
+\setuptyping[]
+\definevimtyping
+[JSON]
+[
+  syntax=json,
+  tab=6,
+  numbering=yes,
+  style=small,
 ]
 
 % Source codes
 \input{source-codes/detection-script-backbone}
+\input{source-codes/detection-script-frame}
+\input{source-codes/detection-script-output}
 
 % Chapters
 

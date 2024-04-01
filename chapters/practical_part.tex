@@ -1,22 +1,23 @@
 \kap[chapter:practical-part]{Practical part}
-In this chapter, we will comprehensively examine the various stages involved in training a new model for human pose estimation. The initial phase entails the preparation of a custom dataset, followed by the utilization of an existing models outlined in \in{Section}[section:existing-nns] on \at{page}[section:existing-nns]. Subsequently, a unified format for pose estimation is introduced to aggregate results from each model.
+This chapter comprehensively examines the various stages involved in creating a custom human pose estimation dataset. The initial phase leverages existing models outlined in \in{Section}[section:existing-nns] (on \at{page}[section:existing-nns]). Subsequently, these models are integrated into a unified tool for custom dataset creation. Additionally, the tool's performance is evaluated using two metrics, \APE\ and \OKS\.
 
-dataset. Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] at the end of this chapter.
+Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] on \at{page}[section:problems-limitations].
 
+% ------- Section ------- %
 \pkap[section:individual-models-detection]{Individual Models detection}
-This section introduces an approach to the individual models detection implementation. It shows the key concepts and tools for creating complex detection scripts in {\bf Python} programming language.
+This section introduces an approach to implementing individual model detection. It details key concepts and tools for creating complex detection scripts in the {\bf Python} programming language.
 
-For the implementation the main tool is the Python and its libraries. In the initial step of creating the detection scripts for individual model, the following libraries were used:
+The primary tool for implementation is Python and its extensive libraries. The following libraries were used in the initial step of creating detection scripts for individual models:
 
 \startitemize[n]
     \item PoseNet:
         \startitemize[1]
-            \item {\bf {\em Mediapipe}} - A library containing the PoseNet model and tools for drawing the detections on image.
+            \item {\bf {\em Mediapipe}} - A library providing the PoseNet model and tools for drawing detections on images.
         \stopitemize
     \item MoveNet:
         \startitemize[1]
-            \item {\bf {\em Tensorflow}} - A library used for working with the structures representing the image data.
-            \item {\bf {\em Tensorflow Hub}} - A repository of trained machine learning models.
+            \item {\bf {\em Tensorflow}} - A library used for working with image data structures.
+            \item {\bf {\em Tensorflow Hub}} - A repository of pre-trained machine learning models containing the MoveNet model.
         \stopitemize
     \item MMPose:
         \startitemize[1]
@@ -26,12 +27,37 @@ For the implementation the main tool is the Python and its libraries. In the ini
         \stopitemize
 \stopitemize
 
-The main idea behind all detection scripts is to provide very similar interface with the same funcionality. Each detection model uses different resources, meaning that the detection part itself is different for every case and needs to be implemented separately. Similarly, the model initialization parts is different. However, the script skeleton is the same for every model. The scripts use the common custom functions which are gathered to the {\em utils} package. These are the methods for manipulation with the images to provide the same frame formats for every model. Then there are helper functions for processing the script arguments like handling the processed file paths, output file names, exporting the detections to JSON files etc. Additionally, the functions for drawing the keypoints and skeletons on detedted human instances for MoveNet model for which there is no library with this functionality unlike the other two models. See the script structure in the following code:
+The main idea behind all detection scripts is to provide a very similar interface with the same functionality. Each detection model uses different resources, meaning the detection part itself is different for every case and needs to be implemented separately. Similarly, the model initialization parts are different. However, the script skeleton remains the same for every model.
 
-\sourcecode{Simplified detection script backbone. Containing the common code base used for each of the detection models. Accorging to a given program arguments, the scrit processes files of differrent type. Accepts the image and video files. If the given input is a directory, the script loops through the all video and image files and executes the detection on them. Finally, every detection is saved into a JSON file.}{}{src:detection-script-backbone}{}
+The scripts utilize common custom functions gathered in the {\em utils} package. These methods manipulate images to provide the same frame format for every model. Additionally, they include helper functions for processing script arguments, such as handling processed file paths, output file names, and exporting detections to JSON files. Notably, the functions for drawing keypoints and skeletons on detected human instances are specific to the MoveNet model, as there is no library with this functionality for MoveNet unlike the other two models.
 
+See the script structure in the following code:
+
+\sourcecode{Simplified Detection Script Backbone (Pseudocode)}{}{src:detection-script-backbone}{}
+
+The detection scripts process various file types based on the provided program arguments. They accept both image and video files. If the input is a directory, the script iterates through all video and image files within it, executing detection on each. Refer to the single-frame detection function for a deeper understanding of the core detection implementation.
+
+\sourcecode{Python Implementation of MoveNet Detection Function.}{}{src:detection-script-frame}{}
+
+This function demonstrates the concept behind image detection execution for the MoveNet model. Similar approaches are used for MMPose and PoseNet models, with variations in the specific detection implementation and visualization. The first task is to load the frame or image. Optionally, a function for resizing the frame is available if it's too large. Then follows the pose detection itself. Program arguments manage actions like saving the detection file (JSON), the frame with drawn detections, and displaying the drawn detection frame. Optionally, correctly formatted detections are exported to a JSON file. The functions for drawing the detections onto the frame are then executed, followed by optional saving or displaying of the frame.
+
+To understand the detection JSON file format, see the following example:
+
+\sourcecode{Detection Script Output Format (Example)}{}{src:detection-script-output}{}
+
+This format pertains to the {\em single-frame} detection mode. When conducting detection on a video file without the \uv{{\em ---single--frame--output}} option, the entire detection process is encapsulated within an additional dictionary to distinguish individual video frames. However, for the purpose of this thesis, which focuses on dataset creation, there is no necessity to save the frame sequence. The \uv{{\em---single--frame--output}} argument was implemented to segment the video file into individual frames and generate dedicated images for easily processed detection files.
+
+The top level of the output format example includes a {\bf list} of {\bf detection instances} (objects). Each detection instance consists of the keypoints {\bf list}. The number of keypoints varies depending on the chosen detection model. A single {\bf keypoint} is represented by a {\bf list} of three {\bf float} values. The first two values represent the {\bf coordinates} in pixels, and the last value signifies the {\bf visibility}. Additionally, the MMPose model produces the \BBOX\ position for the instance which is not present in the other models output.
+
+% ------- Sub-section ------- %
+\ppkap[subsection:individual-models-detection]{Detection Format}
+This subsection will take a close look into the individual detection models output format which is crusial for futher processing and creation of unified format described in the \in{Section}[section:unified-format] on \at{page}[section:unified-format].
+
+The detection scripts described in the previous section produce the same detection output format for every detection model. There is also some exceptions, for example, when the detection the MMPose mode has customizable option to produce the BBOX coordinates for each instance which is later used for detection validation to map the predicted instance to corresponding ground thruth instance.
+
+% ------- Section ------- %
 \pkap[section:dataset]{Dataset}
-In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for the unified detection format evaluation. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated. Finally, the specified custom dataset with healthcare usecases will be described.
+In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for the unified detection format evaluation. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated.
 
 As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation} subset. The total (\APE\) was equal to {\bf 4.37\%}. This metric was calculated only on the matching instances of the predicted annotations with respect to the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into an account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances wer obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the bounding box ovelap. The treshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou].
 
@@ -41,6 +67,7 @@ There was also made an evaluation on the \APE\ metric just for the {\bf MMPose} 
 
 Because of the fact, that the human pose estimation is very complex task, it is required to use multiple metrics to expres the perfomance of the detection models. For this reason additionally, the mean squeare error is evaulated as well.
 
+% ------- Section ------- %
 \pkap[section:unified-format]{Created Unified Format}
 A~highly cost-effective method of obtaining a custom dataset with real-life footage data is to leverage existing \NN\-s to generate labels. This approach enables the training of a new model specifically tailored to the target detection task. To develop a novel model with the desired functionality, multiple models can be employed for label generation. However, for effective training, a unified format is required to aggregate the results of these individual models. This section precisely addresses the concept of a unified format introduced in this thesis, capitalizing on the strengths of existing models. As explained in the previous chapter, each model estimates a different number of keypoints, emphasizing different qualities. Refer to \in{Table}[tab:format-comparison] for a comprehensive understanding of these differences.
 
@@ -72,6 +99,11 @@ The weighted average is not applied in scenarios involving the processing of key
 
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}
 
+% ------- Section ------- %
 \pkap[section:experiments]{Experiments and Results}
 
+% ------- Section ------- %
 \pkap[section:problems-limitations]{Implementation Problems and Technical Limitations}
+Throughout the course of this thesis, there have been many technical limitations and implementation struggles. This section will list some of them.
+
+The initial plan was to utilize the {\bf BodyPoseNet} detection model from {\bf NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement BodyPoseNet, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitates an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS {\bf Sonoma} on a {\bf 16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.
