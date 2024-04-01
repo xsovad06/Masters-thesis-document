@@ -1,0 +1,39 @@
+\startbuffer[src:detection-script-frame]
+\startPY
+def process_image_detection(args, model, input_name: str, input_size: int, output_file: str) -> int:
+        """Handle the image detection."""
+
+        saved_detections = 0
+
+        # Load image
+        frame = cv2.imread(input_name)
+
+        # Resize frame if too big while keeping the aspect ration
+        frame = resize_while_keep_aspect_ratio(frame, args.max_height)
+
+        # Obtain detected keypoints
+        results = detect_pose(model, frame, input_size)
+
+        # Save prediction results
+        if args.save_predictions:
+                detection = formate_detection_result(results)
+                detection_save_path = get_detection_save_path(args.output_root, input_name)
+                save_detections_to_json(detection_save_path, detection)
+                saved_detections += 1
+
+        # Rendering
+        draw_connections(frame, results, KEYPOINT_EDGE_TO_COLOR)
+        draw_keypoints(frame, results)
+
+        # Save image
+        if output_file:
+                cv2.imwrite(output_file, frame)
+
+        # Display results
+        if args.show:
+            cv2.imshow('MoveNet Lightning', frame)
+            cv2.waitKey(1)
+
+        return saved_detections
+\stopPY
+\stopbuffer
