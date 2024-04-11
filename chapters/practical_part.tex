@@ -4,6 +4,14 @@ This chapter comprehensively examines the various stages involved in creating a 
 Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] on \at{page}[section:problems-limitations].
 
 % ------- Section ------- %
+\pkap[section:overall-process-introduction]{Overall process introduction}
+In this section, the overall process will be described to provide better understanding of the thesis as a whole. The key idea behind this process will be described in the graph representing individual steps which this thesis implemented.
+
+\obrazek{overall-process}{Graph of the process introducing individual stages of this thesis}{figures/overall-process.png}{width=38cc}
+
+To better explain the process, see \in{Figure}[overall-process]. The initial phase of the process is the application of the existing skeleton detection models. Custom implemened scripts were used in this step which runs the detection using existing models as described in the next \in{Section}[section:individual-models-detection]. The detection is executed on the evaluation subset of the COCO dataset.
+
+% ------- Section ------- %
 \pkap[section:individual-models-detection]{Individual Models detection}
 This section introduces an approach to implementing individual model detection. It details key concepts and tools for creating complex detection scripts in the {\bf Python} programming language.
 
@@ -12,16 +20,16 @@ The primary tool for implementation is Python and its extensive libraries. The f
 \startitemize[n]
     \item PoseNet:
         \startitemize[1]
-            \item {\bf {\em Mediapipe}} - A library providing the PoseNet model and tools for drawing detections on images.
+            \item {\bf {\em Mediapipe}} - A~library providing the PoseNet model and tools for drawing detections on images.
         \stopitemize
     \item MoveNet:
         \startitemize[1]
-            \item {\bf {\em Tensorflow}} - A library used for working with image data structures.
-            \item {\bf {\em Tensorflow Hub}} - A repository of pre-trained machine learning models containing the MoveNet model.
+            \item {\bf {\em Tensorflow}} - A~library used for working with image data structures.
+            \item {\bf {\em Tensorflow Hub}} - A~repository of pre-trained machine learning models containing the MoveNet model.
         \stopitemize
     \item MMPose:
         \startitemize[1]
-            \item {\bf {\em MMCV}} - A foundational library for computer vision research.
+            \item {\bf {\em MMCV}} - A~foundational library for computer vision research.
             \item {\bf {\em MMPOSE}} - An open-source toolbox for pose estimation based on {\bf PyTorch}.
             \item {\bf {\em MMDET}} - An open-source object detection toolbox based on {\bf PyTorch}.
         \stopitemize
@@ -59,7 +67,7 @@ The detection scripts described in the previous section produce the same detecti
 
 This format pertains to the {\em single-frame} detection mode. When conducting detection on a video file without the {\em ---single--frame--output} option, the entire detection process is encapsulated within an additional dictionary to distinguish individual video frames. However, for this thesis, which focuses on dataset creation, there is no necessity to save the frame sequence. The {\em---single--frame--output} argument was implemented to segment the video file into individual frames and generate dedicated images for easily processed detection files.
 
-The top level of the output format example includes a {\bf list} of {\bf detection instances} (objects). Each detection instance consists of the keypoints {\bf list}. The number of keypoints varies depending on the chosen detection model. A single {\bf keypoint} is represented by a {\bf list} of three {\bf float} values. The first two values represent the {\bf coordinates} in pixels, and the last value signifies the {\bf visibility}. Additionally, the MMPose model produces the \BBOX\ position for the instance which is not present in the other model's output.
+The top level of the output format example includes a {\bf list} of {\bf detection instances} (objects). Each detection instance consists of the keypoints {\bf list}. The number of keypoints varies depending on the chosen detection model. A~single {\bf keypoint} is represented by a {\bf list} of three {\bf float} values. The first two values represent the {\bf coordinates} in pixels, and the last value signifies the {\bf visibility}. Additionally, the MMPose model produces the \BBOX\ position for the instance which is not present in the other model's output.
 
 % ------- Section ------- %
 \pkap[section:unified-format]{Created Unified Format}
@@ -67,7 +75,7 @@ A~highly cost-effective method of obtaining a custom dataset with real-life foot
 
 The rationale behind the unified format is to identify commonalities among individual formats and address their variations. Essentially, the common format is based on {\bf MoveNet}, which comprises {\bf 17} keypoints, excluding {\em hands} and {\em feet} estimation compared to the unified format. {\bf PoseNet} introduces additional eye keypoints (compared to unified format) that need elimination, while {\bf MMPose} includes {\bf 107} unnecessary keypoints, particularly detailed facial keypoints and non-crucial hand keypoints (individual joints of each finger). The unified format optimally encompasses {\bf 27} keypoints, providing satisfactory detail for hands, feet, and face. Refer to \in{Figure}[unified-format-structure] for a visual representation of the structure. You can see that the format is straightforward. It offers basic pose representation with sufficient detail to both hands and feet.
 
-Another crucial aspect is the accurate aggregation of individual model estimations, encompassing both the coordinates of keypoints and their visibility values. To address this, we introduce a weighted average, mitigating weaknesses in faster models such as MoveNet and PoseNet. Given that these models are designed for real-time estimation, and we utilize the "lightning" model version for PoseNet, accuracy is inherently limited. Detailed values for the weighted average are available in \in{Table}[tab:format-comparison]. The assignment of the highest weight to the {\bf MMPose} model is justified by its superior accuracy on our custom dataset. This approach ensures the uniformity of estimations made by individual models across the entire dataset, as prepared in the previous section.
+Another crucial aspect is the accurate aggregation of individual model estimations, encompassing both the coordinates of keypoints and their visibility values. To address this, we introduce a weighted average, mitigating weaknesses in faster models such as MoveNet and PoseNet. Given that these models are designed for real-time estimation, and we utilize the "lightning" model version for PoseNet, accuracy is inherently limited. Detailed values for the weighted average are available in \in{Table}[tab:format-comparison]. The assignment of the highest weight to the {\bf MMPose} model is justified by its superior accuracy with \APE\ metric described in the \in{Section}[section:evaluation]. This approach ensures the uniformity of estimations made by individual models across the entire dataset, as prepared in the previous section.
 
 The weighted average is not applied in scenarios involving the processing of keypoints on the hands or feet. This limitation arises from the fact that the {\bf MoveNet} model does not provide these keypoints, necessitating a basic average calculation of the two values. In other words, the weighted average is applied only when there is data from all three models.
 
@@ -93,11 +101,32 @@ The weighted average is not applied in scenarios involving the processing of key
 
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}
 
+\obrazkyvedlesebe[3][top]{coco;mmpose;unified}
+    {
+        COCO WholeBody annotation simplified to unified format;
+        MMPose model detection with 133 keypoints format;
+        Unified format detection with 27 keypoints;
+    }
+    {
+        figures/detection-comparison/000000002153-coco-annotation.png;
+        figures/detection-comparison/000000002153-mmpose-prediction.png;
+        figures/detection-comparison/000000002153-unified-prediction.png;
+    }
+    {
+        height=9.5cc;
+        height=9.5cc;
+        height=9.5cc;
+    }
+
+% ------- Sub-section ------- %
+\ppkap[subsection:unified-format-implementation]{Implementation of the Unified Format}
+This subsection aims to provide description for the unification script key concepts alongside the code examples.
+
 % ------- Section ------- %
-\pkap[section:dataset]{Dataset and Evaluations}
+\pkap[section:evaluation]{Evaluation}
 In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for the unified detection format evaluation. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated.
 
-As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation} subset. The total {\bf APE} was equal to {\bf 4.37\%}. This metric was calculated only on the matching instances of the predicted annotations concerning the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances were obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the bounding box overlap. The threshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou]. The result is very satisfactory even though the averaging of the keypoints position in the unification process causes some errors.
+As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation 2017} subset. The total {\bf APE} was equal to {\bf 4.37\%}. This metric was calculated only on the matching instances of the predicted annotations concerning the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances were obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the bounding box overlap. The threshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou]. The result is very satisfactory even though the averaging of the keypoints position in the unification process causes some errors.
 
 \obrazek{iou}{Calculation of the Intersection over Union}{figures/iou.png}{width=\makeupwidth}
 
@@ -109,4 +138,4 @@ Because of the fact, that human pose estimation is a very complex task, it is re
 \pkap[section:problems-limitations]{Implementation Problems and Technical Limitations}
 Throughout the course of this thesis, there have been many technical limitations and implementation struggles. This section will list some of them.
 
-The initial plan was to utilize the {\bf BodyPoseNet} detection model from {\bf NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement BodyPoseNet, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitated an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS {\bf Sonoma} on a {\bf 16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.
+The initial plan was to utilize the {\bf BodyPoseNet} (NVIDIA, 2024) detection model from {\bf NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement BodyPoseNet detection script, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitated an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS {\bf Sonoma} on a {\bf 16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.

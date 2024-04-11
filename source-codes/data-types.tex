@@ -1,0 +1,11 @@
+\startbuffer[src:data-types]
+\startPY
+from typing import List, Dict, Set
+
+DetectionInstance = List[List[float]]
+Frame = List[DetectionInstance]
+Detection = Dict[str, Frame]
+SkeletonEdgesPainting = Dict[Set[int], str]
+
+\stopPY
+\stopbuffer
