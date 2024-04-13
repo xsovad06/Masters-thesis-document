@@ -20,7 +20,6 @@ $(CO).dvi: $(CO).tex $(CO).bib
 
 clean:
 	rm -f *.log $(CO).tuc
-	rm -f $(CO).pdf
 	rm -f *~
 	rm -f */*~
 
