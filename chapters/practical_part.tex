@@ -37,7 +37,7 @@ The primary tool for implementation is Python and its extensive libraries. The f
 
 Several other libraries are employed in the scripts to furnish essential functionality. Here is a list of the most crucial libraries: {\bf OS}, {\bf Sys}, {\bf OpenCV} and {\bf Numpy}. Additionally, the {\bf typing} library serves as a helper, primarily aimed at providing type hints and enhancing clarity regarding input/output structures. For this purpose, custom datatypes were devised, namely:
 
-\sourcecode{Custom Datatypes}{}{src:data-types}{}
+\sourcecode[][code:data-types]{Custom Datatypes}{}{src:data-types}{}
 
 These custom datatypes address the detection output format and are organized hierarchically. The first, {\bf DetectionInstance}, represents a single human instance in the image, containing a list of keypoints, as described in \in{Subsection}[subsection:individual-models-detection]. Then follows the {\bf Frame}, which is a list of {\em detection instances}. At the top of this hierarchy lies the {\bf Detection} itself, which is a dictionary of the {\em frames}. Lastly, the final custom datatype, {\bf SkeletonEdgesPainting}, is a structure devised to store skeleton colour codes, assigning a single colour to each keypoint pair.
 
@@ -49,11 +49,11 @@ The scripts utilize common custom functions gathered in the {\em utils} package.
 
 See the script structure in the following code:
 
-\sourcecode{Simplified Detection Script Backbone (Pseudocode)}{}{src:detection-script-backbone}{}
+\sourcecode[][code:detection-script-backbone]{Simplified Detection Script Backbone (Pseudocode)}{}{src:detection-script-backbone}{}
 
-The detection scripts process various file types based on the provided program arguments. They accept both image and video files. If the input is a directory, the script iterates through all video and image files within it, executing detection on each. Refer to the single-frame detection function for a deeper understanding of the core detection implementation.
+The detection scripts process various file types based on the provided program arguments. They accept both image and video files. If the input is a directory, the script iterates through all video and image files within it, executing detection on each. Refer to the single-frame detection function \in{Code}[code:detection-script-frame] for a deeper understanding of the core detection implementation.
 
-\sourcecode{Python Implementation of MoveNet Detection Function.}{}{src:detection-script-frame}{}
+\sourcecode[][code:detection-script-frame]{Python Implementation of MoveNet Detection Function.}{}{src:detection-script-frame}{}
 
 This function demonstrates the concept behind image detection execution for the MoveNet model. Similar approaches are used for MMPose and PoseNet models, with variations in the specific detection implementation and visualization. The first task is to load the frame or image. Optionally, a function for resizing the frame is available if it's too large. Then follows the pose detection itself. Program arguments manage actions like saving the detection file (JSON), the frame with drawn detections, and displaying the drawn detection frame. Optionally, correctly formatted detections are exported to a JSON file. The functions for drawing the detections onto the frame are then executed, followed by optional saving or displaying of the frame.
 
@@ -63,7 +63,7 @@ This subsection will take a close look into the individual detection models outp
 
 The detection scripts described in the previous section produce the same detection output format for every detection model. To understand the detection JSON file format, see the following example:
 
-\sourcecode{Detection Script Output Format (Example)}{}{src:detection-script-output}{}
+\sourcecode[][code:detection-script-output]{Detection Script Output Format (Example)}{}{src:detection-script-output}{}
 
 This format pertains to the {\em single-frame} detection mode. When conducting detection on a video file without the {\em ---single--frame--output} option, the entire detection process is encapsulated within an additional dictionary to distinguish individual video frames. However, for this thesis, which focuses on dataset creation, there is no necessity to save the frame sequence. The {\em---single--frame--output} argument was implemented to segment the video file into individual frames and generate dedicated images for easily processed detection files.
 
