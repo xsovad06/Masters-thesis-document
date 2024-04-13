@@ -1,5 +1,5 @@
 \kap[chapter:theoretical-foundation]{Theoretical Foundations}
-This chapter provides an overview of the theoretical foundations of the proposed automated \NN\-s dataset generation approach for human skeleton detection. It explains the difficulties of the human pose estimation in the real-world enviroment. Additionally, it introduces the key concepts of \NN\-s, convolutional neural network (\CNN\) and region-based convolutional neural network (\RCNN\). Additionally, it explores existing \NN\-s for human pose estimation, including {\em PoseNet}, {\em MoveNet}, and {\em MMPose}. Finally, the detection performance evaluation metrics are described.
+This chapter provides an overview of the theoretical foundations of the proposed automated \NN\-s dataset generation approach for human skeleton detection. It explains the difficulties of the human pose estimation in the real-world enviroment. Additionally, it introduces the key concepts of \NN\-s, convolutional neural network (\CNN\) and region-based convolutional neural network (\RCNN\). Moreover, it explores existing \NN\-s for human pose estimation, including {\em PoseNet}, {\em MoveNet}, and {\em MMPose}. Finally, the detection performance evaluation metrics are described.
 
 % ------- Section ------- %
 \pkap[section:pose-estimation-challanges]{Challenges in Real-World Human Pose Estimation}
@@ -11,7 +11,7 @@ Human pose estimation faces numerous challenges in real-world applications, such
     \item {\bf Crowded Scenes:} Pose estimation becomes challenging in highly crowded locations, where occlusions and the presence of many individuals hinder accurate detection.
 \stopitemize
 
-A significant obstacle in developing models to address these challenges lies in the training data. Popular datasets like MPII(TODO: REFERENCE), AI Challenger(TODO: REFERENCE), and COCO (\scc Tsung-Yi, 2015) mainly feature unoccluded individuals close to the camera in non-crowded scenes. Although specialized datasets like CrowdPose, OCHuman, and Tiny People Pose have been introduced to tackle specific concerns, they each focus on a single issue and present challenges in their annotation styles and validation methods, making it difficult to train a comprehensive model. No single dataset adequately addresses all three main challenges of real-world human pose estimation (\scc Alinezhad Noghre et al., 2022).
+A significant obstacle in developing models to address these challenges lies in the training data. Popular datasets like MPII (\scc Andriluka et al., 2014), AI Challenger (\scc Wu et al., 2019), and COCO (\scc Tsung-Yi, 2015) mainly feature unoccluded individuals close to the camera in non-crowded scenes. Although specialized datasets like CrowdPose, OCHuman, and Tiny People Pose have been introduced to tackle specific concerns, they each focus on a single issue and present challenges in their annotation styles and validation methods, making it difficult to train a comprehensive model. No single dataset adequately addresses all three main challenges of real-world human pose estimation (\scc Alinezhad Noghre et al., 2022).
 
 \obrazek{coco-annotations}{Keypoint annotations from COCO dataset. Source: (\\scc Alinezhad Noghre et al., 2022)}{figures/coco-annotations.png}{width=\makeupwidth}
 
@@ -106,7 +106,7 @@ The original \RCNN\ architecture has been criticized for its computational {\em 
 
 % ------- Section ------- %
 \pkap[section:existing-nns]{Existing \NN\-s for Human Pose Estimation}
-Several \NN\ architectures have been developed for skeleton detection. This thesis explores three notable examples, each with a dedicated section in this chapter:
+Several \NN\ architectures have been developed for skeleton detection. The reason for using these models is based on the low resource requirements. The key criterion was that the models can be executed on the CPU unit and do not require GPU. Another limitation was the model complexity, so that the detection can be used in real-time. Because of the COCO evaluation set consists of 5000 images and the training subset  This thesis explores three notable examples, each with a dedicated section in this chapter:
 
 \startitemize[n]
     \item {\bf PoseNet:} Lightweight and efficient \CNN\ for real-time single-person detection.
@@ -219,11 +219,11 @@ The human pose estimation results are then evaluated using the COCO WholeBody me
 
 % % ------- Section ------- %
 \pkap[section:chapter-metrics]{Metrics}
-In this section, we take a closer look at how to effectively measure the model accuracy concerning the pose estimation. Multiple metrics, such as Average Percentage Error (\APE\), Mean Squared Error (\MSE\) and others will be investigated for the usability for pose estimation evaluation.
+In this section, we take a closer look at how to effectively measure the model accuracy concerning the pose estimation. Multiple metrics, such as Average Percentage Error (\APE\), Mean Squared Error (\MSE\) and Object Keypoint Similarity (\OKS\) will be investigated for the usability for pose estimation evaluation.
 
 % ------- Sub-section ------- %
 \ppkap[subsection:ape]{Average Percentage Error}
-The \APE\ is a metric commonly used to evaluate the accuracy of human pose detection models. It measures the average difference between the predicted keypoint locations and their corresponding ground truth locations in a pose annotation(for each human instance separately, then averages all instances).
+The \APE\ is a metric commonly used to evaluate the accuracy of human pose detection models. It measures the average difference between the predicted keypoint locations and their corresponding ground truth locations in a pose annotation (for each human instance separately, then averages all instances).
 
 The \APE\ is calculated for each pose prediction in a dataset. Here's the breakdown:
 
@@ -234,14 +234,14 @@ The \APE\ is calculated for each pose prediction in a dataset. Here's the breakd
     \item {\bf Percentage Conversion:} Finally, the normalized average distance is multiplied by 100 to express the error as a percentage.
 \stopitemize
 
-The Euclidean distance between the predictions and the annotated dataset is computed as follows:
+The Euclidean distance between the prediction keypoint $ x $ and the annotated keypoint $ \tilde{x}$ is computed as follows:
 
-\startplaceformula[reference=euclidean-distance]
-    \startformula {D}_2(x,\tilde{x}) = \fraction{1}{N} \sum_{i=1}^{N} \|\,p_i(x) - d_i(\tilde{x})\,\|^{2}
+\startplaceformula[reference=formula:euclidean-distance]
+    \startformula D(x,\tilde{x}) = \sqrt {\sum_{i=1}^{N} (\,a_i(x) - p_i(\tilde{x})\,)^{2}}
     \stopformula
 \stopplaceformula
 
-where $ p_i (x) $ is the 2D points annotated in the reference image of the database, $ d_i (\tilde{x}) \in  \mathbf R^2 $ is the prediction in the image of the 2D coordinates of the target $ i $ knowing the predicted pose $ \tilde{x} $ (Ababsa et al., 2020).
+where $ a_i (x) $ is the $ i $-th dimension coordinate of the annotated point in the reference image of the dataset, $ p_i (\tilde{x}) \in  \mathbf R^2 $ is the prediction in the image of the $ i $-th dimension coordinate of the target $ i $ knowing the predicted pose $ \tilde{x} $.
 
 A~lower APE value indicates a more accurate pose prediction. Ideally, the APE should be as close to 0\% as possible. However, the acceptable APE threshold depends on the specific application and the level of precision required.
 
@@ -257,11 +257,20 @@ And here are some limitations of the \APE\ metric:
     \item {\bf Normalization dependence:} The accuracy of normalization depends on the quality of bounding box information.
 \stopitemize
 
-APE is a valuable metric for evaluating human pose detection models. However, it is recommended to use \APE\ in conjunction with other evaluation metrics, such as {\bf Precision-Recall} (PR) curves or {\bf Object Keypoint Similarity} (OKS), to obtain a more comprehensive understanding of the model performance.
+APE is a valuable metric for evaluating human pose detection models. However, it is recommended to use \APE\ in conjunction with other evaluation metrics, such as {\bf Precision-Recall} (\PR\) curves or {\bf Object Keypoint Similarity} (\OKS\), to obtain a more comprehensive understanding of the model performance.
 
 % ------- Sub-section ------- %
 \ppkap[subsection:mse]{Mean Squared Error}
-The \MSE\ is a metric commonly used to evaluate the accuracy of human pose detection models and is very similar to the \APE\ metric from previous \in{Subsection}[subsection:ape]. It involves squaring the difference ({\bf Euclidean distance}, see \in{Formula}[euclidean-distance]) between each predicted keypoint coordinate and its corresponding ground truth value, summing these squared errors for all keypoints in a pose, and then averaging the sum.
+The \MSE\ is a metric commonly used to evaluate the accuracy of human pose detection models and is very similar to the \APE\ metric from previous \in{Subsection}[subsection:ape]. It involves squaring the difference ({\bf Euclidean distance}, see \in{Formula}[formula:mse]) between each predicted keypoint coordinate and its corresponding ground truth value, summing these squared errors for all keypoints in a pose, and then averaging the sum.
+
+Analogically, the \MSE\ between the prediction pose $ x $ and the annotated pose $ \tilde{x}$ is computed as follows:
+
+\startplaceformula[reference=formula:mse]
+    \startformula MSE(x,\tilde{x}) = \fraction{1}{N} \sum_{i=1}^{N} (\,a_i(x) - p_i(\tilde{x})\,)^{2}
+    \stopformula
+\stopplaceformula
+
+where $ a_i (x) $ is the 2D points annotated in the reference image of the database, $ p_i (\tilde{x}) \in  \mathbf R^2 $ is the prediction in the image of the 2D coordinates of the target $ i $ knowing the predicted pose $ \tilde{x} $ (Ababsa et al., 2020).
 
 The advantages of this metric is that it focuses on larger errors. By squaring the errors, \MSE\ gives more weight to significant deviations between predicted and ground truth keypoints. This can be helpful in identifying poses with substantial errors in specific joints.
 
@@ -277,6 +286,27 @@ One should consider the normalization for the \MSE\. While normalization by inst
 One have to keep in mind the interpretation. When reporting \MSE\, it is crucial to mention that the values represent squared distances and {\bf not percentages} for proper context.
 
 \MSE\ can be a valuable addition to \APE\ for human pose detection evaluation. By combining them, you gain insights into both the average error and the presence of significant localization errors. However, the limitations of MSE needs to be kept in mind to ensure clear interpretation when reporting the results.
+
+% ------- Sub-section ------- %
+\pkap[subsection:oks]{Object Keypoint Similarity}
+Object Keypoint Similarity (\OKS) is a metric commonly used to evaluate the accuracy of human pose estimation models. It provides a comprehensive assessment of pose estimation performance by considering the similarity between predicted and ground truth keypoint locations.
+
+The \OKS\ metric calculates the similarity between predicted keypoints and their corresponding ground truth keypoints. It takes into account the spatial distance between keypoints, as well as the scale of the person in the image. The formula for calculating \OKS\ is as follows:
+
+\startplaceformula[reference=oks]
+    \startformula \OKS\ = \fraction{\sum_{i} \exp(-\fraction{{d_i}^{2}}{2s^{2}{k_i}^{2}})\delta(i)}{\sum_{i}\delta(i)}
+    \stopformula
+\stopplaceformula
+
+Where $ d_i $ represents the Euclidean distance between the predicted keypoint i and its corresponding ground truth keypoint, $ s $ denotes the scale of the person in the image, $ k_i $ is a per-keypoint confidence score, and $ \delta(i) $ is an indicator function that equals 1 if keypoint i is visible in both the prediction and ground truth, and 0 otherwise.
+
+The \OKS\ metric ranges from 0 to 1, where a value closer to 1 indicates a higher similarity between predicted and ground truth keypoints.
+
+One advantage of \OKS\ is its ability to account for scale variation and confidence scores, providing a more robust evaluation of pose estimation accuracy. Additionally, \OKS\ is suitable for comparing pose estimations across different datasets and scenarios.
+
+However, \OKS\ also has some limitations. It may not adequately capture errors in specific keypoints or joint configurations, and it relies on accurate confidence scores and scale information for accurate evaluation.
+
+In summary, Object Keypoint Similarity (\OKS) is a valuable metric for assessing the accuracy of human pose estimation models. Its consideration of spatial distance, scale, and confidence scores makes it a comprehensive evaluation tool. However, it should be used in conjunction with other metrics to provide a thorough assessment of model performance.
 
 % % ------- Section ------- %
 \pkap[section:chapter-summary]{Chapter Summary}

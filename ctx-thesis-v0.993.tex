@@ -1,19 +1,21 @@
 % macros=mkvi
 
 %====================================================================%
-% CTX-THESIS ver. 0.991 -- Thesis in ConTeXt                         %
+% CTX-THESIS ver. 0.993 -- Thesis in ConTeXt                         %
 %--------------------------------------------------------------------%
-% Sazební styl pro ConTeXt -- (c) TH, 2013--2023                     %
+% Sazební styl pro ConTeXt -- (c) TH, 2013--2024                     %
 % Typesetting style for ConTeXt                                      %
 %--------------------------------------------------------------------%
 % t. č. ve vývoji / under the development                            %
 %====================================================================%
+% 0.993 20240411 space between figurecomb and caption
+% 0.992 20240314 ml+id added
 % 0.991 20230509 fixing: \zlom; unilist
 % 0.990 20230426 doMyFigure: list= (experimental) 
 % 0.989 20230418 (TK:) US English: fixing bug; thesis->Thesis; 's; degree\,
 % 0.988 20230418 tiny additions, fixing bugs..., hanging abstracts
 % 0.987 20230414 pt added
-% 0.986 20230412 CTX v LMTX differnce with \par in macros
+% 0.986 20230412 CTX v LMTX difference with \par in macros
 % 0.985s 20230228 SOČ added
 % 0.985 20221203(?) fi added
 % 0.984 20221129 hy added
@@ -45,6 +47,8 @@
 %   es --- Javier Gambin Monzo + Samuel Conca Coles (2022)
 %   fr --- Arnaud Pierre Henri De Barbentane + Adrien Patton (2022)
 %   hy --- Kristina Nazarjanová (2022)
+%   id --- Keiko Budhi Saputra (2024)
+%   ml --- Sin Huei Ong (2024)
 %   pt --- Joanna Sofia Bogas Carneiro et al. (2023)
 %--------------------------------------------------------------------%
 % 
@@ -228,43 +232,34 @@ fonts.protrusions.vectors.cscompound = table.merged (
 local data      = languages.data
 
 data.labels.thesis = {
+  ["abstract"]={
+   ["labels"]={
+    ["cs"]="Abstrakt",
+    ["en"]="Abstract",
+	["ca"]="Resum",
+	["es"]="Resumen",
+	["fi"]="Tiivistelmä",
+	["fr"]="Abstrait",
+	["hy"]="Աբստրակտ",
+    ["id"]="Abstrak",
+    ["ml"]="Abstrak",
+	["pt"]="Abstrato",
+    ["sk"]="Abstrakt",
+	},
+   },
   ["bachelorthesis"]={
    ["labels"]={
-	["cs"]="Bakalářská práce", 
+ 	["cs"]="Bakalářská práce", 
 	["en"]="Bachelor's Thesis",
 	["ca"]="Tesi de licenciatura",
 	["es"]="Tesis de licenciatura",
 	["fi"]="Opinnäytetyö",
 	["fr"]="Mémoire de Bachelor",
 	["hy"]="Դիպլոմային աշխատանք",
+    ["id"]="Skripsi",
+    ["ml"]="Tesis Sarjana Muda",
 	["pt"]="Tese de Licenciatura",
 	["sk"]="Bakalárska práca",
-	},
-   },
-  ["masterthesis"]={
-   ["labels"]={
-	["cs"]="Diplomová práce",
-	["en"]="Master's Thesis",
-	["ca"]="Tesi de master",
-	["es"]="Tesis de master",
-	["fi"]="Pro gradu tutkielma",
-	["fr"]="Mémoire de Master",
-    ["hy"]="Մագիստրոսական թեզ",
-	["pt"]="Tese de Mestrado",
-	["sk"]="Diplomová práca",
-	},
-   },
-  ["phdthesis"]={
-   ["labels"]={
-    ["cs"]="Doktorská práce",
-    ["en"]="PhD~Thesis",
-	["ca"]="Tesi doctoral",
-	["es"]="Tesis de doctorado",
-	["fi"]="",
-	["fr"]="Thèse de doctorat",
-    ["hy"]="Դոկտորական թեզ",
-	["pt"]="Tese de Douturamento",
-	["sk"]="Doktorská práca",
 	},
    },
   ["commentarybachelorthesis"]={
@@ -275,6 +270,8 @@ data.labels.thesis = {
 	["es"]="Comentario de tesis de licenciatura",
 	["fi"]="Kommentti kandidaatintyöstä",
 	["fr"]="",
+    ["id"]="Komentar tentang Skripsi",
+    ["ml"]="Ulasan Tesis Sarjana Muda",
 	["hy"]="Դիպլոմային աշխատանքի մեկնաբանություն",
 	["pt"]="Comentario de tese de licenciatura",
     ["sk"]="Komentár k bakalárskej práci",
@@ -289,6 +286,8 @@ data.labels.thesis = {
 	["fi"]="Kommentti diplomityöstä",
 	["fr"]="",
 	["hy"]="Մագիստրոսական թեզի մեկնաբանություն",
+    ["id"]="Komentar tentang Tesis",
+    ["ml"]="Ulasan Tesis Sarjana",
 	["pt"]="Comentario de tese de mestrado",
     ["sk"]="Komentár k diplomovej práci",
 	},
@@ -302,60 +301,40 @@ data.labels.thesis = {
 	["fi"]="Väitöskirjan kommentit",
 	["fr"]="",
 	["hy"]="Թեկնածուական թեզի մեկնաբանություն",
+    ["id"]="Komentar tentang Disertasi",
+    ["ml"]="Ulasan Tesis PhD",
 	["pt"]="Comentario de tese de douturamento",
     ["sk"]="Komentár k doktorskej práci",
 	},
    },
-  ["seminarthesis"]={
+  ["consultant"]={
    ["labels"]={
-    ["cs"]="Seminární práce",
-    ["en"]="Seminar Thesis",
-	["ca"]="Tesi de seminari",
-	["es"]="Tesis de seminario",
-	["fi"]="Seminaarin opinnäytetyö",
+    ["cs"]="Konzultant",
+    ["en"]="Consultant",
+	["ca"]="",
+	["es"]="",
+	["fi"]="",
 	["fr"]="",
-	["hy"]="Սեմինարային աշխատանք",
-	["pt"]="Tese de seminario",
-    ["sk"]="Seminárna práca",
+	["hy"]="",
+    ["id"]="Konsultan",
+    ["ml"]="Perunding",
+	["pt"]="Consultor",
+    ["sk"]="Konzultant",
 	},
    },
-  ["finalthesis"]={
+  ["declaration"]={
    ["labels"]={
-    ["cs"]="Závěrečná práce",
-    ["en"]="Final Thesis",
-	["ca"]="Tesi final",
-	["es"]="Tesis final",
-	["fi"]="Seminaarin opinnäytetyö", --?
-	["fr"]="Thèse finale",
-	["hy"]="Վերջնական թեզ",
-	["pt"]="Tese final",
-    ["sk"]="Záverečná práca",
-	},
-   },
-  ["report"]={
-   ["labels"]={
-    ["cs"]="Protokol",
-    ["en"]="Report",
-	["ca"]="Informe",
-	["es"]="Informe",
-	["fi"]="Reportti",
-	["fr"]="Rapport",
-	["hy"]="Զեկույց",
-	["pt"]="Reporte",
-    ["sk"]="Protokol",
-	},
-   },
-  ["project"]={
-   ["labels"]={
-    ["cs"]="Projekt",
-    ["en"]="Project",
-	["ca"]="Projecte",
-	["es"]="Proyecto",
-	["fi"]="Projekti",
-	["fr"]="Projet",
-	["hy"]="Նախագիծ",
-	["pt"]="Projeto",
-    ["sk"]="Projekt",
+    ["cs"]="Čestné prohlášení",
+    ["en"]="Declaration",
+	["ca"]="Declaracio",
+	["es"]="Declaracion",
+	["fi"]="Declaration",
+	["fr"]="Déclaration",
+	["hy"]="Արձանագրություն",
+    ["id"]="Deklarasi",
+    ["ml"]="Pengisytiharan",
+	["pt"]="Declaraçao",
+    ["sk"]="Čestné prehlásenie",
 	},
    },
   ["documentation"]={
@@ -367,8 +346,160 @@ data.labels.thesis = {
 	["fi"]="Dokumentaatio",
 	["fr"]="Notice d'utilisation",
 	["hy"]="Փաստաթղթավորում",
+    ["id"]="Dokumentasi",
+    ["ml"]="Dokumentasi",
 	["pt"]="Documentaçao",
     ["sk"]="Dokumentácia",
+	},
+   },
+  ["finalthesis"]={
+   ["labels"]={
+    ["cs"]="Závěrečná práce",
+    ["en"]="Final Thesis",
+	["ca"]="Tesi final",
+	["es"]="Tesis final",
+	["fi"]="Seminaarin opinnäytetyö", --?
+	["fr"]="Thèse finale",
+	["hy"]="Վերջնական թեզ",
+    ["id"]="Tesis Akhir",
+    ["ml"]="Tesis Akhir",
+	["pt"]="Tese final",
+    ["sk"]="Záverečná práca",
+	},
+   },
+  ["insteadofassignment"]={
+   ["labels"]={
+    ["cs"]="NA MÍSTĚ TOHOTO LISTU\\par SE NACHÁZÍ ORIGINÁL\\par ZADÁNÍ PRÁCE.\\par",
+    ["en"]="INSTEAD OF THIS SHEET\\par THERE IS THE ORIGINAL OF THE\\par THESIS ASSIGNMENT.\\par",
+	["ca"]="EN COMPTES D'AQUESTA PAGINA\\par AQUESTA ES L'ORIGINAL\\par TAREA DE TESI",
+	["es"]="EN VEZ DE ESTA PAGINA\\par ESTA ES LA ORIGINAL DE\\par TAREA DE TESIS",
+	["fi"]="TÄMÄN SIVUN SIJAAN\\par SIELLÄ ON ALKUPERÄINEN \\par OPINNÄYTTÖTEHTÄVÄ.\\par",
+	["fr"]="A LA PLACE DE CETTE FEUILLE\\par IL Y A L'ORIGINAL\\par ....",
+	["hy"]="ԱՅՍ ԹԵՐԹԻ ՓՈԽԱՐԵՆ\\par ԿԱ ԹԵԶԻ ՕՐԻԳԻՆԱԼ\\par ՀԱՆՁՆԱՐԱՐՈՒԹՅՈՒՆԸ:\\par",
+    ["id"]="ALIH-ALIH HALAMAN INI\\par ADA LEMBAR ASLI DARI\\par TUGAS TESIS.\\par",
+    ["ml"]="SEBALIKNYA LEMBARAN INI\\par ADA YANG ASLI\\par TUGASAN TESIS.\\par",
+	["pt"]="EM VEZ DESTE PAGINA\\par EXISTE UMA PAGINA\\par ORIGINAL DESTA TESE.\\par",
+    ["sk"]="NA MIESTE TOHTO LISTU\\par SA NACHÁDZA ORIGINÁL\\par ZADANIA PRÁCE.\\par",
+	},
+   },
+  ["keywords"]={
+   ["labels"]={
+    ["cs"]="Klíčová slova",
+    ["en"]="Key words",
+	["ca"]="Paraules clau",
+	["es"]="Palabras clave",
+	["fi"]="Avainsanat",
+	["fr"]="Mots-clés",
+	["hy"]="Հիմնաբառեր",
+    ["id"]="Kata Kunci",
+    ["ml"]="Kata kunci",
+	["pt"]="Palavra-chave",
+    ["sk"]="Kľúčové slová",
+	},
+   },
+  ["masterthesis"]={
+   ["labels"]={
+	["cs"]="Diplomová práce",
+	["en"]="Master's Thesis",
+	["ca"]="Tesi de master",
+	["es"]="Tesis de master",
+	["fi"]="Pro gradu tutkielma",
+	["fr"]="Mémoire de Master",
+    ["hy"]="Մագիստրոսական թեզ",
+    ["id"]="Tesis",
+    ["ml"]="Tesis Sarjana",
+	["pt"]="Tese de Mestrado",
+	["sk"]="Diplomová práca",
+	},
+   },
+  ["onday"]={
+   ["labels"]={
+    ["cs"]="dne",
+    ["en"]="",
+	["ca"]="el",
+	["es"]="el",
+	["fi"]="",
+	["fr"]="le",
+	["hy"]="",
+    ["id"]="hari",
+    ["ml"]="pada hari",
+	["pt"]="no dia",
+    ["sk"]="dňa",
+	},
+   },
+  ["phdthesis"]={
+   ["labels"]={
+    ["cs"]="Doktorská práce",
+    ["en"]="PhD~Thesis",
+	["ca"]="Tesi doctoral",
+	["es"]="Tesis de doctorado",
+	["fi"]="",
+	["fr"]="Thèse de doctorat",
+    ["hy"]="Դոկտորական թեզ",
+    ["id"]="Disertasi",
+    ["ml"]="Tesis PhD",
+	["pt"]="Tese de Douturamento",
+	["sk"]="Doktorská práca",
+	},
+   },
+  ["project"]={
+   ["labels"]={
+    ["cs"]="Projekt",
+    ["en"]="Project",
+	["ca"]="Projecte",
+	["es"]="Proyecto",
+	["fi"]="Projekti",
+	["fr"]="Projet",
+	["hy"]="Նախագիծ",
+    ["id"]="Proyek",
+    ["ml"]="Projek",
+	["pt"]="Projeto",
+    ["sk"]="Projekt",
+	},
+   },
+  ["report"]={
+   ["labels"]={
+    ["cs"]="Protokol",
+    ["en"]="Report",
+	["ca"]="Informe",
+	["es"]="Informe",
+	["fi"]="Reportti",
+	["fr"]="Rapport",
+	["hy"]="Զեկույց",
+    ["id"]="Laporan",
+    ["ml"]="Laporan",
+	["pt"]="Reporte",
+    ["sk"]="Protokol",
+	},
+   },
+  ["seminarthesis"]={
+   ["labels"]={
+    ["cs"]="Seminární práce",
+    ["en"]="Seminar Thesis",
+	["ca"]="Tesi de seminari",
+	["es"]="Tesis de seminario",
+	["fi"]="Seminaarin opinnäytetyö",
+	["fr"]="",
+	["hy"]="Սեմինարային աշխատանք",
+    ["id"]="Tesis Seminar",
+    ["ml"]="Tesis Seminar",
+	["pt"]="Tese de seminario",
+    ["sk"]="Seminárna práca",
+	},
+   },
+  ["signature"]={
+   ["labels"]={
+    ["cs"]="podpis",
+    ["en"]="signature",
+	["ca"]="firma",
+	["es"]="firma",
+	["fi"]="Allekirjoitus",
+	["fr"]="signature",
+	["hy"]="ստորագրություն",
+    ["id"]="Tanda Tangan",
+    ["ml"]="tandatangan",
+ 	["pt"]="assinatura",
+    ["sk"]="podpis",
 	},
    },
   ["studentprofact"]={
@@ -380,6 +511,8 @@ data.labels.thesis = {
 	["fi"]="Opiskelijoiden ammatillinen toiminta",
 	["fr"]="",
 	["hy"]="Ուսանողների մասնագիտական գործունեություն",
+    ["id"]="Kegiatan Professional Mahasiswa",
+    ["ml"]="Aktiviti Profesional Pelajar",
 	["pt"]="Atividades profissionais do estudante",
     ["sk"]="Stredoškolská odborná činnosť",
 	},
@@ -393,47 +526,10 @@ data.labels.thesis = {
 	["fi"]="Valvoja",
 	["fr"]="Superviseur",
 	["hy"]="Ղեկավար",
+    ["id"]="Pengawas",
+    ["ml"]="Penyelia",
 	["pt"]="Supervisor",
     ["sk"]="Vedúci práce",
-	},
-   },
-  ["consultant"]={
-   ["labels"]={
-    ["cs"]="Konzultant",
-    ["en"]="Consultant",
-	["ca"]="",
-	["es"]="",
-	["fi"]="",
-	["fr"]="",
-	["hy"]="",
-	["pt"]="Consultor",
-    ["sk"]="Konzultant",
-	},
-   },
-  ["keywords"]={
-   ["labels"]={
-    ["cs"]="Klíčová slova",
-    ["en"]="Key words",
-	["ca"]="Paraules clau",
-	["es"]="Palabras clave",
-	["fi"]="Avainsanat",
-	["fr"]="Mots-clés",
-	["hy"]="Հիմնաբառեր",
-	["pt"]="Palavra-chave",
-    ["sk"]="Kľúčové slová",
-	},
-   },
-  ["abstract"]={
-   ["labels"]={
-    ["cs"]="Abstrakt",
-    ["en"]="Abstract",
-	["ca"]="Resum",
-	["es"]="Resumen",
-	["fi"]="Tiivistelmä",
-	["fr"]="Abstrait",
-	["hy"]="Աբստրակտ",
-	["pt"]="Abstrato",
-    ["sk"]="Abstrakt",
 	},
    },
   ["where"]={
@@ -445,60 +541,10 @@ data.labels.thesis = {
 	["fi"]="",
 	["fr"]="à",
 	["hy"]="",
+    ["id"]="Tempat",
+    ["ml"]="mana",
 	["pt"]="á",
     ["sk"]="V",
-	},
-   },
-  ["declaration"]={
-   ["labels"]={
-    ["cs"]="Čestné prohlášení",
-    ["en"]="Declaration",
-	["ca"]="Declaracio",
-	["es"]="Declaracion",
-	["fi"]="Declaration",
-	["fr"]="Déclaration",
-	["hy"]="Արձանագրություն",
-	["pt"]="Declaraçao",
-    ["sk"]="Čestné prehlásenie",
-	},
-   },
-  ["onday"]={
-   ["labels"]={
-    ["cs"]="dne",
-    ["en"]="",
-	["ca"]="el",
-	["es"]="el",
-	["fi"]="",
-	["fr"]="le",
-	["hy"]="",
-	["pt"]="no dia",
-    ["sk"]="dňa",
-	},
-   },
-  ["signature"]={
-   ["labels"]={
-    ["cs"]="podpis",
-    ["en"]="signature",
-	["ca"]="firma",
-	["es"]="firma",
-	["fi"]="Allekirjoitus",
-	["fr"]="signature",
-	["hy"]="ստորագրություն",
-	["pt"]="assinatura",
-    ["sk"]="podpis",
-	},
-   },
-  ["insteadofassignment"]={
-   ["labels"]={
-    ["cs"]="NA MÍSTĚ TOHOTO LISTU\\par SE NACHÁZÍ ORIGINÁL\\par ZADÁNÍ PRÁCE.\\par",
-    ["en"]="INSTEAD OF THIS SHEET\\par THERE IS THE ORIGINAL OF THE\\par THESIS ASSIGNMENT.\\par",
-	["ca"]="EN COMPTES D'AQUESTA PAGINA\\par AQUESTA ES L'ORIGINAL\\par TAREA DE TESI",
-	["es"]="EN VEZ DE ESTA PAGINA\\par ESTA ES LA ORIGINAL DE\\par TAREA DE TESIS",
-	["fi"]="TÄMÄN SIVUN SIJAAN\\par SIELLÄ ON ALKUPERÄINEN \\par OPINNÄYTTÖTEHTÄVÄ.\\par",
-	["fr"]="A LA PLACE DE CETTE FEUILLE\\par IL Y A L'ORIGINAL\\par ....",
-	["hy"]="ԱՅՍ ԹԵՐԹԻ ՓՈԽԱՐԵՆ\\par ԿԱ ԹԵԶԻ ՕՐԻԳԻՆԱԼ\\par ՀԱՆՁՆԱՐԱՐՈՒԹՅՈՒՆԸ:\\par",
-	["pt"]="EM VEZ DESTE PAGINA\\par EXISTE UMA PAGINA\\par ORIGINAL DESTA TESE.\\par",
-    ["sk"]="NA MIESTE TOHTO LISTU\\par SA NACHÁDZA ORIGINÁL\\par ZADANIA PRÁCE.\\par",
 	},
    },
 }
@@ -518,7 +564,7 @@ L.labels.thesis      = L.labels.thesis or {}
 Lti, Lth        = L.labels.titles, L.labels.thesis
 
 
-T.supportedlanguages = {cs=1,sk=1,en=1,ca=1,es=1,fi=1,fr=1,hy=1,pt=1}
+T.supportedlanguages = {cs=1,sk=1,en=1,ca=1,es=1,fi=1,fr=1,hy=1,id=1,ml=1,pt=1}
 T.frontmatter        = T.frontmatter or {}
 
 function T.err(errmsg)
@@ -568,13 +614,27 @@ end
 ---------------------- Function / Get & Set
 
 function T.get_label (hash,lang,name)
+--inspect(lang,name) os.exit()
+--inspect(languages) os.exit()
   if not hash then err("Non-existing structure, call the wizard.") os.exit() end
   if not name or not hash[name] or not hash[name].labels then err("Non-existing named structure ("..name.."), call the wizard.") os.exit() end
-  if not lang or not languages.data.variants[lang] then lang="en" end
-  return hash[name].labels[lang] or hash[name].labels.en or hash[name].labels.cs or hash[name].labels.sk or ""
+  if     not lang then lang="en" 
+  elseif --not languages.data.variants[lang] then -- ctx("\\errmessage{The "..lang.." language has not been supported by ConTeXt yet.}") 
+     not languages.data.labels.texts.chapter.labels[lang] then  ctx("\\errmessage{The "..lang.." language has not been supported by ConTeXt yet.}") 
+  end
+--if name=="keywords" then inspect(S) inspect(lang) io.read() 
+--end
+--inspect(name.."/"..lang.."/"..hash[name].labels[lang])
+return hash[name].labels[lang] or hash[name].labels.en or hash[name].labels.cs or hash[name].labels.sk or ""
 end
 
 function T.get_label_thesis (name)
+--if name=="keywords" then --inspect(T.setup) io.read() 
+--inspect(name.."/"..T.setup.mainlanguage) 
+--inspect(Lth.keywords)
+--inspect( T.get_label (Lth,T.setup.mainlanguage,name)) 
+--io.read()
+--end
   return T.get_label (Lth,T.setup.mainlanguage,name)
 end
 
@@ -607,9 +667,8 @@ function T.setupthesis(keywords, keyvals)
   if l=="uk" or l=="us" then S.mainlanguage="en" end
 
   S.university, S.faculty, S.department = keyword_options[2], keyword_options[3], keyword_options[4]
-  if not T.unilist[S.university] then 
-T.unilist = require "./ctx-thesis-listofuni" 
-end
+  if not T.unilist[S.university] then T.unilist = require "./ctx-thesis-listofuni" 
+  end
   
   if #keyword_options<2 then err("Missing setup?") end
   if not S.location then err("Missing location.") else
@@ -644,6 +703,8 @@ end
   end
   S.declaration.sk="\\thesisDeclarationSKtext"
   S.declaration.en="\\thesisDeclarationENtext"
+  S.declaration.ml="\\relax"
+  S.declaration.id="\\relax"
 
   S.title=string.split(S.title,S.subtitlesep)
   S.titleen=string.split(S.titleen,S.subtitlesep)
@@ -1069,8 +1130,7 @@ end
 %\setupfloat[figureright][offset=0ex,indentnext=yes,toffset=-1cc,boffset=-1em,spacebefore=0em,spaceafter=4*line]  %,before={\godown[2em]}] % do v0.57: toffset=0
 %\setupfloat[figureright][loffset=0ex,roffset=0em,location={right,hanging}]
 
-\setupfloat[figurecomblt][boffset=-2ex,bottommargin=2ex,topmargin=2ex]
-\setupfloat[figurecombrt][boffset=-2ex,bottommargin=2ex]
+\setupcaption[figurecomblt][spaceinbetween=-2.5ex]
 
 %\def\mycmdfigureright#1{\startalignment[middle]#1\stopalignment}
 %\setupcaption[figureure][offset=0cc,align={middle,nothyphenated}] %?
@@ -1621,7 +1681,9 @@ a~o~změně některých zákonů (autorský zákon) ve znění pozdějších př
 \def\thesisSupervisorText{\ctxlua{ctx(get_label_thesis("supervisor"))}}
 \def\thesisConsultantText{\ctxlua{ctx(get_label_thesis("consultant"))}}
 \def\thesisAbstractText{\ctxlua{ctx(get_label_thesis("abstract"))}}
-\def\thesisKeywordsText{\ctxlua{ctx(get_label_thesis("keywords"))}}
+\def\thesisKeywordsText{\ctxlua{
+%inspect(S) io.read() 
+ctx(get_label_thesis("keywords"))}}
 \def\thesisDeclarationText{\ctxlua{ctx(get_label_thesis("declaration"))}}
 
 \def\thesisKeywordsEN{\ctxlua{ctx(T.setup.keywordsen)}}
@@ -1763,7 +1825,10 @@ end
 			if not(S.type=="xp" and S.university=="none") then ctx(" : "..T.getuniversity("u",##7)) end
 		},
        \thesisYear.\par\blank[2*big]##6\par\blank[2*big]{\noindenting\fontthesisAbstractText##4}
-     \par\blank[big]\noindenting##5
+     \par\blank[big]
+%  \startluacode inspect(S) io.read() \stopluacode 
+%  \startluacode inspect('##4') io.read() \stopluacode 
+\noindenting##5
 \stopframedtext%
   }
   {\startluacode 
@@ -1771,18 +1836,20 @@ end
 	  S.mainlanguage="en"
   \stopluacode
   \pomAbstract{\thesisAbstractText}{\thesisTypeName}{\thesisTitleEN}{\thesisKeywordsText}{\thesisKeywordsEN}{\thesisAbstractEN}{"en"}
-  \startluacode S.mainlanguage=pomlang \stopluacode
+  \startluacode S.mainlanguage=pomlang 
+\stopluacode
   }
   {\startluacode 
-	if S.mainlanguage=="en" 
+	if S.mainlanguage=="enxxxx" 
 	  then ctx("\\language["..S.auxlanguage.."]") 
 		S.mainlanguage=S.auxlanguage 
 	end
    \stopluacode
 %-- 	else ctx(S.mainlanguage) 
   \par\blank[3*big]\null\quad%
+%  \startluacode inspect(S) os.exit() \stopluacode 
   \pomAbstract{\thesisAbstractText}{\thesisTypeName}{\thesisTitle}{\thesisKeywordsText}{\thesisKeywords}{\thesisAbstract}{""}
-  \ctxlua{S.mainlanguage="en"}
+%  \ctxlua{S.mainlanguage="en"}
   }
 }
 
@@ -1900,5 +1967,5 @@ end
 %====================================================================%
 % Thesis in ConTeXt                                                  %     
 %--------------------------------------------------------------------%
-% Sazební styl pro ConTeXt -- (c) TH, 2013--2023                     %
+% Sazební styl pro ConTeXt -- (c) TH, 2013--2024                     %
 %====================================================================%

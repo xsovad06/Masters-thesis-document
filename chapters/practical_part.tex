@@ -77,8 +77,6 @@ The rationale behind the unified format is to identify commonalities among indiv
 
 Another crucial aspect is the accurate aggregation of individual model estimations, encompassing both the coordinates of keypoints and their visibility values. To address this, we introduce a weighted average, mitigating weaknesses in faster models such as MoveNet and PoseNet. Given that these models are designed for real-time estimation, and we utilize the "lightning" model version for PoseNet, accuracy is inherently limited. Detailed values for the weighted average are available in \in{Table}[tab:format-comparison]. The assignment of the highest weight to the {\bf MMPose} model is justified by its superior accuracy with \APE\ metric described in the \in{Section}[section:evaluation]. This approach ensures the uniformity of estimations made by individual models across the entire dataset, as prepared in the previous section.
 
-The weighted average is not applied in scenarios involving the processing of keypoints on the hands or feet. This limitation arises from the fact that the {\bf MoveNet} model does not provide these keypoints, necessitating a basic average calculation of the two values. In other words, the weighted average is applied only when there is data from all three models.
-
 \TABULKA[][tab:format-comparison]{Comparison of the individual models detection format}
     \setupTABLE[r][1][style=bold]
     \setupTABLE[c][each][offset=3dd]
@@ -98,25 +96,32 @@ The weighted average is not applied in scenarios involving the processing of key
     \bTR
         \bTD Unified Format\eTD\bTD     27\eTD\bTD  Yes\eTD\bTD  --\eTD\eTR
 
-
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}
 
-\obrazkyvedlesebe[3][top]{coco;mmpose;unified}
+The weighted average is not applied in scenarios involving the processing of keypoints on the hands or feet. This limitation arises from the fact that the {\bf MoveNet} model does not provide these keypoints, necessitating a basic average calculation of the two values. In other words, the weighted average is applied only when there is data from all three models.
+
+To clarify and explain the detection outcomes, refer to Figures \in[compose-fig:coco-detection], \in[compose-fig:mmpose-detection] and \in[compose-fig:unified-detection]. The initial depiction presents the original COCO WholeBody annotations in a simplified format, mirroring the Unified Format with 27 keypoints. All individuals within the image are annotated, meticulously considering the overlap and occlusion of human figures. Additionally, non-visible skeleton edges are omitted. Notably, no facial keypoints are detected, aligning with the absence of visible faces, thus demonstrating accurate annotation.
+
+Subsequently, \in{Figure}[compose-fig:mmpose-detection] portrays a detection outcome from the MMPose model. Regrettably, the individual performing a deep squat remains undetected, while facial keypoints are erroneously identified for two adjacent individuals facing away from the camera. Despite these anomalies, the overall detection performance is commendable.
+
+\obrazkyvedlesebe[3][top]{compose-fig:coco-detection;compose-fig:mmpose-detection;compose-fig:unified-detection}
     {
         COCO WholeBody annotation simplified to unified format;
         MMPose model detection with 133 keypoints format;
         Unified format detection with 27 keypoints;
     }
     {
-        figures/detection-comparison/000000002153-coco-annotation.png;
-        figures/detection-comparison/000000002153-mmpose-prediction.png;
-        figures/detection-comparison/000000002153-unified-prediction.png;
+        figures/detection-comparison/000000002153-coco-annotation.jpg;
+        figures/detection-comparison/000000002153-mmpose-prediction.jpg;
+        figures/detection-comparison/000000002153-unified-prediction.jpg;
     }
     {
         height=9.5cc;
         height=9.5cc;
         height=9.5cc;
     }
+
+Lastly, the Unified Format, primarily informed by the MMPose model, is depicted in the third figure. Notably, a single individual in the upper portion of the image remains undetected. This occurrence is attributed to the unification script, which employs an {\bf average instance visibility threshold}, set experimentally at {\bf 40\%}, to determine inclusion in the unified format. This threshold serves as a filter for wrongly detected human instances by one of the models. Usually this occured by the use of MMPose model which is multi-person detector and this is Nevertheless, the precision of individual detections is highly satisfactory, ensuring precise localization of keypoints when individuals are successfully detected within the image. This is proven in the evaluation \in{Section}[section:evaluation] at \at{page}[section:evaluation].
 
 % ------- Sub-section ------- %
 \ppkap[subsection:unified-format-implementation]{Implementation of the Unified Format}
@@ -126,16 +131,110 @@ This subsection aims to provide description for the unification script key conce
 \pkap[section:evaluation]{Evaluation}
 In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for the unified detection format evaluation. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated.
 
-As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation 2017} subset. The total {\bf APE} was equal to {\bf 4.37\%}. This metric was calculated only on the matching instances of the predicted annotations concerning the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances were obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the bounding box overlap. The threshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou]. The result is very satisfactory even though the averaging of the keypoints position in the unification process causes some errors.
+As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation 2017} subset containing {\bf 5000} images. According to a COCO validation annotations only {\bf 2693} images has present humans. The total {\bf APE} was equal to {\bf 4.37\%}. This metric was calculated only on the matching instances of the predicted annotations concerning the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances were obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the bounding box overlap. The threshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou]. The result is very satisfactory even though the averaging of the keypoints position in the unification process causes some errors.
 
 \obrazek{iou}{Calculation of the Intersection over Union}{figures/iou.png}{width=\makeupwidth}
 
 There was also an evaluation on the \APE\ metric just for the {\bf MMPose} model because only this model provides us with the \BBOX\--es in the detection. The total \APE\ was: {\bf 1.29\%} which provided us with the information about the model precision on individual keypoints of detected instances. This information will be used for setting up the weights for weighted average in the process of unified format creation in the following \in{section}[section:unified-format] on \at{page}[section:unified-format]. Generally, the MMPose model is showing great performance on the detection tasks. Visually, there are only occasional differences in the prediction and the ground truth.
 
-Because of the fact, that human pose estimation is a very complex task, it is required to use multiple metrics to express the performance of the detection models. For this reason, additionally, the mean square error(or \OKS\) is evaluated as well.
+Because of the fact, that human pose estimation is a very complex task, it is required to use multiple metrics to express the performance of the detection models. For this reason, additionally, the \MSE\ and \OKS\ are evaluated as well.
+
+\TABULKA[][tab:evaluation-unified]{Evaulation Statistics for the Unified Format}
+    \setupTABLE[r][1][style=bold]
+    \setupTABLE[c][each][offset=3dd]
+    \setupTABLE[frame=off]
+    \setupTABLE[r][1][topframe=on,bottomframe=on]
+    \setupTABLE[c][each][leftframe=on]
+    \setupTABLE[c][1][leftframe=off]
+    \setupTABLE[c][2,3][align=middle]
+    \bTR
+        \bTD Statistic                              \eTD\bTD      Value\eTD\bTD  From Total\eTD\eTR
+    \bTR
+        \bTD Total number ground truth images:           \eTD\bTD    2693 \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total Average Percentage Error (APE):       \eTD\bTD    2.05\% \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    2.63 \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.20 \eTD\bTD    \eTD\eTR
+    \bTR
+        \bTD Total average of correct keypoint detected: \eTD\bTD    20.30\% \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total matching number of poses (instances): \eTD\bTD    5833 \eTD\bTD    53.01\% \eTD\eTR
+    \bTR
+        \bTD Total predicted number of poses (instances):\eTD\bTD    7746 \eTD\bTD    70.39\% \eTD\eTR
+    \bTR
+        \bTD Total truth number of poses (instances):    \eTD\bTD    11004 \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Model predicted more poses in image (total):\eTD\bTD    589 \eTD\bTD   5.35\% \eTD\eTR
+    \bTR
+        \bTD Model predicted less poses in image (total):\eTD\bTD    3847 \eTD\bTD    34.96\% \eTD\eTR
+
+The evaluation statistics for the Unified Format can be found in the \in{Table}[tab:evaluation-unified]. This table features many different values, from the overall counts of the processed images with the ground truth annotations all the way to the differences in the predicted poses counts. Easy interpretable is the \APE\ metric which tells us the average error of the predicted keypoints position to the ground truth ones.
+
+\TABULKA[][tab:evaluation-mmpose]{Evaulation Statistics for the MMPose model}
+    \setupTABLE[r][1][style=bold]
+    \setupTABLE[c][each][offset=3dd]
+    \setupTABLE[frame=off]
+    \setupTABLE[r][1][topframe=on,bottomframe=on]
+    \setupTABLE[c][each][leftframe=on]
+    \setupTABLE[c][1][leftframe=off]
+    \setupTABLE[c][2,3][align=middle]
+    \bTR
+        \bTD Statistic                              \eTD\bTD      Value\eTD\bTD  From Total\eTD\eTR
+    \bTR
+        \bTD Total number ground truth images:           \eTD\bTD    2693 \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total Average Percentage Error (APE):       \eTD\bTD    0.54\% \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    0.09 \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.20 \eTD\bTD    \eTD\eTR
+    \bTR
+        \bTD Total average of correct keypoint detected: \eTD\bTD    20.31\% \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Total matching number of poses (instances): \eTD\bTD    5833 \eTD\bTD    53.01\% \eTD\eTR
+    \bTR
+        \bTD Total predicted number of poses (instances):\eTD\bTD    7685 \eTD\bTD    69.84\% \eTD\eTR
+    \bTR
+        \bTD Total truth number of poses (instances):    \eTD\bTD    11004 \eTD\bTD     \eTD\eTR
+    \bTR
+        \bTD Model predicted more poses in image (total):\eTD\bTD    589 \eTD\bTD   5.35\% \eTD\eTR
+    \bTR
+        \bTD Model predicted less poses in image (total):\eTD\bTD    3908 \eTD\bTD    35.51\% \eTD\eTR
 
 % ------- Section ------- %
 \pkap[section:problems-limitations]{Implementation Problems and Technical Limitations}
 Throughout the course of this thesis, there have been many technical limitations and implementation struggles. This section will list some of them.
 
 The initial plan was to utilize the {\bf BodyPoseNet} (NVIDIA, 2024) detection model from {\bf NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement BodyPoseNet detection script, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitated an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS {\bf Sonoma} on a {\bf 16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.
+
+\obrazkyvedlesebe[2*2][top]{compose-fig:mmpose-problem;compose-fig:posenet-problem;compose-fig:unified-problem;compose-fig:coco-problem}
+    {
+        MMPose;
+        PoseNet;
+        Unified Format;
+        COCO Annotations;
+    }
+    {
+        figures/instance-mapping-problem/000000065350-mmpose.jpg;
+        figures/instance-mapping-problem/000000065350-posenet.jpg;
+        figures/instance-mapping-problem/000000065350-unified.jpg;
+        figures/instance-mapping-problem/000000065350-coco.jpg;
+    }
+    {
+        height=10.5cc;
+        height=10.5cc;
+        height=10.5cc;
+        height=10.5cc;
+    }
+
+There are also som implementation limitations regarding the unified format creation. Problem occures when you are averaging the detection together, but some models does not provide you with the \BBOX\ values. For example, both PoseNet and MoveNet does not generate the \BBOX\ which results in difficult mapping of the appropriate detection instances for averaging. There are some examples from the COCO evaluation subset, where this phenomenon is really significant. This issue is visible in the Figures \in[compose-fig:mmpose-problem], \in[compose-fig:posenet-problem] and finally \in[compose-fig:unified-problem]. The mapping of the jumping person from PoseNet model in the middle of the figure is to a wrong instance from the MMPose mode, which is a guy in the right. This results in averaging of those two detection and put the detection in between in the Unified Format output. The unified version of the detection is bit deformed but it is cleary visible, how the averaging process combined the original detections. In this case the MoveNet model does not provided any results so the unification script took into an account only MMPose and PoseNet detections.
+
+This issues could be solved by the implementation of the custom function, which would take two instances from the detection scripts and return a similarity constant. The constant would serve for decision if the two detection instances are corresponding. While the MMPose model provide the \BBOX\ of the instance, this could be used for area of comparison for individual keypoints from the other two models. If a certain percentage of keypoints fit into a \BBOX\ (for example 65\%, similarly to a \IoU\ threshold), the instances are considered to be a corresponding ones.
+
+There are also some implementation limitations regarding the creation of the unified format. A problem arises when averaging detections together, especially when some models do not provide \BBOX\ values. For instance, both PoseNet and MoveNet do not generate \BBOX\ information, making it challenging to map the appropriate detection instances for averaging. This issue is particularly pronounced in examples from the COCO evaluation subset, as illustrated in Figures \in[compose-fig:mmpose-problem], \in[compose-fig:posenet-problem], and \in[compose-fig:unified-problem].
+
+In Figure \in[compose-fig:posenet-problem], for instance, the mapping of the jumping person from the PoseNet model in the middle of the figure is incorrectly associated with a different instance from the MMPose model, depicted as a person on the right. Consequently, the averaging of these two detections results in the placement of the detection in between in the Unified Format output. Although the unified version of the detection appears slightly distorted, it clearly demonstrates how the averaging process combines the original detections. In this specific case, the MoveNet model did not provide any results, prompting the unification script to consider only MMPose and PoseNet detections.
+
+These issues could be addressed by implementing a custom function that compares two instances from the detection scripts and returns a similarity constant. This constant would serve as a basis for determining if the two detection instances correspond. Utilizing the \BBOX\ information provided by the MMPose model, for example, could facilitate comparison by defining an area of overlap for individual keypoints from the other two models. If a certain percentage of keypoints fit into a \BBOX\ (for example, 65\%, similar to an \IoU\ threshold introduced in \in{Section}[section:evaluation]), the instances would be considered corresponding.
