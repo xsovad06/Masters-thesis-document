@@ -9,7 +9,7 @@ In this section, the overall process will be described to provide better underst
 
 \obrazek{overall-process}{Graph of the process introducing individual stages of this thesis}{figures/overall-process.png}{width=38cc}
 
-To better explain the process, see \in{Figure}[overall-process]. The initial phase of the process is the application of the existing skeleton detection models. Custom implemened scripts were used in this step which runs the detection using existing models as described in the next \in{Section}[section:individual-models-detection]. The detection is executed on the evaluation subset of the COCO dataset.
+To better explain the process, see \in{Figure}[overall-process]. The initial phase of the process is the application of the {\bf existing skeleton detection models} from Sections \in[section:movenet], \in[section:posenet] and \in[section:mmpose]. Custom implemened scripts were used in this step which runs the detection using existing models as described in the next \in{Section}[section:individual-models-detection]. The detection is executed on the evaluation subset (5K images) of the COCO dataset. Output from individual detections is stored in separate JSON files (see output format in \in{Code}[code:detection-script-output]). These files serves as an input to the {\bf Unification script}. Unification script also needs a keypoint map files for each detection model. This file maps native model's output to the unified format the script should produce. As for the Unification script output, it aggragates the individual detections into a specified format and generates JSON file for each image (or video, depending on the script argument). These unified format JSON files can be optionally used for the detection rendering which is provided by the custom Render script. Parallely, the COCO WholeBody annotations(133 keypoints) are processed in the custom script which takes single JSON file with annotations for the whole subset(training or validation). Then it generates the singel JSON output for each image from the subset and also produse the same detection format as the Unification script. It combines the annotations for various body parts and simplifies it into the 27 keypoint format. Optionally, this annotations can be rendered to the subset images for the visual analysis. Then the final step is the evaluation of the unified format perfomance. For this task there is a custom script which takse the annotations (ground truth) and the unified format detections (predictions) and calculates various statistics which are described in the \in{Section}[section:evaluation].
 
 % ------- Section ------- %
 \pkap[section:individual-models-detection]{Individual Models detection}
@@ -154,9 +154,9 @@ Because of the fact, that human pose estimation is a very complex task, it is re
     \bTR
         \bTD Total Average Percentage Error (APE):       \eTD\bTD    2.05\% \eTD\bTD     \eTD\eTR
     \bTR
-        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    2.63 \eTD\bTD     \eTD\eTR
+        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    813.37 \eTD\bTD     \eTD\eTR
     \bTR
-        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.20 \eTD\bTD    \eTD\eTR
+        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.2 \eTD\bTD    \eTD\eTR
     \bTR
         \bTD Total average of correct keypoint detected: \eTD\bTD    20.30\% \eTD\bTD     \eTD\eTR
     \bTR
@@ -187,9 +187,9 @@ The evaluation statistics for the Unified Format can be found in the \in{Table}[
     \bTR
         \bTD Total Average Percentage Error (APE):       \eTD\bTD    0.54\% \eTD\bTD     \eTD\eTR
     \bTR
-        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    0.09 \eTD\bTD     \eTD\eTR
+        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    70.8 \eTD\bTD     \eTD\eTR
     \bTR
-        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.20 \eTD\bTD    \eTD\eTR
+        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.2 \eTD\bTD    \eTD\eTR
     \bTR
         \bTD Total average of correct keypoint detected: \eTD\bTD    20.31\% \eTD\bTD     \eTD\eTR
     \bTR
