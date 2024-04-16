@@ -3,7 +3,7 @@ This chapter provides an overview of the theoretical foundations of the proposed
 
 % ------- Section ------- %
 \pkap[section:pose-estimation-challanges]{Challenges in Real-World Human Pose Estimation}
-Human pose estimation faces numerous challenges in real-world applications, such as smart surveillance or healthcare. Surveillance cameras are deployed in diverse locations, including shopping malls, stores, hallways, food courts, and parking lots. These locations present varying distances between individuals and cameras, occlusions, and crowded scenes. Three primary challenges were identified:
+Human pose estimation faces numerous challenges in real-world applications, such as smart surveillance or healthcare. Surveillance cameras are deployed in diverse locations, including shopping malls, stores, hallways, food courts, and parking lots. These locations present varying distances between individuals and cameras, occlusions, and crowded scenes. Three primary challenges were identified (\scc Alinezhad Noghre et al., 2022):
 
 \startitemize[n]
     \item {\bf Wide Variety of Distances:} This refers to the varying scales of individuals in images, influenced by their distance from the camera and the image resolution.
@@ -11,22 +11,22 @@ Human pose estimation faces numerous challenges in real-world applications, such
     \item {\bf Crowded Scenes:} Pose estimation becomes challenging in highly crowded locations, where occlusions and the presence of many individuals hinder accurate detection.
 \stopitemize
 
-A significant obstacle in developing models to address these challenges lies in the training data. Popular datasets like MPII (\scc Andriluka et al., 2014), AI Challenger (\scc Wu et al., 2019), and COCO (\scc Tsung-Yi, 2015) mainly feature unoccluded individuals close to the camera in non-crowded scenes. Although specialized datasets like CrowdPose (\scc Li et al. 2019), OCHuman (\scc Song-Hai et al. 2019), and Tiny People Pose (\scc Neumann and Vedaldi, 2019) have been introduced to tackle specific concerns, they each focus on a single issue and present challenges in their annotation styles and validation methods, making it difficult to train a comprehensive model. No single dataset adequately addresses all three main challenges of real-world human pose estimation (\scc Alinezhad Noghre et al., 2022).
+A~significant obstacle in developing models to address these challenges lies in the training data. Popular datasets like MPII (\scc Andriluka et al., 2014), AI Challenger (\scc Wu et al., 2019), and COCO (\scc Tsung-Yi, 2015) mainly feature unoccluded individuals close to the camera in non-crowded scenes. Although specialized datasets like CrowdPose (\scc Li et al. 2019), OCHuman (\scc Song-Hai et al. 2019), and Tiny People Pose (\scc Neumann and Vedaldi, 2019) have been introduced to tackle specific concerns, they each focus on a single issue and present challenges in their annotation styles and validation methods, making it difficult to train a comprehensive model. No single dataset adequately addresses all three main challenges of real-world human pose estimation (\scc Alinezhad Noghre et al., 2022).
 
 \obrazek{coco-annotations}{Keypoint annotations from COCO dataset. Source: (\\scc Alinezhad Noghre et al., 2022)}{figures/coco-annotations.png}{width=\makeupwidth}
 
 In \in{Figure}[coco-annotations], it is evident that individuals who are distant from the camera or in crowded scenes are not annotated. In the upper left image, people riding elephants are not labeled, and in the bottom right image, most of the crowd is also unlabeled. Similarly, individuals distant from the camera in the other images are not annotated, even though they are visible. Hand annotating all these unmarked individuals would be challenging and time-consuming, which explains their absence. The COCO dataset's annotation files contain null keypoint annotations corresponding to individuals who may be present in the image but are not annotated. During validation, if additional skeletons lacking annotations are identified, the count of null key points is deducted. Moreover, COCO automatically disregards all but the 20 skeletons with the highest confidence to prevent undue penalization of networks for estimating skeletons of unlabeled individuals.
 
-The limitations outlined above disproportionately impact bottom-up approaches, which are often preferred in real-world applications due to their lower computational complexities and superior real-time execution capabilities. Unlike top-down methodologies, which first detect entire human bodies before estimating individual keypoints, bottom-up methods focus on detecting individuals independently. However, the absence of labeled data in real-world scenarios poses significant challenges for both training and validation processes within bottom-up approaches.
+The limitations outlined above disproportionately impact bottom-up approaches, which are often preferred in real-world applications due to their lower computational complexities and superior real-time execution capabilities. Unlike top-down methodologies, which first detect entire human bodies before estimating individual keypoints, bottom-up methods focus on detecting individuals independently. However, the absence of labeled data in real-world scenarios poses significant challenges for both training and validation processes within bottom-up approaches (\scc Alinezhad Noghre et al., 2022).
 
-The scarcity of labeled data in real-world environments hampers the effectiveness of bottom-up approaches during the training phase. Without sufficient labeled data representing distant individuals or individuals in crowded scenes, the model's ability to accurately detect keypoints for such scenarios is compromised. Consequently, the model may fail to generalize well to real-world conditions, leading to suboptimal performance in deployment scenarios.
+The scarcity of labeled data in real-world environments hampers the effectiveness of bottom-up approaches during the training phase. Without sufficient labeled data representing distant individuals or individuals in crowded scenes, the model's ability to accurately detect keypoints for such scenarios is compromised. Consequently, the model may fail to generalize well to real-world conditions, leading to suboptimal performance in deployment scenarios (\scc Alinezhad Noghre et al., 2022).
 
-Similarly, the lack of labeled data poses challenges during the validation of bottom-up approaches. In scenarios where distant individuals or crowded scenes are prevalent, the model may struggle to accurately detect keypoints. However, due to the absence of ground truth annotations for these challenging instances, false positives generated by the model may go unnoticed during validation. This lack of proper penalization for false positives can result in inflated validation accuracy metrics, masking the model's true performance shortcomings in real-world scenarios.
+Similarly, the lack of labeled data poses challenges during the validation of bottom-up approaches. In scenarios where distant individuals or crowded scenes are prevalent, the model may struggle to accurately detect keypoints. However, due to the absence of ground truth annotations for these challenging instances, false positives generated by the model may go unnoticed during validation. This lack of proper penalization for false positives can result in inflated validation accuracy metrics, masking the model's true performance shortcomings in real-world scenarios (\scc Alinezhad Noghre et al., 2022).
 
-% The limitations imposed by the absence of labeled data disproportionately affect bottom-up approaches in human pose estimation. Despite their advantages in computational efficiency and real-time execution, bottom-up methods face significant hurdles in accurately detecting keypoints for distant individuals and crowded scenes in real-world environments. Addressing these challenges requires innovative approaches to dataset collection, annotation, and model training/validation strategies, ensuring robust performance of bottom-up approaches in diverse real-world scenarios.
+The limitations imposed by the absence of labeled data disproportionately affect bottom-up approaches in human pose estimation. Despite their advantages in computational efficiency and real-time execution, bottom-up methods face significant hurdles in accurately detecting keypoints for distant individuals and crowded scenes in real-world environments. Addressing these challenges requires innovative approaches to dataset collection, annotation, and model training/validation strategies, ensuring robust performance of bottom-up approaches in diverse real-world scenarios ((\scc Alinezhad Noghre et al., 2022)).
 
 % ------- Section ------- %
-\pkap[section:neural-network]{Neural Network}
+\pkap[section:nn]{Neural Network}
 We will now temporarily set aside the challenges inherent in human pose estimation and delve into the mechanics employed by existing detection models. This exploration will afford us a deeper understanding of the underlying processes driving detection methodologies.
 
 \NN\-s, inspired by the structure and function of the {\em human brain}, are computational models comprising {\em interconnected} layers of artificial {\em neurons} responsible for processing and transforming information. Demonstrating remarkable capabilities, \NN\-s have proven effective in diverse tasks, including image recognition, natural language processing, and machine translation. A~schematic representation of a simple \NN\ is presented in \in{Figure}[nn-schema], illustrating individual layers of neurons interconnected with their neighbours. The initial layer is commonly referred to as the {\em input layer}, followed by {\em hidden layers}, and concluding with the {\em output layer}. In practical usage, data, such as an image in the form of a vector where values represent individual pixels, is input into the initial layer for analysis. The \NN\ processes this information, ultimately yielding a result in the form of a single value or vector, dependent on the nature of the problem—be it a classification or regression task. Across various fields, \NN\-s have consistently demonstrated their robustness, excelling in tasks such as classification, prediction, filtering, optimization, pattern recognition, and function approximation (\scc Simoneau et al., 1998).
@@ -97,13 +97,10 @@ Researchers are continuing to develop new methods to improve the accuracy and ef
 \stopitemize
 
 The original \RCNN\ architecture has been criticized for its computational {\em inefficiency}, as it involves two separate stages of processing (\scc Ren et al., 2015). To address this issue, researchers developed {\em Faster R-CNN}, which integrates the region proposal and region classification stages into a {\em single network} (\scc Ren et al., 2015). This significantly reduces the computational cost and improves the overall performance of the system (\scc He et al., 2015).
-% ------- Section ------- %
-% \pkap[section:transformation-models]{Transformation Models of \NN\-s}
-% Transformation models aim to improve the performance and efficiency of \NN\-s by transforming the input or output data. These models can be used to reduce the dimensionality of the data, improve the interpretability of the model, or adapt the model to specific tasks.
 
 % ------- Section ------- %
 \pkap[section:existing-nns]{Existing \NN\-s for Human Pose Estimation}
-Several \NN\ architectures have been developed for skeleton detection. The reason for using these models is based on the low resource requirements. The key criterion was that the models can be executed on the CPU unit and do not require GPU. Another limitation was the model complexity, so that the detection can be used in real-time. Because of the COCO evaluation set consists of 5000 images and the training subset  This thesis explores three notable examples, each with a dedicated section in this chapter:
+Several \NN\ architectures have been developed for skeleton detection. The reason for using following models is based on the low resource requirements. The key criterion was that the models can be executed on the CPU unit and do not require GPU. Another limitation was the model complexity, so that the detection can be used in real-time. Due to the fact that the COCO evaluation set comprises {\bf 5K} images and the training subset comprises {\bf 118K} images, which are utilized for model detection purposes, it is imperative that the models are capable of executing the detection process within a reasonable timeframe, considering the resource constraints imposed by the available hardware resources for this thesis. This thesis explores three notable examples, each with a dedicated section in this chapter:
 
 \startitemize[n]
     \item {\bf PoseNet:} Lightweight and efficient \CNN\ for real-time single-person detection.
@@ -111,6 +108,7 @@ Several \NN\ architectures have been developed for skeleton detection. The reaso
     \item {\bf MMPose:} Library uses a \CNN\ for multiple human pose estimation.
 \stopitemize
 
+Now, a comprehensive examination of each model and its unique characteristics will be undertaken. Within each section, essential insights into the qualities of the models, details regarding their output formats, and a summarization table will be provided to aid in understanding their performance. This comprehensive overview aims to offer clarity and facilitate a detailed evaluation of each model's capabilities within the context of the study.
 
 % ------- Section ------- %
 \pkap[section:posenet]{PoseNet}
@@ -190,7 +188,7 @@ The second stage estimates the poses of the detected human bodies. This is done 
 
 The top-down pose estimation network is based on the {\em HRNet} architecture, which is a deep \CNN\ that is designed for human pose estimation. The network consists of a series of {\em residual blocks}, each of which consists of two convolutional layers with a {\em stride} of 1 followed by two convolutional layers with a stride of 2. This allows the network to capture both local and global information in the image (\scc Ke et al., 2019).
 
-The human pose estimation results are then evaluated using the COCO WholeBody metric (\scc Jin et al., 2020; \scc Xe et al., 2022), which is a measure of the accuracy of the predicted keypoints.
+The human pose estimation results are then evaluated using the COCO WholeBody metric (\scc Jin et al., 2020; \scc Xe et al., 2022), which is a measure of the accuracy of the predicted keypoints. The COCO WholeBody dataset pose annotations has the same format as the output of the MMPose model.
 
 \TABULKA[][tab:mmpose-features]{MMPose model features}
     \setupTABLE[r][1][style=bold]
@@ -215,7 +213,35 @@ The human pose estimation results are then evaluated using the COCO WholeBody me
 \obrazek{mmpose-skeleton}{MMPose skeleton structure with IDs of used keypoint in the further processing. For simplicity, the small blue points do not have ID ensuring good visibility. Additionally, the blue keypoints have been omitted to achieve the unified format described in \\in{section}[section:unified-format] on \\at{page}[section:unified-format].}{figures/mmpose-detection-structure.png}{width=36cc,height=41cc}
 
 % % ------- Section ------- %
-\pkap[section:chapter-metrics]{Metrics}
+\pkap[section:models-comparison]{Human Pose Models for Unified Format}
+In this segment, an analysis of three distinct human pose estimation models—{\bf PoseNet}, {\bf MoveNet}, and {\bf MMPose}—is conducted, all utilized within the context of this thesis to establish a unified format for the representation of human pose. The merits and demerits of each model will be scrutinized, and their contributions towards the development of a resilient unified pose format will be examined.
+
+Commencing with {\bf PoseNet}, efficiency in single-person pose estimation is demonstrated, achieving commendable {\bf accuracy} of up to {\bf 83\%} on the COCO dataset. Its {\bf lightweight CNN architecture} renders it adaptable to diverse applications, encompassing {\bf 33 keypoints} that capture crucial body joints. However, PoseNet's limitation to single-person detection results in the neglect of scenarios involving multiple individuals, and the model may encounter challenges with intricate poses or occlusions.
+
+{\bf MoveNet}, conversely, is distinguished by its exceptional {\bf lightweight design}, making it ideal for real-time applications, operating at speeds of up to {\bf 30 FPS}. It attains high accuracy levels, reaching up to {\bf 88\%} on the COCO dataset, specifically for single-person poses. Emphasizing the detection of the individual closest to the center of the image, MoveNet reduces processing requirements. Nonetheless, akin to PoseNet, MoveNet is confined to single-person detection and offers a more concise set of {\bf 17 keypoints}, potentially lacking in detail for complex poses.
+
+Transitioning to {\bf MMPose}, the model facilitates {\bf multi-person pose estimation}, crucial for scenarios featuring multiple subjects. Providing the most comprehensive {\bf keypoint array}, consisting of {\bf 133 keypoints} encompassing facial features, hand gestures, and foot positions, MMPose adopts a two-stage methodology involving Faster R-CNN for detection and HRNet for top-down pose estimation. However, MMPose's demand for a powerful GPU restricts real-time application on resource-constrained devices, and it achieves a lower accuracy rate ({\bf 76.3\%} on COCO WholeBody) compared to PoseNet and MoveNet for single-person tasks.
+
+The rationale for a unified format lies in the amalgamation of insights from these models, engendering a more robust and versatile representation of pose. Augmenting detection capabilities and enhancing keypoint data, the unified format ensures adaptability across diverse scenarios. Strategies to mitigate redundancy, such as prioritization and data fusion techniques, further contribute to its effectiveness within the framework of this thesis. Reference to the comparison \in{Table}[tab:models-comparison] aids in better understanding the performance metrics of each model.
+
+\TABULKA[][tab:models-comparison]{Individual Models Comparison}
+    \setupTABLE[r,c][1][style=bold]
+    \setupTABLE[c][each][offset=3dd]
+    \setupTABLE[frame=off]
+    \setupTABLE[r][1][topframe=on,bottomframe=on]
+    \setupTABLE[c][each][leftframe=on, align={middle,lohi}]
+    \setupTABLE[c][1][leftframe=off]
+    \bTR
+        \bTD Model\eTD\bTD   Strengths\eTD\bTD Weaknesses\eTD\eTR
+    \bTR
+        \bTD PoseNet\eTD\bTD Efficient single-person pose estimation with good accuracy. Lightweight and suitable for various applications. Provides 33 essential body joint keypoints.\eTD\bTD Limited to single-person detection. May struggle with complex poses or occlusions.\eTD\eTR
+    \bTR
+        \bTD MoveNet\eTD\bTD Extremely lightweight and efficient for real-time applications. High accuracy for single-person poses. Focuses on the person closest to the image center.\eTD\bTD Limited to single-person detection. Provides fewer keypoints, potentially lacking detail for complex poses.\eTD\eTR
+    \bTR
+        \bTD MMPose\eTD\bTD  Enables multi-person pose estimation. Provides a comprehensive set of keypoints including face, hands, and feet. Utilizes a two-stage approach.\eTD\bTD Requires a powerful GPU for real-time use. Lower accuracy compared to PoseNet and MoveNet for single-person tasks.\eTD\eTR
+
+% % ------- Section ------- %
+\pkap[section:metrics]{Metrics}
 In this section, we take a closer look at how to effectively measure the model accuracy concerning the pose estimation. Multiple metrics, such as Average Percentage Error (\APE\), Mean Squared Error (\MSE\) and Object Keypoint Similarity (\OKS\) will be investigated for the usability for pose estimation evaluation.
 
 % ------- Sub-section ------- %
@@ -227,7 +253,7 @@ The \APE\ is calculated for each pose prediction in a dataset. Here's the breakd
 \startitemize[n]
     \item {\bf Distance Calculation:} The {\bf Euclidean} distance between each predicted keypoint and its corresponding ground truth keypoint is calculated.
     \item {\bf Averaging:} The individual distances are then averaged across all keypoints for a single pose.
-    \item {\bf Normalization:} To account for image size variations, the average distance is normalized by the maximum dimension (width or height) of the image containing the pose. This normalization is achieved by dividing the average distance by the maximum dimension obtained from the bounding box information in the ground truth data.
+    \item {\bf Normalization:} To account for instance size variations, the average distance is normalized by the maximum dimension (width or height) of the \BBOX\ containing the instance pose. This normalization is achieved by dividing the average distance by the maximum dimension obtained from the \BBOX\ information in the ground truth data.
     \item {\bf Percentage Conversion:} Finally, the normalized average distance is multiplied by 100 to express the error as a percentage.
 \stopitemize
 
@@ -238,9 +264,18 @@ The Euclidean distance between the prediction keypoint $ x $ and the annotated k
     \stopformula
 \stopplaceformula
 
-where $ a_i (x) $ is the $ i $-th dimension coordinate of the annotated point in the reference image of the dataset, $ p_i (\tilde{x}) \in  \mathbf R^2 $ is the prediction in the image of the $ i $-th dimension coordinate of the target $ i $ knowing the predicted pose $ \tilde{x} $.
+where $ a_i (x) $ is the $ i $-th dimension coordinate of the annotated point in the reference image of the dataset, $ p_i (\tilde{x}) \in  \mathbf R^2 $ is the prediction in the image of the $ i $-th dimension coordinate of the target $ i $ knowing the predicted pose $ \tilde{x} $. $ N $ is the number of dimensions of the point, for 2D detection, the number is 2.
 
-A~lower APE value indicates a more accurate pose prediction. Ideally, the APE should be as close to 0\% as possible. However, the acceptable APE threshold depends on the specific application and the level of precision required.
+A~lower APE value indicates a more accurate pose prediction. Ideally, the \APE\ should be as close to 0\% as possible. However, the acceptable \APE\ threshold depends on the specific application and the level of precision required.
+
+The \APE\ formula is as follows:
+
+\startplaceformula[reference=formula:ape]
+    \startformula \APE\ = \fraction{1}{N} \sum_{i=1}^{N} D(x, \tilde{x}) \fraction{100}{max(w_{bbox}, h_{bbox})}
+    \stopformula
+\stopplaceformula
+
+where $ x $ is the 2D annotated point in the reference image of the dataset, $ \tilde{x} \in  \mathbf R^2 $ is the 2D prediction point in the image. $ N $ is the number of keypoints of the detection instance. The $ w_{bbox} $ and $ h_{bbox} $ are the dimensions of the detection instance \BBOX\.
 
 Here is the list of advantages:
 \startitemize[1]
@@ -275,15 +310,6 @@ There are also some disadvantage behaviour in this metric, such as sensitivity t
 
 Another fact is the interpretability for human. Unlike \APE\, which is a percentage, \MSE\ produces raw squared distance values that are not directly interpretable in terms of accuracy.
 
-\pppkap[subsubsection:ape-mse]{Combining APE and MSE}
-
-Using both \APE\ and \MSE\ provides a more comprehensive view of the model's performance. \APE\ offers a general sense of average error, while \MSE\ highlights poses with substantial keypoint localization issues.
-
-One should consider the normalization for the \MSE\. While normalization by instance size is not strictly necessary for \MSE\, it can be helpful for comparing results across datasets with varying image scales. You can normalize \MSE\ by dividing it by the square of the maximum instance dimension (width or height of the BBOX).
-One have to keep in mind the interpretation. When reporting \MSE\, it is crucial to mention that the values represent squared distances and {\bf not percentages} for proper context.
-
-\MSE\ can be a valuable addition to \APE\ for human pose detection evaluation. By combining them, you gain insights into both the average error and the presence of significant localization errors. However, the limitations of MSE needs to be kept in mind to ensure clear interpretation when reporting the results.
-
 % ------- Sub-section ------- %
 \pkap[subsection:oks]{Object Keypoint Similarity}
 Object Keypoint Similarity (\OKS) is a metric commonly used to evaluate the accuracy of human pose estimation models. It provides a comprehensive assessment of pose estimation performance by considering the similarity between predicted and ground truth keypoint locations.
@@ -305,6 +331,39 @@ However, \OKS\ also has some limitations. It may not adequately capture errors i
 
 In summary, Object Keypoint Similarity (\OKS) is a valuable metric for assessing the accuracy of human pose estimation models. Its consideration of spatial distance, scale, and confidence scores makes it a comprehensive evaluation tool. However, it should be used in conjunction with other metrics to provide a thorough assessment of model performance.
 
+% ------- Sub-section ------- %
+\ppkap[subsection:ape-mse-oks]{Combining APE, MSE, and OKS}
+
+When evaluating human pose estimation models, combining multiple evaluation metrics such as \APE, \MSE, and \OKS\ offers a more comprehensive understanding of the model's performance.
+
+\APE\ provides a general sense of average error across all keypoints, allowing for a straightforward assessment of overall accuracy. On the other hand, \MSE\ highlights poses with substantial keypoint localization issues by measuring the squared distances between predicted and ground truth keypoints. Additionally, \OKS\ takes into account the similarity between predicted and ground truth keypoints, considering spatial distance, scale, and confidence scores.
+
+Normalization is an important consideration for \MSE, where dividing by the square of the maximum instance dimension (width or height of the BBOX) can aid in comparing results across datasets with varying image scales. It's crucial to note that when reporting \MSE, the values represent squared distances and not percentages for proper context.
+
+Combining \APE, \MSE, and \OKS\ allows for a more nuanced evaluation of human pose estimation models. By considering both average error, keypoint localization issues, and similarity to ground truth keypoints, researchers gain valuable insights into model performance across different aspects of pose estimation.
+
+However, it's essential to be aware of the limitations of each metric. While \APE\ and \MSE\ provide insights into overall accuracy and localization errors, they may not capture errors in specific keypoints or joint configurations. Similarly, \OKS\ relies on accurate confidence scores and scale information for accurate evaluation and may not adequately capture all types of pose estimation errors.
+
+In conclusion, combining \APE, \MSE, and \OKS\ offers a more comprehensive evaluation of human pose estimation models, allowing researchers to gain insights into various aspects of model performance. However, it's important to use these metrics in conjunction with each other and with other evaluation techniques to ensure a thorough assessment of model accuracy and effectiveness.
+
 % % ------- Section ------- %
 \pkap[section:chapter-summary]{Chapter Summary}
-This chapter introduced the key concepts of \NN\-s, \CNN\-s, \RCNN\-s and existing models for human pose estimation. \CNN\-s excel in processing visual data for skeleton detection, while \RCNN\-s, including Faster \RCNN\, enhance efficiency through a two-stage pipeline for object detection, alongside existing \NN\ models like PoseNet, MoveNet, and MMPose, achieving high accuracy in real-time human pose estimation. Finally, the key concepts of the detection performance evaluation were explored namely \APE\ and the \MSE\ metrics.
+This chapter serves as an introduction to the theoretical underpinnings of the proposed automated {\bf NN dataset generation approach for human skeleton detection}. It delves into the complexities of human pose estimation in real-world environments and introduces key concepts essential for understanding the subsequent discussions.
+
+\ppkapx{Challenges in Real-World Human Pose Estimation}
+
+The chapter begins by elucidating the challenges inherent in human pose estimation in real-world scenarios (\in{Section}[section:pose-estimation-challanges]). These challenges include {\bf varying distances} between individuals and cameras, {\bf occlusions}, and {\bf crowded scenes}. The chapter underscores the importance of addressing these challenges to develop effective pose estimation models.
+
+\ppkapx{Neural Networks: Fundamentals and Architectures}
+
+A fundamental understanding of \NN\-s is crucial for comprehending automated dataset generation approaches (Sections \in[section:nn], \in[section:cnn] and \in[section:rcnn]). The chapter introduces {\bf NNs}, {\bf CNNs}, and {\bf RCNNs}, outlining their roles and applications in skeleton detection tasks.
+
+\ppkapx{Existing NNs for Human Pose Estimation}
+
+The chapter explores existing NN models tailored for human pose estimation (Sections \in[section:posenet], \in[section:movenet] and \in[section:mmpose]). Noteworthy models such as {\bf PoseNet}, {\bf MoveNet}, and {\bf MMPose} are discussed in detail, elucidating their architectures, functionalities, and performance characteristics. Understanding these models lays the foundation for developing novel approaches to dataset generation.
+
+\ppkapx{Evaluation Metrics for Detection Performance}
+
+Lastly, the chapter delves into the evaluation metrics employed to assess the performance of pose estimation models (\in{Section}[section:metrics]). Metrics such as {\bf APE}, {\bf MSE}, and {\bf OKS} are explained, along with their significance in gauging the accuracy and efficacy of detection algorithms.
+
+This chapter provides a comprehensive overview of the theoretical foundations essential for understanding the proposed automated NN dataset generation approach for human skeleton detection. By elucidating the challenges, introducing key concepts, and exploring existing models and evaluation metrics, this chapter lays the groundwork for the subsequent discussions on dataset generation methodologies and experimental analyses.
