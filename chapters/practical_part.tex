@@ -4,12 +4,32 @@ This chapter comprehensively examines the various stages involved in creating a 
 Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] on \at{page}[section:problems-limitations].
 
 % ------- Section ------- %
-\pkap[section:overall-process-introduction]{Overall Process Introduction}
-In this section, the overall process will be described to provide better understanding of the thesis as a whole. The key idea behind this process will be described in the graph representing individual steps which this thesis implemented.
+\pkap[section:proposal]{Solution Proposal}
+This section will suggest possible solutions for the specific dataset generation using existing \NN\ detection models.
 
+The preceding chapter offered an analysis of the current market landscape, exploring available technologies and datasets, along with their inherent limitations. As highlighted in \in{Section}[section:pose-estimation-challenges], existing datasets lack the complexity and robustness necessary for training a comprehensive detection model capable of excelling in production environments.
+
+To address this shortfall, the concept of a cost-efficient method for generating a tailored dataset using open-source tools and models was explored. A significant advantage of this approach lies in its flexibility; it is not restricted to specific models and can be fully customized to suit specific requirements.
+
+The production data is subject to the execution of existing models designed to detect human instances and estimate their poses. Currently, multiple detection formats are available. It is imperative to propose a Unified Format for these detections, considering their respective keypoint structures and identifying a common skeleton. Once the Unified Format is established, the process of unification can commence. This entails utilizing the existing detections from the initial step.
+
+Sequential processing of these detections is essential, wherein corresponding frames are loaded from each detection model. Subsequently, individual human instances must be matched. This can be accomplished through comparison of instance bounding boxes or individual keypoint analysis. Once instances are paired, aggregation occurs. Aggregation methods may vary, ranging from weighted to simple averaging, contingent upon the utilized models and their respective accuracy levels.
+
+Through this process, the entire dataset undergoes processing, leading to the attainment of aggregated detection results. By processing one source frame at a time, all detections from individual models are transformed into the Unified Format. At this juncture, evaluation becomes necessary. The Unified Format must be compared against an annotated dataset, providing ground truth data for assessment purposes.
+
+% ------- Section ------- %
+\pkap[section:solution-implementation]{Solution Implementation}
 \obrazek{overall-process}{Graph of the process introducing individual stages of this thesis}{figures/overall-process.png}{width=38cc}
 
-To better explain the process, see \in{Figure}[overall-process]. The initial phase of the process is the application of the {\bf existing skeleton detection models} from Sections \in[section:movenet], \in[section:posenet] and \in[section:mmpose]. Custom implemened scripts were used in this step which runs the detection using existing models as described in the next \in{Section}[section:individual-models-detection]. The detection is executed on the evaluation subset (5K images) of the COCO dataset. Output from individual detections is stored in separate JSON files (see output format in \in{Code}[code:detection-script-output]). These files serves as an input to the {\bf Unification script}. Unification script also needs a keypoint map files for each detection model. This file maps native model's output to the unified format the script should produce. As for the Unification script output, it aggragates the individual detections into a specified format and generates JSON file for each image (or video, depending on the script argument). These unified format JSON files can be optionally used for the detection rendering which is provided by the custom Render script. Parallely, the COCO WholeBody annotations(133 keypoints) are processed in the custom script which takes single JSON file with annotations for the whole subset(training or validation). Then it generates the singel JSON output for each image from the subset and also produse the same detection format as the Unification script. It combines the annotations for various body parts and simplifies it into the 27 keypoint format. Optionally, this annotations can be rendered to the subset images for the visual analysis. Then the final step is the evaluation of the unified format perfomance. For this task there is a custom script which takse the annotations (ground truth) and the unified format detections (predictions) and calculates various statistics which are described in the \in{Section}[section:evaluation].
+The moment has arrived to delve into the realm of implementation. Within this section, an overview of the entire process will be presented, aiming to enhance comprehension of the thesis as a cohesive entity. Central to this elucidation will be the graphical representation of the sequential steps undertaken in this thesis. Each of these steps will be comprehensively expounded upon in subsequent sections, offering detailed insights into their execution.
+
+To elucidate the process further, refer to \in{Figure}[overall-process]. The initial phase entails employing the existing skeleton detection models outlined in Sections \in[section:movenet], \in[section:posenet], and \in[section:mmpose]. This step involves the utilization of custom-implemented scripts designed to execute detections using the aforementioned models, as elaborated in the subsequent \in{Section}[section:individual-models-detection]. The detection process is conducted on the evaluation subset comprising 5,000 images from the COCO dataset. Outputs from individual detections are stored in distinct JSON files, the format of which is detailed in \in{Code}[code:detection-script-output].
+
+These JSON files serve as inputs for the Unification script, which also requires keypoint map files for each detection model. These map files facilitate the transformation of native model outputs into the unified format mandated by the script. The Unification script aggregates individual detections into a specified format, generating a JSON file for each image (or video, depending on the script argument). Optionally, these unified format JSON files can be utilized for detection rendering, a functionality provided by the custom Render script.
+
+Concurrently, the COCO WholeBody annotations (comprising 133 keypoints) undergo processing in a custom script. This script takes a single JSON file containing annotations for the entire subset (either training or validation) and produces individual JSON outputs for each image within the subset. Additionally, it generates detections in the same format as the Unification script, consolidating annotations for various body parts into a simplified 27 keypoint format. Optionally, these annotations can be rendered onto the subset images for visual analysis.
+
+The final step entails evaluating the performance of the unified format. For this purpose, a custom script is employed, which compares the annotations (ground truth) with the unified format detections (predictions), calculating various statistical metrics detailed in \in{Section}[section:evaluation].
 
 % ------- Section ------- %
 \pkap[section:individual-models-detection]{Individual Models Detection}
@@ -85,16 +105,11 @@ Another crucial aspect is the accurate aggregation of individual model estimatio
     \setupTABLE[c][each][leftframe=on]
     \setupTABLE[c][1][leftframe=off]
     \setupTABLE[c][2,3,4][align=middle]
-    \bTR
-        \bTD Model\eTD\bTD      Keypoints\eTD\bTD  Multi-person detection\eTD\bTD  Weight\eTD\eTR
-    \bTR
-        \bTD PoseNet\eTD\bTD    33\eTD\bTD  No\eTD\bTD  0.3\eTD\eTR
-    \bTR
-        \bTD MoveNet\eTD\bTD    17\eTD\bTD  No\eTD\bTD  0.2\eTD\eTR
-    \bTR
-        \bTD MMPose\eTD\bTD     133\eTD\bTD  Yes\eTD\bTD  0.5\eTD\eTR
-    \bTR
-        \bTD Unified Format\eTD\bTD     27\eTD\bTD  Yes\eTD\bTD  --\eTD\eTR
+    \bTR\bTD Model\eTD\bTD              Keypoints\eTD\bTD  Multi-person detection\eTD\bTD  Weight\eTD\eTR
+    \bTR\bTD PoseNet\eTD\bTD            33\eTD\bTD         No\eTD\bTD                      0.3\eTD\eTR
+    \bTR\bTD MoveNet\eTD\bTD            17\eTD\bTD         No\eTD\bTD                      0.2\eTD\eTR
+    \bTR\bTD MMPose\eTD\bTD             133\eTD\bTD        Yes\eTD\bTD                     0.5\eTD\eTR
+    \bTR\bTD Unified Format\eTD\bTD     27\eTD\bTD         Yes\eTD\bTD                     --\eTD\eTR
 
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}
 
@@ -139,7 +154,7 @@ There was also an evaluation on the \APE\ metric just for the {\bf MMPose} model
 
 Because of the fact, that human pose estimation is a very complex task, it is required to use multiple metrics to express the performance of the detection models. For this reason, additionally, the \MSE\ and \OKS\ are evaluated as well.
 
-\TABULKA[][tab:evaluation-unified]{Evaulation Statistics for the Unified Format}
+\TABULKA[][tab:evaluation-unified]{Evaulation Statistics for the Unified and MMpose Format}
     \setupTABLE[r][1][style=bold]
     \setupTABLE[c][each][offset=3dd]
     \setupTABLE[frame=off]
@@ -147,32 +162,35 @@ Because of the fact, that human pose estimation is a very complex task, it is re
     \setupTABLE[c][each][leftframe=on]
     \setupTABLE[c][1][leftframe=off]
     \setupTABLE[c][2,3][align=middle]
-    \bTR
-        \bTD Statistic                              \eTD\bTD      Value\eTD\bTD  From Total\eTD\eTR
-    \bTR
-        \bTD Total number ground truth images:           \eTD\bTD    2693 \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total Average Percentage Error (APE):       \eTD\bTD    2.05\% \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    813.37 \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.2 \eTD\bTD    \eTD\eTR
-    \bTR
-        \bTD Total average of correct keypoint detected: \eTD\bTD    20.30\% \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total matching number of poses (instances): \eTD\bTD    5833 \eTD\bTD    53.01\% \eTD\eTR
-    \bTR
-        \bTD Total predicted number of poses (instances):\eTD\bTD    7746 \eTD\bTD    70.39\% \eTD\eTR
-    \bTR
-        \bTD Total truth number of poses (instances):    \eTD\bTD    11004 \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Model predicted more poses in image (total):\eTD\bTD    589 \eTD\bTD   5.35\% \eTD\eTR
-    \bTR
-        \bTD Model predicted less poses in image (total):\eTD\bTD    3847 \eTD\bTD    34.96\% \eTD\eTR
+    \bTR\bTD Statistic                                   \eTD\bTD    Unified F.\eTD\bTD      MMPose\eTD\eTR
+    \bTR\bTD Total number ground truth images:           \eTD\bTD    2693 \eTD\bTD            2693 \eTD\eTR
+    \bTR\bTD Total Average Percentage Error (APE):       \eTD\bTD    2.05\% \eTD\bTD          0.54\% \eTD\eTR
+    \bTR\bTD Total Mean Squared Error (MSE):             \eTD\bTD    813.37 \eTD\bTD          70.8 \eTD\eTR
+    \bTR\bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.2 \eTD\bTD             0.2 \eTD\eTR
+    \bTR\bTD Total average of correct keypoint detected: \eTD\bTD    20.30\% \eTD\bTD         20.31\% \eTD\eTR
+    \bTR\bTD Total matching number of poses (instances): \eTD\bTD    5833 (53.01\%) \eTD\bTD  5833 (53.01\%) \eTD\eTR
+    \bTR\bTD Total predicted number of poses (instances):\eTD\bTD    7746 (70.39\%) \eTD\bTD  7685 (69.84\%) \eTD\eTR
+    \bTR\bTD Total truth number of poses (instances):    \eTD\bTD    11004 \eTD\bTD           11004 \eTD\eTR
+    \bTR\bTD Model predicted more poses in image (total):\eTD\bTD    589 (5.35\%)\eTD\bTD     589 (5.35\%) \eTD\eTR
+    \bTR\bTD Model predicted less poses in image (total):\eTD\bTD    3847 (34.96\%)\eTD\bTD   3908 (35.51\%) \eTD\eTR
 
-The evaluation statistics for the Unified Format can be found in the \in{Table}[tab:evaluation-unified]. This table features many different values, from the overall counts of the processed images with the ground truth annotations all the way to the differences in the predicted poses counts. Easy interpretable is the \APE\ metric which tells us the average error of the predicted keypoints position to the ground truth ones.
+The evaluation statistics for the Unified Format can be found in Table \in{Table}[tab:evaluation-unified]. This table presents various values, ranging from the overall counts of processed images with ground truth annotations to differences in predicted pose counts. Easily interpretable is the \APE\ metric, indicating the average error of predicted keypoint positions relative to ground truth annotations per pose. The value of {\bf 2.05\%} for \APE\ signifies that the predicted detection closely aligns with the ground truth annotation. Conversely, the \OKS\ metric yields a somewhat concerning result, with the value of {\bf 0.2} falling towards the lower end of the metrics interval ($ <0,1> $). Generally, higher values of \OKS\ are preferable, indicative of better alignment. The Evaluation script considers a keypoint similar when the OKS for that particular keypoint exceeds the {\bf 0.5} threshold. For a comprehensive understanding of these values, including \MSE\, refer to examples of images and their individual metrics in Figures \in[compose-fig:mmpose-metric] and \in[compose-fig:mmpose-metric]. Additionally, Table \in{Table}[tab:evaluation-metric-explanation] provides individual statistics for these two detections. The first figure depicts a simplified version of the MMPose model output (comprising {\bf 27 keypoints} in the Unified Format), while the second figure presents the original COCO Wholebody annotations also in the simplified format. This comparison aids in better comprehending the available metrics.
 
-\TABULKA[][tab:evaluation-mmpose]{Evaulation Statistics for the MMPose model}
+\obrazkyvedlesebe[2][top]{compose-fig:mmpose-metric;compose-fig:coco-metric}
+    {
+        MMPose simplified output;
+        COCO Annotations;
+    }
+    {
+        figures/metrics-explanation/000000235784-mmpose.jpg;
+        figures/metrics-explanation/000000235784-coco.jpg;
+    }
+    {
+        height=10.5cc;
+        height=10.5cc;
+    }
+
+\TABULKA[][tab:evaluation-metic-explanation]{Single Image Metrics Evaluation and Comparison}
     \setupTABLE[r][1][style=bold]
     \setupTABLE[c][each][offset=3dd]
     \setupTABLE[frame=off]
@@ -180,28 +198,11 @@ The evaluation statistics for the Unified Format can be found in the \in{Table}[
     \setupTABLE[c][each][leftframe=on]
     \setupTABLE[c][1][leftframe=off]
     \setupTABLE[c][2,3][align=middle]
-    \bTR
-        \bTD Statistic                              \eTD\bTD      Value\eTD\bTD  From Total\eTD\eTR
-    \bTR
-        \bTD Total number ground truth images:           \eTD\bTD    2693 \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total Average Percentage Error (APE):       \eTD\bTD    0.54\% \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total Mean Squared Error (MSE):             \eTD\bTD    70.8 \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.2 \eTD\bTD    \eTD\eTR
-    \bTR
-        \bTD Total average of correct keypoint detected: \eTD\bTD    20.31\% \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Total matching number of poses (instances): \eTD\bTD    5833 \eTD\bTD    53.01\% \eTD\eTR
-    \bTR
-        \bTD Total predicted number of poses (instances):\eTD\bTD    7685 \eTD\bTD    69.84\% \eTD\eTR
-    \bTR
-        \bTD Total truth number of poses (instances):    \eTD\bTD    11004 \eTD\bTD     \eTD\eTR
-    \bTR
-        \bTD Model predicted more poses in image (total):\eTD\bTD    589 \eTD\bTD   5.35\% \eTD\eTR
-    \bTR
-        \bTD Model predicted less poses in image (total):\eTD\bTD    3908 \eTD\bTD    35.51\% \eTD\eTR
+    \bTR\bTD Statistic                                   \eTD\bTD    MMPose\eTD\bTD     Unified F.\eTD\eTR
+    \bTR\bTD Image Average Percentage Error (APE):       \eTD\bTD    1.77\% \eTD\bTD    59.27\% \eTD\eTR
+    \bTR\bTD Image Mean Squared Error (MSE):             \eTD\bTD    49.73 \eTD\bTD     37496.87 \eTD\eTR
+    \bTR\bTD Image Object Kepoint Similarity (OSK):      \eTD\bTD    0.70 \eTD\bTD      0.70 \eTD\eTR
+    \bTR\bTD Image average of correct keypoint detected: \eTD\bTD    70.37\% \eTD\bTD   70.37\% \eTD\eTR
 
 % ------- Section ------- %
 \pkap[section:problems-limitations]{Implementation Problems and Technical Limitations}
