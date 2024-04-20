@@ -24,7 +24,7 @@ clean:
 	rm -f */*~
 
 pack:
-	tar czvf $(CO).tar.gz .tex .bib .bst ./figures/ ./citations/ ./chapters/ ./assignment/ $(CO).pdf Makefile
+	tar czvf $(CO).tar.gz .tex .bib .bst ./figures/ ./references/ ./source-codes/ ./chapters/ ./assignment/ $(CO).pdf Makefile
 
 vlna:
 	vlna -l $(CO).tex $(CAPTERS)
