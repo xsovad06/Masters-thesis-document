@@ -40,11 +40,22 @@
 
 \setuptyping[]
 \definevimtyping
+[BA]
+[
+  syntax=bash,
+  tab=3,
+  numbering=yes,
+  style={\setupbodyfont[mono,9dd]},
+]
+
+\setuptyping[]
+\definevimtyping
 [JSON]
 [
   syntax=json,
   tab=3,
-  numbering=yes
+  numbering=yes,
+  style={\setupbodyfont[mono,9dd]},
 ]
 
 % Source codes
@@ -52,6 +63,11 @@
 \input{source-codes/detection-script-backbone}
 \input{source-codes/detection-script-frame}
 \input{source-codes/detection-script-output}
+\input{source-codes/unification-script-call}
+\input{source-codes/unification-script-main}
+\input{source-codes/unified-format}
+\input{source-codes/unified-format-output}
+\input{source-codes/skeleton-file}
 
 % Chapters
 

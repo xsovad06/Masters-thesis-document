@@ -1,0 +1,35 @@
+\startbuffer[src:unification-script-main]
+\startPY
+def main():
+    """Unify the detection results done by different models.
+    """
+
+    args = parse_arguments()
+    unified_detections = 0
+
+    # Generate dict of detection objects by model, 
+    # each model with the name of the source file
+    for filename, detection in load_detections_objects(args):
+        unified_detection = UnifiedDetection(args.output_folder, filename, args.single_frame_output)
+        model: DetectionProcessor
+        model_weight_for_averaging = []
+        for model in detection.values():
+            if args.verbose:
+                print(f'{unified_detections}. ({model.model}) 
+                Weight: {model.weight_for_averaging}, 
+                Loading detection: {model.source_file}.')
+            model_weight_for_averaging.append(model.weight_for_averaging)
+            unified_detection.load_unified_kepoints(model.get_unified_detection())
+        unified_detection.simplify_unified_detection()
+        unified_detection.aggregate_values(model_weight_for_averaging)
+        unified_detection.export_unified_detection()
+        unified_detections += 1
+
+
+    print(f'Successfuly unified {unified_detections} detections
+    to "{args.output_folder}".')
+
+if __name__ == '__main__':
+    main()
+\stopPY
+\stopbuffer
