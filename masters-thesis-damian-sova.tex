@@ -12,11 +12,20 @@
   supervisor={doc. Ing. Oldřich Trenz, Ph.D.},  % name, surname and degree of your thesis supervisor
   titleen={Automated neural network learning for higher accuracy human skeleton detection under realistic conditions}, 	               % title in English
   title={Automatizované učenie neurónových sietí na presnejšiu detekciu ľudskej kostry v~reálnych podmienkach},                           % title in the second language
-  keywordsen={image processing, pose estimation, human skeleton detection, data generation},
-  keywords={spracovanie obrazu, odhadovanie pózy, detekcia ľudskej kostry, generovanie dát},
+  keywordsen={pose estimation, human skeleton detection, data generation},
+  keywords={odhadovanie pózy, detekcia ľudskej kostry, generovanie dát},
   acknowledgement={I express my sincere gratitude to my supervisor, Doc. Ing. Oldřich Trenz, Ph.D., for his invaluable time, unwavering support, and insightful guidance throughout the entirety of this research journey. I~am also deeply appreciative of the expert consultations provided by RNDr. Michal Procházka, Ph.D., from visioncraft s.r.o., whose regular insights played a pivotal role in shaping the trajectory of this work. Lastly, heartfelt thanks to my friends and family for their unwavering support, encouragement, and understanding, without which this endeavor would not have been possible.},
-  abstracten={},		 % abstract in English
-  abstract={},		   % abstract in the second language
+  abstracten={Recent advancements in computer vision have led to the widespread adoption of neural networks for human pose estimation, yet challenges persist in applying these technologies to real-world scenarios. While accuracy on benchmark datasets continues to improve, many existing datasets fail to capture the complexities encountered in practical applications, such as individuals at varying distances from the camera, crowded environments, and heavily occluded scenes. Consequently, models trained on such datasets often exhibit significant underperformance when deployed in real-world settings. This thesis introduces a novel approach, termed Unified Format, aimed at addressing these challenges by standardizing the aggregation of outputs from diverse neural network models. By unifying the outputs of models like MoveNet, PoseNet, and MMPose into a cohesive structure, the Unified Format facilitates the creation of customized datasets tailored to real-world conditions.
+
+  The evaluation of the Unified Formats performance reveals promising results, particularly in metrics such as Average Percentage Error (APE) and Mean Squared Error (MSE), which indicate close alignment between predicted and ground truth keypoints. However, challenges arise with the Object Keypoint Similarity (OKS) metric due to stringent evaluation criteria and discrepancies in predictions among models. Nonetheless, the Unified Format demonstrates satisfactory performance in accurately localizing keypoints, especially when compared to individual model outputs.
+
+  In summary, while this thesis does not present evidence of substantial improvement over existing benchmark performances, it successfully addresses the challenges associated with human pose estimation dataset creation by proposing and implementing a Unified Format. The format facilitates the aggregation of outputs from multiple neural network models, streamlining the dataset generation process. Despite remaining challenges, continued refinement and exploration of techniques offer opportunities to further improve the Unified Format and advance the field of human pose estimation.},		 % abstract in English
+  abstract={Aktuálne pokroky v~počítačovom videní viedli k~širokému prijatiu neurónových sietí pre odhad ľudskej pózy, no výzvy pretrvávajú pri aplikácii týchto technológií na reálne scenáre. Zatiaľ čo sa presnosť na benchmarkových datasetoch stále zlepšuje, mnohé existujúce datasety nezachytávajú komplexity, s~ktorými sa stretávajú modely v~praktických aplikáciách, ako sú osoby vzdiaľené od kamery, preplnené prostredia a silne prekrývajúce sa scény. V~dôsledku toho modely trénované na takýchto datasetoch často preukazujú výrazný nedostatok výkonu pri nasadení v~reálnych prostrediach. Táto práca uvádza nový prístup nazývaný Unified Format, zameraný na riešenie týchto problémov prostredníctvom štandardizácie agregácie výstupov z~rôznych modelov neurónových sietí. Spojením výstupov modelov ako MoveNet, PoseNet a MMPose do jednotnej štruktúry umožňuje Unified Format vytvárať prispôsobené datasety prispôsobené reálnym podmienkam.
+
+  Hodnotenie výkonu Unified Formátu odhaľuje sľubné výsledky, najmä v~metrikách ako je Priemerná Percentuálna Chyba (APE) a Stredná Kvadratická Chyba (MSE), ktoré naznačujú blízke zarovnanie medzi predpovedanými a skutočnými kľúčovými bodmi. Avšak vznikajú výzvy s~metrikou Object Keypoint Similarity (OKS) kvôli prísnym hodnotiacim kritériám a rozdielom v~predpovediach medzi modelmi. Napriek tomu Unified Formát preukazuje uspokojivý výkon pri presnom lokalizovaní kľúčových bodov, najmä pri porovnaní s~jednotlivými výstupmi modelov.
+
+  I~keď táto práca neponúka dôkazy o~významnom zlepšení oproti existujúcim benchmarkovým výkonom, úspešne rieši výzvy spojené s~vytváraním datasetov pre odhad ľudskej pozície tým, že navrhuje a implementuje Unified Formát. Tento formát uľahčuje agregáciu výstupov z~viacerých modelov neurónových sietí, čím zjednodušuje proces generovania datasetov. Napriek pretrvávajúcim výzvam ponúka príležitosti na ďalšie zlepšovanie Unified Formátu a posun vpred v~oblasti odhadu ľudskej pózy.},		   % abstract in the second language
+  % abstracten={},		 % abstract in English
   location={Brno},	 % location
 %  year={2021},		   % year, the default is the current year
  thesisassignmentform={assignment/diploma-thesis-topic-1.pdf,assignment/diploma-thesis-topic-2.pdf},  % file(s) with thesis assignment
@@ -68,6 +77,8 @@
 \input{source-codes/unified-format}
 \input{source-codes/unified-format-output}
 \input{source-codes/skeleton-file}
+\input{source-codes/euclidean-distance}
+\input{source-codes/oks-k-values}
 
 % Chapters
 

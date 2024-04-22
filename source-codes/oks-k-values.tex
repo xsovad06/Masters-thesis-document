@@ -1,0 +1,18 @@
+\startbuffer[src:oks-k-values]
+\startPY
+def get_k_values(
+  average_squared_distances: List[float],
+  base_k: float = 1.0,
+  scale_factor: float = 0.1
+  ):
+  """Calculates k values based on average squared distances without object scale."""
+
+  k_values = []
+  for avg_squared_distance in average_squared_distances:
+    # Calculate standard deviation
+    sigma = math.sqrt(avg_squared_distance)
+    # Adjust k based on standard deviation
+    k_values.append(round((base_k + sigma * scale_factor) / 100, 3))
+  return k_values
+\stopPY
+\stopbuffer

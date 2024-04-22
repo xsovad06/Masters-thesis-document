@@ -10,7 +10,11 @@ def main():
     # Generate dict of detection objects by model, 
     # each model with the name of the source file
     for filename, detection in load_detections_objects(args):
-        unified_detection = UnifiedDetection(args.output_folder, filename, args.single_frame_output)
+        unified_detection = UnifiedDetection(
+            args.output_folder,
+            filename,
+            args.single_frame_output
+        )
         model: DetectionProcessor
         model_weight_for_averaging = []
         for model in detection.values():
@@ -19,7 +23,9 @@ def main():
                 Weight: {model.weight_for_averaging}, 
                 Loading detection: {model.source_file}.')
             model_weight_for_averaging.append(model.weight_for_averaging)
-            unified_detection.load_unified_kepoints(model.get_unified_detection())
+            unified_detection.load_unified_kepoints(
+                model.get_unified_detection()
+            )
         unified_detection.simplify_unified_detection()
         unified_detection.aggregate_values(model_weight_for_averaging)
         unified_detection.export_unified_detection()
