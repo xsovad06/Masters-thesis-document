@@ -5,21 +5,12 @@
 CO=masters-thesis-damian-sova
 CAPTERS=chapters/introduction.tex chapters/theoretical_foundations.tex chapters/practical_part.tex chapters/conclusion.tex
 
-all: $(CO).pdf
-
-pdf: $(CO).pdf
-
-$(CO).ps: $(CO).dvi
-	dvips $(CO)
-
-$(CO).pdf: clean
-	context $(CO).tex
-
-$(CO).dvi: $(CO).tex $(CO).bib
+all: $(CO).tex
 	context $(CO).tex
 
 clean:
 	rm -f *.log $(CO).tuc
+	rm -f *.vimout
 	rm -f *~
 	rm -f */*~
 
