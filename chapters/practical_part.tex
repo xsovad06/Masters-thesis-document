@@ -1,5 +1,5 @@
 \kap[chapter:practical-part]{Practical Part}
-This chapter comprehensively examines the various stages involved in creating a custom human pose estimation dataset. The initial phase introduces the solution proposal and detials regarding the whole process. The following phase leverages existing models outlined in \in{Section}[section:existing-nns] (on \at{page}[section:existing-nns]). Subsequently, these models are integrated into a unified tool for custom dataset creation. Additionally, the tool's performance is evaluated using three metrics, \OKS\, \APE\ and \MSE\.
+This chapter comprehensively examines the various stages of creating a custom human pose estimation dataset. The initial phase introduces the solution proposal and details the whole process. The following phase leverages existing models outlined in \in{Section}[section:existing-nns] (on \at{page}[section:existing-nns]). Subsequently, these models are integrated into a unified tool for custom dataset creation. Additionally, the tool's performance is evaluated using three metrics, \OKS\, \APE\ and \MSE\.
 
 Throughout this thesis, several implementation challenges emerged, leading to certain technical limitations outlined in a dedicated \in{Section}[section:problems-limitations] on \at{page}[section:problems-limitations].
 
@@ -7,27 +7,27 @@ Throughout this thesis, several implementation challenges emerged, leading to ce
 \pkap[section:proposal]{Solution Proposal}
 This section will propose solutions for the specific dataset generation using existing {\bf \NN} detection models. The content of this section outlines one of the possible solutions, grounded in the analysis from the preceding paper chapter. It specifies the technologies that should be used and explains their suitability for this task.
 
-The preceding chapter conducted an in-depth analysis of the current market landscape, exploring available technologies and datasets, along with their inherent limitations. As highlighted in \in{Section}[section:pose-estimation-challanges], existing datasets lack the complexity and robustness necessary for training a comprehensive detection model capable of excelling in production environments.
+The preceding chapter conducted an in-depth analysis of the current market landscape, exploring available technologies and datasets and their inherent limitations. As highlighted in \in{Section}[section:pose-estimation-challanges], existing datasets lack the complexity and robustness necessary for training a comprehensive detection model capable of excelling in production environments.
 
-To address this shortfall, the concept of a cost-efficient method for generating a tailored dataset using open-source tools and models was explored. In selecting the technological foundation, {\bf Python} emerged as a prime choice due to its widespread adoption in data processing and machine learning endeavors. Python offers an extensive array of libraries such as {\bf Numpy} for numerical computations, {\bf Pandas} for data manipulation and analysis, and deep learning frameworks like {\bf PyTorch} and {\bf TensorFlow}. This rich ecosystem not only simplifies the implementation of complex algorithms but also fosters innovation and efficiency in dataset generation processes.
+A~cost-efficient method for generating a tailored dataset using open-source tools and models was explored to address this shortfall. {\bf Python} emerged as a prime choice in selecting the technological foundation due to its widespread adoption in data processing and machine learning. Python offers an extensive array of libraries such as {\bf Numpy} for numerical computations, {\bf Pandas} for data manipulation and analysis, and deep learning frameworks like {\bf PyTorch} and {\bf TensorFlow}. This rich ecosystem simplifies the implementation of complex algorithms and fosters innovation and efficiency in dataset generation processes.
 
-Initially, the production data undergoes the execution of existing models designed to detect human instances and estimate their poses. Namely, these include {\bf PoseNet}, {\bf MoveNet}, and {\bf MMPose} models described in the Sections \in[section:movenet], \in[section:posenet], and \in[section:mmpose]. The primary reason for the application of these models is outlined in \in{Section}[section:existing-nns], which includes the models' hardware requirements and their ease of implementability in Python, the underlying technology proposed in this section. Following the execution, multiple detection formats become available. It is crucial to propose a Unified Format for these detections, considering their respective keypoint structures and identifying a common skeleton. Once the Unified Format is established, the process of unification can commence, utilizing the existing detections from the initial step.
+Initially, the production data executes existing models designed to detect human instances and estimate their poses. Namely, these include {\bf PoseNet}, {\bf MoveNet}, and {\bf MMPose} models described in the Sections \in[section:movenet], \in[section:posenet], and \in[section:mmpose]. The primary reason for applying these models is outlined in \in{Section}[section:existing-nns], which includes the models' hardware requirements and ease of implementation in Python, the underlying technology proposed in this section. Following the execution, multiple detection formats become available. It is crucial to propose a Unified Format for these detections, considering their respective keypoint structures and identifying a common skeleton. Once the Unified Format is established, the unification process can commence, utilizing the existing detections from the initial step.
 
-Subsequently, the sequential processing of these detections becomes essential, wherein corresponding frames are loaded from each detection model. Subsequent steps involve matching individual human instances, accomplished through comparison of instance {\bf \BBOX}-es or individual keypoint analysis. Once instances are paired, aggregation occurs, with methods varying from weighted to simple averaging based on the utilized models and their respective accuracy levels.
+Subsequently, the sequential processing of these detections becomes essential, wherein corresponding frames are loaded from each detection model. Subsequent steps involve matching individual human instances by comparing instance {\bf \BBOX}-es or individual keypoint analysis. Once instances are paired, aggregation occurs, with methods varying from weighted to simple averaging based on the utilized models and their respective accuracy levels.
 
 This process leads to the complete dataset processing, resulting in aggregated detection results. Processing one source frame at a time transforms all detections from individual models into the Unified Format.
 
-Finally, evaluation becomes necessary, comparing the Unified Format against an annotated dataset (with a similar skeleton as the Unified Format), providing ground truth data for assessment. For evaluation, several metrics need inclusion to cover the overall performance of this Unified Format, including the {\bf \APE}, {\bf \MSE}, and {\bf \OKS} metrics.
+Finally, evaluation becomes necessary, comparing the Unified Format against an annotated dataset (with a similar skeleton as the Unified Format) and providing ground truth data for assessment. For evaluation, several metrics need inclusion to cover the overall performance of this Unified Format, including the {\bf \APE}, {\bf \MSE}, and {\bf \OKS} metrics.
 
-A~significant advantage of this approach lies in its flexibility; it is not restricted to specific models and can be fully customized to suit specific requirements. This implies the ability to combine any available detection model (or any number of detection models) and use them in the dataset generation process. The usage of existing models does not need to be confined to Python scripts introduced in this thesis. The only condition is to run the detection on some production data and prepare the results for the unification process.
+A~significant advantage of this approach lies in its flexibility; it is not restricted to specific models and can be fully customized to suit specific requirements. This implies combining any available detection model (or any number of detection models) and using them in the dataset generation process. The usage of existing models does not need to be confined to Python scripts introduced in this thesis. The only condition is to run the detection on some production data and prepare the results for the unification process.
 
 % ------- Section ------- %
 \pkap[section:solution-implementation]{Solution Implementation}
 \obrazek{overall-process}{Graph of the process introducing individual stages of this thesis}{figures/overall-process.png}{width=38cc}
 
-The moment has arrived to delve into the realm of implementation. Within this section, an overview of the entire process will be presented, aiming to enhance comprehension of the thesis as a cohesive entity. Central to this elucidation will be the graphical representation of the sequential steps undertaken in this thesis. Each of these steps will be comprehensively expounded upon in subsequent sections, offering detailed insights into their execution.
+The moment has arrived to delve into the realm of implementation. This section will present an overview of the entire process, aiming to enhance comprehension of the thesis as a cohesive entity. Central to this elucidation will be the graphical representation of the sequential steps undertaken in this thesis. These steps will be comprehensively expounded upon in subsequent sections, offering detailed insights into their execution.
 
-To elucidate the process further, refer to \in{Figure}[overall-process]. The initial phase entails employing the existing skeleton detection models outlined in Sections \in[section:movenet], \in[section:posenet], and \in[section:mmpose]. This step involves the utilization of custom-implemented scripts designed to execute detections using the aforementioned models, as elaborated in the subsequent \in{Section}[section:individual-models-detection]. The detection process is conducted on the evaluation subset comprising 5,000 images from the COCO dataset. Outputs from individual detections are stored in distinct JSON files, the format of which is detailed in \in{Code}[code:detection-script-output].
+To elucidate the process further, refer to \in{Figure}[overall-process]. The initial phase entails employing the existing skeleton detection models outlined in Sections \in[section:movenet], \in[section:posenet], and \in[section:mmpose]. This step involves the utilization of custom-implemented scripts designed to execute detections using the models above, as elaborated in the subsequent \in{Section}[section:individual-models-detection]. The detection process is conducted on the evaluation subset comprising 5,000 images from the COCO dataset. Outputs from individual detections are stored in distinct JSON files, the format of which is detailed in \in{Code}[code:detection-script-output].
 
 These JSON files serve as inputs for the Unification script, which also requires keypoint map files for each detection model. These map files facilitate the transformation of native model outputs into the Unified Format mandated by the script. The Unification script aggregates individual detections into a specified format, generating a JSON file for each image (or video, depending on the script argument). Optionally, these Unified Format JSON files can be utilized for detection rendering, a functionality provided by the custom Render script.
 
@@ -39,269 +39,269 @@ The final step entails evaluating the performance of the Unified Format. For thi
 \pkap[section:individual-models-detection]{Individual Models Detection}
 This section introduces an approach to implementing individual model detection. It details key concepts and tools for creating complex detection scripts in the {\bf Python} programming language.
 
-The primary tool for implementation is Python and its extensive libraries. The following libraries were used in the initial step of creating detection scripts for individual models:
+The primary implementation tools are Python and its extensive libraries. The following libraries were used in the initial step of creating detection scripts for individual models:
 
 \startitemize[n]
-    \item PoseNet:
-        \startitemize[1]
-            \item {\bf {\em Mediapipe}} - A~library providing the PoseNet model and tools for drawing detections on images.
-        \stopitemize
-    \item MoveNet:
-        \startitemize[1]
-            \item {\bf {\em Tensorflow}} - A~library used for working with image data structures.
-            \item {\bf {\em Tensorflow Hub}} - A~repository of pre-trained machine learning models containing the MoveNet model.
-        \stopitemize
-    \item MMPose:
-        \startitemize[1]
-            \item {\bf {\em MMCV}} - A~foundational library for computer vision research.
-            \item {\bf {\em MMPOSE}} - An open-source toolbox for pose estimation based on {\bf PyTorch}.
-            \item {\bf {\em MMDET}} - An open-source object detection toolbox based on {\bf PyTorch}.
-        \stopitemize
+ \item PoseNet:
+ \startitemize[1]
+ \item {\bf {\em Mediapipe}} - A~library providing the PoseNet model and tools for drawing detections on images.
+ \stopitemize
+ \item MoveNet:
+ \startitemize[1]
+ \item {\bf {\em Tensorflow}} - A~library used for working with image data structures.
+ \item {\bf {\em Tensorflow Hub}} - A~repository of pre-trained machine learning models containing the MoveNet model.
+ \stopitemize
+ \item MMPose:
+ \startitemize[1]
+ \item {\bf {\em MMCV}} - A~foundational library for computer vision research.
+ \item {\bf {\em MMPOSE}} - An open-source toolbox for pose estimation based on {\bf PyTorch}.
+ \item {\bf {\em MMDET}} - An open-source object detection toolbox based on {\bf PyTorch}.
+ \stopitemize
 \stopitemize
 
 Several other libraries are employed in the scripts to furnish essential functionality. Here is a list of the most crucial libraries: {\bf OS}, {\bf Sys}, {\bf OpenCV} and {\bf Numpy}. Additionally, the {\bf typing} library serves as a helper, primarily aimed at providing type hints and enhancing clarity regarding input/output structures. For this purpose, custom datatypes were devised (See \in{Code}[code:data-types]).
 
 \sourcecode[][code:data-types]{Custom Datatypes}{}{src:data-types}{}
 
-These custom datatypes address the detection output format and are organized hierarchically. The first, {\bf DetectionInstance}, represents a single human instance in the image, containing a list of keypoints, as described in \in{Subsection}[subsection:detection-format]. Then follows the {\bf Frame}, which is a list of {\em detection instances}. At the top of this hierarchy lies the {\bf Detection} itself, which is a dictionary of the {\em frames}. Lastly, the final custom datatype, {\bf SkeletonEdgesPainting}, is a structure devised to store skeleton colour codes, assigning a single colour to each keypoint pair.
+These custom datatypes address the detection output format and are organized hierarchically. The first, {\bf DetectionInstance}, represents a single human instance in the image, containing a list of keypoints, as described in \in{Subsection}[subsection:detection-format]. Then follows the {\bf Frame}, a list of {\em detection instances}. At the top of this hierarchy lies the {\bf Detection} itself, a dictionary of the {\em frames}. Lastly, the final custom datatype, {\bf SkeletonEdgesPainting}, is a structure that stores skeleton colour codes, assigning a single colour to each keypoint pair.
 
 All these custom datatypes are utilized across various scripts to support type hints and enhance clarity regarding the utilized data structures. Subsequent references will be made to these types.
 
-The main idea behind all detection scripts is to provide a very similar interface with the same functionality. Each detection model uses different resources, meaning the detection part itself is different for every case and needs to be implemented separately. Similarly, the model initialization parts are different. However, the script skeleton remains the same for every model.
+The main idea behind all detection scripts is to provide a similar interface with the same functionality. Each detection model uses different resources, meaning the detection part is different for every case and must be implemented separately. Similarly, the model initialization parts are different. However, the script skeleton remains the same for every model.
 
-The scripts utilize common custom functions gathered in the {\it utils} package. These methods manipulate images to provide the same frame format for every model. Additionally, they include helper functions for processing script arguments, such as handling processed file paths, output file names, and exporting detections to JSON files. Notably, the functions for drawing keypoints and skeletons on detected human instances are specific to the MoveNet model, as there is no library with this functionality for MoveNet, unlike the other two models.
+The scripts utilize standard custom functions gathered in the {\it utils} package. These methods manipulate images to provide the same frame format for every model. Additionally, they include helper functions for processing script arguments, such as handling processed file paths, output file names, and exporting detections to JSON files. Notably, the functions for drawing keypoints and skeletons on detected human instances are specific to the MoveNet model, as there is no library with this functionality for MoveNet, unlike the other two models.
 
-See the {\it main()} function structure in the following \in{Code}[code:detection-script-backbone]. The detection scripts processes various file types based on the provided program arguments. They accept both image and video files. If the input is a directory, the script iterates through all video and image files within it, executing detection on each. Refer to the single-frame detection function {\it process_image_detection()} in \in{Code}[code:detection-script-frame] for a deeper understanding of the core detection implementation.
+See the {\it main()} function structure in the following \in{Code}[code:detection-script-backbone]. The detection scripts process various file types based on the provided program arguments. They accept both image and video files. If the input is a directory, the script iterates through all video and image files, executing detection on each. Refer to the single-frame detection function {\it process_image_detection()} in \in{Code}[code:detection-script-frame] for a deeper understanding of the core detection implementation.
 
 \sourcecode[][code:detection-script-backbone]{Simplified Detection Script Backbone (Pseudocode)}{}{src:detection-script-backbone}{}
 
-This function demonstrates the concept behind image detection execution for the MoveNet model. Similar approaches are used for MMPose and PoseNet models, with variations in the specific detection implementation and visualization. The first task is to load the frame or image. Optionally, a function for resizing the frame is available if the image is too large. Then follows the pose detection itself. Program arguments manage actions like saving the detection file (JSON), the frame with drawn detections, and displaying the drawn detection frame. Optionally, correctly formatted detections are exported to a JSON file. The functions for drawing the detections onto the frame are then executed, followed by optional saving or displaying of the frame. 
+This function demonstrates the concept behind image detection execution for the MoveNet model. Similar MMPose and PoseNet models use similar approaches with specific detection implementation and visualization variations. The first task is to load the frame or image. Optionally, a function for resizing the frame is available if the image is too large. Then follows the pose detection itself. Program arguments manage actions like saving the detection file (JSON), the frame with drawn detections, and displaying the drawn detection frame. Optionally, correctly formatted detections are exported to a JSON file. The functions for drawing the detections onto the frame are then executed, followed by optional saving or displaying of the frame. 
 
 \sourcecode[][code:detection-script-frame]{Python Implementation of MoveNet Detection Function.}{}{src:detection-script-frame}{}
 
 % ------- Sub-section ------- %
 \ppkap[subsection:detection-format]{Detection Format}
-This subsection will take a close look into the individual detection models output format which is crucial for further processing and creation of Unified Format described in the \in{Section}[section:unified-format] on \at{page}[section:unified-format].
+This subsection will take a close look into the individual detection models output format, which is crucial for further processing and creation of Unified Format described in the \in{Section}[section:unified-format] on \at{page}[section:unified-format].
 
-The detection scripts described in the previous section produce the same detection output format for every detection model. To understand the detection JSON file format, see the \in{Code}[code:detection-script-output]. This format pertains to the {\em single-frame} detection mode. When conducting detection on a video file without the {\em ---single--frame--output} option, the entire detection process is encapsulated within an additional dictionary to distinguish individual video frames. However, for this thesis, which focuses on dataset creation, there is no necessity to save the frame sequence. The {\em---single--frame--output} argument was implemented to segment the video file into individual frames and generate dedicated images for easily processed detection files.
+The detection scripts described in the previous section produce the same detection output format for every detection model. To understand the detection JSON file format, see the \in{Code}[code:detection-script-output]. This format pertains to the {\em single-frame} detection mode. When conducting detection on a video file without the {\em ---single--frame--output} option, the entire detection process is encapsulated within an additional dictionary to distinguish individual video frames. However, for this thesis, which focuses on dataset creation, there is no necessity to save the frame sequence. The {\em---single--frame--output} argument was implemented to segment the video file into individual frames and generate dedicated images for quickly processed detection files.
 
 \sourcecode[][code:detection-script-output]{Detection Script Output Format (Example)}{}{src:detection-script-output}{}
 
-The top level of the output format example includes a {\bf list} of {\bf detection instances} (objects). Each detection instance consists of the keypoints {\bf list}. The number of keypoints varies depending on the chosen detection model. A~single {\bf keypoint} is represented by a {\bf list} of three {\bf float} values. The first two values represent the {\bf coordinates} in pixels, and the last value signifies the {\bf visibility}. Additionally, the MMPose model produces the \BBOX\ position for the instance which is not present in the other model's output.
+The top level of the output format example includes a {\bf list} of {\bf detection instances} (objects). Each detection instance consists of the keypoints {\bf list}. The number of keypoints varies depending on the chosen detection model. A~single {\bf keypoint} is represented by a {\bf list} of three {\bf float} values. The first two values represent the {\bf coordinates} in pixels, and the last value signifies the {\bf visibility}. Additionally, the MMPose model produces the \BBOX\ position for the instance, which is not present in the other model's output.
 
 % ------- Section ------- %
 \pkap[section:unified-format]{Created Unified Format}
-A~highly cost-effective method of obtaining a custom dataset with real-life footage data is to leverage existing \NN\-s to generate labels. This approach enables the training of a new model specifically tailored to the target detection task. However, for effective training, a Unified Format is required to aggregate the results of these individual models. This section precisely addresses the concept of a Unified Format introduced in this thesis, capitalizing on the strengths of existing models. As explained in the previous chapter, each model estimates a different number of keypoints, emphasizing different qualities. Refer to \in{Table}[tab:format-comparison] for a comprehensive understanding of these differences.
+A~highly cost-effective method of obtaining a custom dataset with real-life footage data is to leverage existing \NN\-s to generate labels. This approach enables training in a new model tailored to the target detection task. However, for practical training, a Unified Format is required to aggregate the results of these individual models. This section precisely addresses the concept of a Unified Format introduced in this thesis, capitalizing on the strengths of existing models. As explained in the previous chapter, each model estimates a different number of keypoints, emphasizing different qualities. Refer to \in{Table}[tab:format-comparison] for a comprehensive understanding of these differences.
 
-The rationale behind the Unified Format is to identify commonalities among individual formats and address their variations. Essentially, the common format is based on {\bf MoveNet}, which comprises {\bf 17} keypoints, excluding {\em hands} and {\em feet} estimation compared to the Unified Format. {\bf PoseNet} introduces additional eye keypoints (compared to Unified Format) that need elimination, while {\bf MMPose} includes {\bf 107} unnecessary keypoints, particularly detailed facial keypoints and non-crucial hand keypoints (individual joints of each finger). The Unified Format optimally encompasses {\bf 27} keypoints, providing satisfactory detail for hands, feet, and face. Refer to \in{Figure}[unified-format-structure] for a visual representation of the structure. From the skeleton figure, it is clearly visible that the format is straightforward. It offers basic pose representation with sufficient detail to both hands and feet.
+The rationale behind the Unified Format is to identify commonalities among individual formats and address their variations. Essentially, the common format is based on {\bf MoveNet}, which comprises {\bf 17} keypoints, excluding {\em hands} and {\em feet} estimation compared to the Unified Format. {\bf PoseNet} introduces additional eye keypoints (compared to Unified Format) that need elimination. At the same time, {\bf MMPose} includes {\bf 107} unnecessary keypoints, exceptionally detailed facial keypoints and non-crucial hand keypoints (individual joints of each finger). The Unified Format optimally encompasses {\bf 27} keypoints, providing satisfactory detail for hands, feet, and face. Refer to \in{Figure}[unified-format-structure] for a visual representation of the structure. From the skeleton figure, it is visible that the format is straightforward. It offers essential pose representation with sufficient detail to both hands and feet.
 
-Another crucial aspect is the accurate aggregation of individual model estimations, encompassing both the coordinates of keypoints and their visibility values. To address this, a weighted average of these values was introduced, mitigating weaknesses in faster models such as MoveNet and PoseNet. Given that these models are designed for real-time estimation, and we utilize the "lightning" model version for PoseNet, accuracy is inherently limited (From manual inspection of individual detections, the PoseNet and Movenet often provided significant errors in pose estimation. Which can be explained by the fact that they are more focused on real-time use-cases. There is always a trade-off between the detection time and accuracy.). Detailed values for the weighted average are available in the model's comparison table. The assignment of the highest weight to the {\bf MMPose} model is justified by its superior accuracy in all metrics described in the \in{Section}[section:evaluation]. This approach ensures the uniformity of estimations made by individual models across the entire dataset, as prepared in the previous section.
+Another crucial aspect is the accurate aggregation of individual model estimations, encompassing the coordinates of keypoints and their visibility values. A~weighted average of these values was introduced to address this, mitigating weaknesses in faster models such as MoveNet and PoseNet. Given that these models are designed for real-time estimation, and we utilize the "lightning" model version for PoseNet, accuracy is inherently limited (From manual inspection of individual detections, the PoseNet and Movenet often provide significant errors in pose estimation, which can be explained by the fact that they are more focused on real-time use-cases. There is always a trade-off between the detection time and accuracy.). Detailed values for the weighted average are available in the model's comparison table. The assignment of the highest weight to the {\bf MMPose} model is justified by its superior accuracy in all metrics described in the \in{Section}[section:evaluation]. This approach ensures the uniformity of estimations made by individual models across the entire dataset, as prepared in the previous section.
 
 \TABULKA[][tab:format-comparison]{Comparison of the individual models detection format}
-    \setupTABLE[r][1][style=bold]
-    \setupTABLE[c][each][offset=3dd]
-    \setupTABLE[frame=off]
-    \setupTABLE[r][1][topframe=on,bottomframe=on]
-    \setupTABLE[c][each][leftframe=on]
-    \setupTABLE[c][1][leftframe=off]
-    \setupTABLE[c][2,3,4][align=middle]
-    \bTR\bTD Model\eTD\bTD              Keypoints\eTD\bTD  Multi-person detection\eTD\bTD  Weight\eTD\eTR
-    \bTR\bTD PoseNet\eTD\bTD            33\eTD\bTD         No\eTD\bTD                      0.3\eTD\eTR
-    \bTR\bTD MoveNet\eTD\bTD            17\eTD\bTD         No\eTD\bTD                      0.2\eTD\eTR
-    \bTR\bTD MMPose\eTD\bTD             133\eTD\bTD        Yes\eTD\bTD                     0.5\eTD\eTR
-    \bTR\bTD Unified Format\eTD\bTD     27\eTD\bTD         Yes\eTD\bTD                     --\eTD\eTR
+ \setupTABLE[r][1][style=bold]
+ \setupTABLE[c][each][offset=3dd]
+ \setupTABLE[frame=off]
+ \setupTABLE[r][1][topframe=on,bottomframe=on]
+ \setupTABLE[c][each][leftframe=on]
+ \setupTABLE[c][1][leftframe=off]
+ \setupTABLE[c][2,3,4][align=middle]
+ \bTR\bTD Model\eTD\bTD Keypoints\eTD\bTD Multi-person detection\eTD\bTD Weight\eTD\eTR
+ \bTR\bTD PoseNet\eTD\bTD 33\eTD\bTD No\eTD\bTD 0.3\eTD\eTR
+ \bTR\bTD MoveNet\eTD\bTD 17\eTD\bTD No\eTD\bTD 0.2\eTD\eTR
+ \bTR\bTD MMPose\eTD\bTD 133\eTD\bTD Yes\eTD\bTD 0.5\eTD\eTR
+ \bTR\bTD Unified Format\eTD\bTD 27\eTD\bTD Yes\eTD\bTD --\eTD\eTR
 
 \obrazek{unified-format-structure}{Unified format structure with IDs to each keypoint}{figures/unified-detection-structure.png}{width=\makeupwidth}
 
-The weighted average is not applied in scenarios involving the processing of keypoints on the hands or feet. This limitation arises from the fact that the {\bf MoveNet} model does not provide these keypoints, necessitating a basic average calculation of the two values. In other words, the weighted average is applied only when there is data from all three models.
+The weighted average is not applied in scenario processing keypoints on the hands or feet. This limitation arises because the {\bf MoveNet} model does not provide these keypoints, necessitating a basic average calculation of the two values. In other words, the weighted average is applied only when data is from all three models.
 
 To clarify and explain the detection outcomes, refer to Figures \in[compose-fig:coco-detection], \in[compose-fig:mmpose-detection] and \in[compose-fig:unified-detection]. The initial depiction presents the original COCO WholeBody annotations in a simplified format, mirroring the Unified Format with 27 keypoints. All individuals within the image are annotated, meticulously considering the overlap and occlusion of human figures. Additionally, non-visible skeleton edges are omitted. Notably, no facial keypoints are detected, aligning with the absence of visible faces, thus demonstrating accurate annotation.
 
 Subsequently, \in{Figure}[compose-fig:mmpose-detection] portrays a detection outcome from the MMPose model. Regrettably, the individual performing a deep squat remains undetected, while facial keypoints are erroneously identified for two adjacent individuals facing away from the camera. Despite these anomalies, the overall detection performance is commendable.
 
 \obrazkyvedlesebe[3][top]{compose-fig:coco-detection;compose-fig:mmpose-detection;compose-fig:unified-detection}
-    {
-        COCO WholeBody annotation simplified to Unified Format;
-        MMPose model detection with 133 keypoints format;
-        Unified format detection with 27 keypoints;
-    }
-    {
-        figures/detection-comparison/000000002153-coco-annotation.jpg;
-        figures/detection-comparison/000000002153-mmpose-prediction.jpg;
-        figures/detection-comparison/000000002153-unified-prediction.jpg;
-    }
-    {
-        height=9.5cc;
-        height=9.5cc;
-        height=9.5cc;
-    }
+ {
+ COCO WholeBody annotation simplified to Unified Format;
+ MMPose model detection with 133 keypoints format;
+ Unified format detection with 27 keypoints;
+ }
+ {
+ figures/detection-comparison/000000002153-coco-annotation.jpg;
+ figures/detection-comparison/000000002153-mmpose-prediction.jpg;
+ figures/detection-comparison/000000002153-unified-prediction.jpg;
+ }
+ {
+ height=9.5cc;
+ height=9.5cc;
+ height=9.5cc;
+ }
 
-Lastly, the Unified Format, primarily informed by the MMPose model, is depicted in the third figure. Notably, a single individual in the upper portion of the image remains undetected. This occurrence is attributed to the unification script, which employs an {\bf average instance visibility threshold}, set experimentally at {\bf 40\%}, to determine inclusion in the Unified Format. This threshold serves as a filter for wrongly detected human instances by one of the models. Usually this occured by the use of MMPose model which is multi-person detector and this is Nevertheless, the precision of individual detections is highly satisfactory, ensuring precise localization of keypoints when individuals are successfully detected within the image. This is proven in the evaluation \in{Section}[section:evaluation] at \at{page}[section:evaluation].
+Lastly, the Unified Format, primarily informed by the MMPose model, is depicted in the third Figure. Notably, a single individual in the upper portion of the image remains undetected. This occurrence is attributed to the unification script, which employs an {\bf average instance visibility threshold}, set experimentally at {\bf 40\%}, to determine inclusion in the Unified Format. This threshold serves as a filter for wrongly detected human instances by one of the models. Usually, this occurs using the MMPose model, a multi-person detector. Nevertheless, the precision of individual detections is highly satisfactory, ensuring precise localization of keypoints when individuals are successfully detected within the image. This is proven in the evaluation \in{Section}[section:evaluation] at \at{page}[section:evaluation].
 
 % ------- Sub-section ------- %
 \ppkap[subsection:unification-process-implementation]{Unification Process Implementation}
-This subsection aims to provide description for the unification script key concepts alongside the code examples. The whole process is described in the previous section now the implementation details will be described.
+This subsection aims to describe the unification script key concepts alongside the code examples. The whole process is described in the previous section. Now, the implementation details will be described.
 
 \sourcecode[][code:unification-script-call]{Command for running the Unification script and its options}{}{src:unification-script-call}{}
 
-Unification script is designed to facilitate the processing of detection data from multiple sources into a unified format. It offers flexibility in handling various input configurations and provides options for customizing the output structure. Check out the \in{Code}[code:unification-script-call] to see the program arguments documentation, which can be described as follows:
+The unification script facilitates processing detection data from multiple sources into a unified format. It offers flexibility in handling various input configurations and provides options for customizing the output structure. Check out the \in{Code}[code:unification-script-call] to see the program arguments documentation, which can be described as follows:
 
 \startitemize
-    \item {\bf --source-folder}: Specifies the main source folder containing models detection subfolders.
-    \item {\bf --output-folder}: Specifies the destination folder for the unified detection results.
-    \item {\bf --models-detection-folders}: Specifies the folders to process, allowing multiple folders to be provided (For each detection model separate folder with detections.).
-    \item {\bf --skeleton-map-files}: Specifies the files containing unified skeleton mappings, allowing multiple files to be provided (For each detection model separate mapping file.).
-    \item {\bf --single-frame-output}: Optional flag indicating that only image sources (not videos) are expected, resulting in simplified output structure (The top level dictionary is changed to simple list with detection instances.).
-    \item {\bf --include-bbox}: Optional flag indicating to include \BBOX\ information for each detection instance.
-    \item {\bf --instance-visibility-threshold}: Optional parameter specifying the visibility threshold for removing instances from detection unification. Default value is 0.4. If the average instance visibility is below threshold, the detection will not be included in the output.
-    \item {\bf --verbose}: Optional flag enabling verbose mode for detailed output information.
+ \item {\bf --source-folder}: Specifies the main source folder containing models detection subfolders.
+ \item {\bf --output-folder}: Specifies the destination folder for the unified detection results.
+ \item {\bf --models-detection-folders}: Specifies the folders to process, allowing multiple folders to be provided (For each detection model, a separate folder with detections.).
+ \item {\bf --skeleton-map-files}: Specifies the files containing unified skeleton mappings, allowing multiple files to be provided (For each detection model, separate mapping file.).
+ \item {\bf --single-frame-output}: Optional flag indicating that only image sources (not videos) are expected, resulting in simplified output structure (The top-level dictionary is changed to a simple list with detection instances.).
+ \item {\bf --include-bbox}: Optional flag indicating to include \BBOX\ information for each detection instance.
+ \item {\bf --instance-visibility-threshold}: Optional parameter specifying the visibility threshold for removing instances from detection unification. The default value is 0.4. If the average instance visibility is below the threshold, the detection will not be included in the output.
+ \item {\bf --verbose}: Optional flag enabling verbose mode for detailed output information.
 \stopitemize
 
-When the program arguments are understood, let us take a look at the main function structure, which is available in \in{Code}[code:unification-script-main].
+When the program arguments are understood, let us look at the main function structure, which is available in \in{Code}[code:unification-script-main].
 
 \sourcecode[][code:unification-script-main]{Unified Format Class}{}{src:unification-script-main}{}
 
-The first step is to deal with the program arguments which are explained above. Afer the arguments are processed, the main loop begins, where it sequencially process the indivicual detection files (from each detection model). The {\it load_detections_objects()} function is a generator which streams the filename of currently processing detection file (shared name by all detection models) and the dictionary with the individual models raw detections loaded into the {\it DetectionProcessor} class which provide interface for the manipulation. For example, the {\it get_unified_detection()} method processes the raw detection and simplifies it to a Unified Format (possible NULL values, for example MoveNet detects only 17 keypoints, Unified Format has 27, resulting in 10 NULL keypoints) defined by the skeleton files for each detection model. These skeleton files consists of the mapping of the each individual detection model output to the Unified Format output. In other words, to obtain the Unified Format from the models detection, which keypoints needs to be used and to what place do they correspond in the Unified Format. They are in the JSON format and the keypoints map can be found in the \in{Code}[code:skeleton-file].
+The first step is to deal with the program arguments explained above. After the arguments are processed, the main loop begins, where it sequentially processes the individual detection files (from each detection model). The {\it load_detections_objects()} function is a generator which streams the filename of the current processing detection file (the shared name by all detection models) and the dictionary with the individual model's raw detections loaded into the {\it DetectionProcessor} class, which provides an interface for the manipulation. For example, the {\it get_unified_detection()} method processes the raw detection and simplifies it to a Unified Format (possible NULL values, for example MoveNet detects only 17 keypoints, Unified Format has 27, resulting in 10 NULL keypoints) defined by the skeleton files for each detection model. These skeleton files map each detection model output to the Unified Format output. In other words, to obtain the Unified Format from the model's detection, which keypoints need to be used, and to what place do they correspond in the Unified Format? They are in the JSON format, and the keypoints map can be found in the \in{Code}[code:skeleton-file].
 
-The skeleton files contain the indexes from the original detection that are mapped to the corresponding keypoints in the Unified Format and another important information is the {\bf Weight} of this model for the averaging purposes. The last item is the original detection description in the manner of keypoint names ({\it nose}, {\it left_eye}, {\it right_eye},\edots).
+The skeleton files contain the indexes from the original detection mapped to the corresponding keypoints in the Unified Format. Another vital piece of information is this model's {\bf Weight} for averaging purposes. The last item is the original detection description in the manner of keypoint names ({\it nose}, {\it left_eye}, {\it right_eye},\edots).
 
 \sourcecode[][code:skeleton-file]{MoveNet Skeleton File with Keypoints Map to Unified Format}{}{src:skeleton-file}{}
 
-Back to the process loop. The next step is to load the all individual models detections into the Object {\it UnifiedDetection} which will be the main manipulator of the detection format. The main task of this class is to assemble the finall Unified Format detection file either for an image or a video. After this object is initialized, there comes a time to loop through the individual models detection provided by the {\it get_unified_detection()} method. The output of this method goes directly to the {\it UnifiedDetection} object method {\it load_unified_keypoints()} which appends the detection to the internal structure.
+Back to the process loop. The next step is to load all individual model detections into the object {\it UnifiedDetection}, which will be the main manipulator of the detection format. The main task of this class is to assemble the final Unified Format detection file for either an image or a video. After this object is initialized, there comes a time to loop through the individual model's detection provided by the {\it get_unified_detection()} method. The output of this method goes directly to the {\it UnifiedDetection} object method {\it load_unified_keypoints()}, which appends the detection to the internal structure.
 
-When all detections from every model are loaded, the simplification process begins. This serves for clearing the {\it name} attribure from the internal structures of the Unified Format which is available in \in{Code}[code:unified-format]. This class ({\it UnifiedFormat}) serves as a single human detection instance representation. The class provides the functionality for manipulating with the detection on the lower level than the {\it UnifiedDetection} which provides interface for the detection of the whole image. In other words, every method on the UnifiedDetection level eventualy leads to the method on the UnifiedFormat level. For better interpretation purposes of the struture, the {\it name} attribure was included, but for the aggregation process it does not provide any value, that is why it is removed before futher processing.
+When all detections from every model are loaded, the simplification process begins. This serves for clearing the {\it name} attribute from the internal structures of the Unified Format, which is available in \in{Code}[code:unified-format]. This class ({\it UnifiedFormat}) represents a single human detection instance. The class provides the functionality for manipulating the detection on the lower level than the {\it UnifiedDetection}, which provides an interface for the detection of the whole image. In other words, every method on the UnifiedDetection level eventually leads to the method on the UnifiedFormat level. The {\it name} attribute was included to interpret the structure better. However, for the aggregation process, it does not provide any value, which is why it is removed before further processing.
 
 \sourcecode[][code:unified-format]{Unified Format Class}{}{src:unified-format}{}
 
-Now comes the most important task of aggregating the detections and formulating the final Unified Format. For this purpose, the UnifiedDetection object has {\it aggregate_values()} method which takes list of weights for individual models in order as the detections were processed. Internally, for each human instance in the detection the {\it aggregate_instance()} method of the class {\it UnifiedFormat} is called with the list of weights as an argument. This method calculates the weighted average for the keypoints that are present in all individual detections (from every model). Otherwise, the simple average is calculated, if values from some model are missing. Generally, the keypoints of the hands and feet are not present in the MoveNet detections, leading to average of just two values from the other models.
+Now comes the most critical task of aggregating the detections and formulating the final Unified Format. For this purpose, the UnifiedDetection object has {\it aggregate_values()} method, which takes a list of weights for individual models in order as the detections were processed. Internally, for each human instance in the detection, the {\it aggregate_instance()} method of the class {\it UnifiedFormat} is called with the list of weights as an argument. This method calculates the weighted average for the keypoints present in all individual detections (from every model). Otherwise, the simple average is calculated if values from some model are missing. Generally, the keypoints of the hands and feet are not present in the MoveNet detections, leading to an average of just two values from the other models.
 
-When the aggregation went without problems, it is time to export the Unified Detection into single JSON file. This functionality is provided by the {\it export_unified_detection()} method which generates either a single frame format of or multi-frame output according to a program argument ({\it --single-frame-outpu}). The output format is shown in \in{Code}[code:unified-format-output]. Generally, the difference between the single and multi-frame output is that the multi-frame output has a {\bf dictionary} on the top level, where the keys identifies individual frames (In the image detections just one item is present with key \uv{frame_1}. The video detections contains more than one frame leading to multiple records in the dictionary.). On the other hand, the single-frame output has a {\bf list} on the top level, where this list contains human detection instances directly.
+When the aggregation went without problems, it was time to export the Unified Detection into a single JSON file. This functionality is provided by the {\it export_unified_detection()} method, which generates either a single-frame format or multi-frame output according to a program argument ({\it --single-frame-outpu}). The output format is shown in \in{Code}[code:unified-format-output]. Generally, the difference between the single and multi-frame output is that the multi-frame output has a {\bf dictionary} on the top level, where the keys identify individual frames (In the image detections, just one item is present with key \uv{frame_1}. The video detections contains more than one frame leading to multiple records in the dictionary.). On the other hand, the single-frame output has a {\bf list} on the top level, where this list contains human detection instances directly.
 
 \sourcecode[][code:unified-format-output]{Unified Format Output (Single-Frame Version, with {\it --incluce-bbox} option), where the last item of the detection instance is the BBOX}{}{src:unified-format-output}{}
 
 % ------- Section ------- %
 \pkap[section:evaluation]{Evaluation}
-In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for the unified detection format evaluation. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated.
+In this section, the COCO WholeBody dataset (Xu et al. 2022) will be used as a corpus for evaluating the unified detection format. Additionally, the manipulations and details regarding the processing and use of the dataset will be investigated.
 
-As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically the {\bf validation 2017} subset containing {\bf 5000} images. According to a COCO WholeBody validation annotations only {\bf 2693} images has present humans. 
+As for the unified detection format evaluation, the {\bf COCO WholeBody} dataset was used. Specifically, the {\bf validation 2017} subset containing {\bf 5000} images. According to a COCO WholeBody validation annotations, only {\bf 2693} images have present humans. 
 
-The overall metrics results are as follows (see the \in{Table}[tab:evaluation-unified-mmpose]): the {\bf \OKS} equal to {\bf 0.23}, {\bf \APE} equal to {\bf 3.3\%}, the {\bf \MSE} equal to {\bf 1213.84} and finally, the total {\bf correctly detected keypoints} {\bf 37.93\%} (used \OKS\ threshold {\bf 0.45}). This metrics was calculated only on the matching instances of the predicted annotations concerning the ground truth annotations. This means that the differences in the predictions and the ground truth were not taken into account. Specifically the missing or additional (detection) instances in the predictions. But as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances were obtained. The criterion used for defining whether the instances from predictions correspond to the ground truth annotations is the \BBOX\ overlap. The threshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric see the \in{Figure}[iou]. The result is satisfactory even though the averaging of the keypoints position in the unification process causes some errors.
+The overall metrics results are as follows (see the \in{Table}[tab:evaluation-unified-mmpose]): the {\bf \OKS} equal to {\bf 0.23}, {\bf \APE} equal to {\bf 3.3\%}, the {\bf \MSE} equal to {\bf 1213.84} and finally, the total {\bf correctly detected keypoints} {\bf 37.93\%} (used \OKS\ threshold {\bf 0.45}). These metrics were calculated only on the matching instances of the predicted annotations concerning the ground truth annotations. This means that the differences in the predictions and the ground truth were not considered—specifically the missing or additional (detection) instances in the predictions. However, as for the corresponding instances, the evaluation serves as a great indicator of how well the individual detection instances were obtained. The criterion for defining whether the instances from predictions correspond to the ground truth annotations is the \BBOX\ overlap. The threshold used for the overlap value, {\bf Intersection over Union} (\IoU\), is the {\bf 65\%}. To better understand the \IoU\ metric, see the \in{Figure}[iou]. The result is satisfactory even though averaging the keypoint's position in the unification process causes some errors.
 
 \obrazek{iou}{Calculation of the Intersection over Union}{figures/iou.png}{width=\makeupwidth}
 
-There was also an evaluation on the metrics just for the {\bf MMPose} model because only this model provides us with the \BBOX\--es in the detections. The total {\bf \OKS} was {\bf 0.28}, the {\bf \APE} was {\bf 0.95\%}, the {\bf \MSE} was equal to {\bf 123.73} and the total {\bf correctly detected keypoints} was equal to {\bf 43.62\%}. This evaluation results provided us with the information about the model precision on individual keypoints of detected instances. This information will be used for setting up the weights for weighted average in the process of Unified Format creation in the following \in{section}[section:unified-format] on \at{page}[section:unified-format]. Generally, the MMPose model is showing great performance on the detection tasks. Visually, there are only occasional differences in the prediction and the ground truth.
+There was also an evaluation on the metrics just for the {\bf MMPose} model because only this model provides us with the \BBOX\--es in the detections. The total {\bf \OKS} was {\bf 0.28}, the {\bf \APE} was {\bf 0.95\%}, the {\bf \MSE} was equal to {\bf 123.73} and the total {\bf correctly detected keypoints} was equal to {\bf 43.62\%}. This evaluation results provided information about the model precision on individual keypoints of detected instances. This information will be used for setting up the weights for weighted average in the process of Unified Format creation in the following \in{section}[section:unified-format] on \at{page}[section:unified-format]. Generally, the MMPose model performs well in detection tasks. Visually, there are only occasional differences in the prediction and the ground truth.
 
 As for the other statistics, the evaluation concerned the {\bf 2693} ground truth images with overall {\bf 11004} pose instances (humans). The Unified Format provided overall {\bf 7746} ({\bf 70.39\%}) detection instances from which the {\bf 5833} were matched with the ground truth poses based on the {\bf \IoU} metric. Very similar results were achieved by the {\bf MMPose} model, which detected overall {\bf 7685} ({\bf 69.84\%}) detection instances, with the same {\bf 5833} matched to the ground truth. The Unified Format provided {\bf 589} ({\bf 5.35\%}) additional detection poses than were in the ground truth annotations and {\bf 3847} ({\bf 34.96\%}) fewer detections than were in the ground truth. Similarly, the {\bf MMPose} model detected {\bf 589} ({\bf 5.35\%}) more poses and {\bf 3908} ({\bf 35.51\%}) fewer poses than the ground truth annotations contained.
 
 \TABULKA[][tab:evaluation-unified-mmpose]{Evaulation Statistics for the Unified and MMpose Format}
-    \setupTABLE[r][1][style=bold]
-    \setupTABLE[c][each][offset=3dd]
-    \setupTABLE[frame=off]
-    \setupTABLE[r][1][topframe=on,bottomframe=on]
-    \setupTABLE[c][each][leftframe=on]
-    \setupTABLE[c][1][leftframe=off]
-    \setupTABLE[c][2,3][align=middle]
-    \bTR\bTD Statistic                                   \eTD\bTD    Unified F.\eTD\bTD       MMPose\eTD\eTR
-    \bTR\bTD Total Object Kepoint Similarity (OSK):      \eTD\bTD    0.23 \eTD\bTD            0.28 \eTD\eTR
-    \bTR\bTD Total Average Percentage Error (APE):       \eTD\bTD    3.3\% \eTD\bTD           0.95\% \eTD\eTR
-    \bTR\bTD Total Mean Squared Error (MSE):             \eTD\bTD    1213.84 \eTD\bTD         123.73 \eTD\eTR
-    \bTR\bTD Total correct keypoints detected:           \eTD\bTD    37.93\% \eTD\bTD         43.62\% \eTD\eTR
-    \bTR\bTD Total matching number of poses (instances): \eTD\bTD    5833 (53.01\%) \eTD\bTD  5833 (53.01\%) \eTD\eTR
-    \bTR\bTD Total predicted number of poses (instances):\eTD\bTD    7746 (70.39\%) \eTD\bTD  7685 (69.84\%) \eTD\eTR
-    \bTR\bTD Model predicted more poses in image (total):\eTD\bTD    589 (5.35\%)\eTD\bTD     589 (5.35\%) \eTD\eTR
-    \bTR\bTD Model predicted less poses in image (total):\eTD\bTD    3847 (34.96\%)\eTD\bTD   3908 (35.51\%) \eTD\eTR
-    \bTR\bTD Total truth number of poses (instances):    \eTD\bTD    11004 \eTD\bTD           11004 \eTD\eTR
-    \bTR\bTD Total number ground truth images:           \eTD\bTD    2693 \eTD\bTD            2693 \eTD\eTR
+ \setupTABLE[r][1][style=bold]
+ \setupTABLE[c][each][offset=3dd]
+ \setupTABLE[frame=off]
+ \setupTABLE[r][1][topframe=on,bottomframe=on]
+ \setupTABLE[c][each][leftframe=on]
+ \setupTABLE[c][1][leftframe=off]
+ \setupTABLE[c][2,3][align=middle]
+ \bTR\bTD Statistic \eTD\bTD Unified F.\eTD\bTD MMPose\eTD\eTR
+ \bTR\bTD Total Object Kepoint Similarity (OSK): \eTD\bTD 0.23 \eTD\bTD 0.28 \eTD\eTR
+ \bTR\bTD Total Average Percentage Error (APE): \eTD\bTD 3.3\% \eTD\bTD 0.95\% \eTD\eTR
+ \bTR\bTD Total Mean Squared Error (MSE): \eTD\bTD 1213.84 \eTD\bTD 123.73 \eTD\eTR
+ \bTR\bTD Total correct keypoints detected: \eTD\bTD 37.93\% \eTD\bTD 43.62\% \eTD\eTR
+ \bTR\bTD Total matching number of poses (instances): \eTD\bTD 5833 (53.01\%) \eTD\bTD 5833 (53.01\%) \eTD\eTR
+ \bTR\bTD Total predicted number of poses (instances):\eTD\bTD 7746 (70.39\%) \eTD\bTD 7685 (69.84\%) \eTD\eTR
+ \bTR\bTD Model predicted more poses in image (total):\eTD\bTD 589 (5.35\%)\eTD\bTD 589 (5.35\%) \eTD\eTR
+ \bTR\bTD Model predicted less poses in image (total):\eTD\bTD 3847 (34.96\%)\eTD\bTD 3908 (35.51\%) \eTD\eTR
+ \bTR\bTD Total truth number of poses (instances): \eTD\bTD 11004 \eTD\bTD 11004 \eTD\eTR
+ \bTR\bTD Total number ground truth images: \eTD\bTD 2693 \eTD\bTD 2693 \eTD\eTR
 
-The evaluation statistics for the {\bf Unified Format} and {\bf MMPose} model can be found in Table \in{Table}[tab:evaluation-unified-mmpose]. This table presents various values, ranging from the overall counts of processed images with ground truth annotations to differences in predicted pose counts. Easily interpretable is the \APE\ metric, indicating the average error of predicted keypoint positions relative to ground truth annotations per pose. The value of {\bf 3.3\%} for \APE\ signifies that the predicted detection closely aligns with the ground truth annotation. Conversely, the \OKS\ metric yields a somewhat concerning result, with the value of {\bf 0.23} falling towards the lower end of the metrics interval ($ <0\,,\,1> $). Generally, higher values of \OKS\ are preferable, indicative of better alignment. The Evaluation script considers a keypoint similar when the OKS for that particular keypoint exceeds the {\bf 0.45} threshold (This threshold was set experimentally.).
+The evaluation statistics for the {\bf Unified Format} and {\bf MMPose} model can be found in Table \in{Table}[tab:evaluation-unified-mmpose]. This table presents various values, ranging from the overall counts of processed images with ground truth annotations to differences in predicted pose counts. The \APE\ metric is easily interpretable, indicating the average error of predicted keypoint positions relative to ground truth annotations per pose. The value of {\bf 3.3\%} for \APE\ signifies that the predicted detection closely aligns with the ground truth annotation. Conversely, the \OKS\ metric yields a somewhat concerning result, with the value of {\bf 0.23} falling towards the lower end of the metrics interval ($ <0\,,\,1> $). Generally, higher values of \OKS\ are preferable, indicative of better alignment. The Evaluation script considers a keypoint similar when the OKS for that particular keypoint exceeds the {\bf 0.45} threshold (This threshold was set experimentally.).
 
-For a comprehensive understanding of these values, including \MSE, refer to example images and their individual metrics in Figures \in[compose-fig:mmpose-metric] and \in[compose-fig:coco-metric]. Additionally, Table \in{Table}[tab:evaluation-metric-explanation] offers detailed statistics for these two detections. The first figure illustrates a simplified version of the MMPose model output (consisting of {\bf 27 keypoints} in the Unified Format), while the second figure displays the original COCO Wholebody annotations, also in the simplified format. This comparison facilitates a deeper understanding of the available metrics.
+For a comprehensive understanding of these values, including \MSE, refer to example images and their metrics in Figures \in[compose-fig:mmpose-metric] and \in[compose-fig:coco-metric]. Additionally, Table \in{Table}[tab:evaluation-metric-explanation] offers detailed statistics for these two detections. The first Figure illustrates a simplified MMPose model output (consisting of {\bf 27 keypoints} in the Unified Format). In contrast, the second Figure also displays the original COCO Wholebody annotations in the simplified format. This comparison facilitates a deeper understanding of the available metrics.
 
 \obrazkyvedlesebe[2][top]{compose-fig:mmpose-metric;compose-fig:coco-metric}
-    {
-        MMPose simplified output;
-        COCO Annotations;
-    }
-    {
-        figures/metrics-explanation/000000235784-mmpose.jpg;
-        figures/metrics-explanation/000000235784-coco.jpg;
-    }
-    {
-        height=10.5cc;
-        height=10.5cc;
-    }
+ {
+ MMPose simplified output;
+ COCO Annotations;
+ }
+ {
+ figures/metrics-explanation/000000235784-mmpose.jpg;
+ figures/metrics-explanation/000000235784-coco.jpg;
+ }
+ {
+ height=10.5cc;
+ height=10.5cc;
+ }
 
 \obrazek{compose-fig:unified-metric}{Unified Format}{figures/metrics-explanation/000000235784-unified.jpg}{height=10.5cc}
 
-Table \in{Table}[tab:evaluation-metric-explanation] encompasses evaluation metrics for both the MMPose detection model and the Unified Format on a specific image (\in[compose-fig:mmpose-metric]). This comparison aids in visualizing the \APE\ and \MSE\ metrics. For the MMPose detection, it is evident that the prediction closely aligns with the ground truth pose, resulting in a low \APE\ of {\bf 2.51\%}. In contrast, for the Unified Format, as depicted in \in{Figure}[compose-fig:unified-metric], the prediction is significantly inaccurate, shifted to the left bottom of the image, while the person is clearly visible in the middle. This discrepancy arises from an incorrect pose prediction by one of the models (PoseNet or MoveNet), which, during the unification process, was averaged with the correct MMPose detection, leading to an erroneous combined prediction.
+Table \in{Table}[tab:evaluation-metric-explanation] encompasses evaluation metrics for both the MMPose detection model and the Unified Format on a specific image (\in[compose-fig:mmpose-metric]). This comparison aids in visualizing the \APE\ and \MSE\ metrics. For the MMPose detection, it is evident that the prediction closely aligns with the ground truth pose, resulting in a low \APE\ of {\bf 2.51\%}. In contrast, for the Unified Format, as depicted in \in{Figure}[compose-fig:unified-metric], the prediction is significantly inaccurate, shifted to the left bottom of the image, while the person is visible in the middle. This discrepancy arises from an incorrect pose prediction by one of the models (PoseNet or MoveNet), which, during the unification process, was averaged with the correct MMPose detection, leading to an erroneous combined prediction.
 
 \TABULKA[][tab:evaluation-metric-explanation]{Single Image Metrics Evaluation and Comparison}
-    \setupTABLE[r][1][style=bold]
-    \setupTABLE[c][each][offset=3dd]
-    \setupTABLE[frame=off]
-    \setupTABLE[r][1][topframe=on,bottomframe=on]
-    \setupTABLE[c][each][leftframe=on]
-    \setupTABLE[c][1][leftframe=off]
-    \setupTABLE[c][2,3][align=middle]
-    \bTR\bTD Statistic                                   \eTD\bTD    MMPose\eTD\bTD     Unified F.\eTD\eTR
-    \bTR\bTD Image Average Percentage Error (APE):       \eTD\bTD    2.51\% \eTD\bTD    84.22\% \eTD\eTR
-    \bTR\bTD Image Mean Squared Error (MSE):             \eTD\bTD    70.67 \eTD\bTD     53285.03 \eTD\eTR
-    \bTR\bTD Image Object Kepoint Similarity (OSK):      \eTD\bTD    0.66 \eTD\bTD      0.00 \eTD\eTR
-    \bTR\bTD Image average of correct keypoint detected: \eTD\bTD    44.44\% \eTD\bTD   00.00\% \eTD\eTR
+ \setupTABLE[r][1][style=bold]
+ \setupTABLE[c][each][offset=3dd]
+ \setupTABLE[frame=off]
+ \setupTABLE[r][1][topframe=on,bottomframe=on]
+ \setupTABLE[c][each][leftframe=on]
+ \setupTABLE[c][1][leftframe=off]
+ \setupTABLE[c][2,3][align=middle]
+ \bTR\bTD Statistic \eTD\bTD MMPose\eTD\bTD Unified F.\eTD\eTR
+ \bTR\bTD Image Average Percentage Error (APE): \eTD\bTD 2.51\% \eTD\bTD 84.22\% \eTD\eTR
+ \bTR\bTD Image Mean Squared Error (MSE): \eTD\bTD 70.67 \eTD\bTD 53285.03 \eTD\eTR
+ \bTR\bTD Image Object Kepoint Similarity (OSK): \eTD\bTD 0.66 \eTD\bTD 0.00 \eTD\eTR
+ \bTR\bTD Image average of correct keypoint detected: \eTD\bTD 44.44\% \eTD\bTD 00.00\% \eTD\eTR
 
-Nevertheless, this serves as an excellent illustration for explaining evaluation metrics, where for this particular pose, the {\bf \APE} is {\bf 84.22\%}, indicating a substantial deviation from the ground truth pose. Regarding the {\bf \MSE}, this pose resulted in an average squared error (Euclidean distance between predictions and ground truth) of {\bf 53,\,285.03}, highlighting significant distances between the prediction and ground truth pose.
+Nevertheless, this is an excellent illustration for explaining evaluation metrics, where for this particular pose, the {\bf \APE} is {\bf 84.22\%}, indicating a substantial deviation from the ground truth pose. Regarding the {\bf \MSE}, this pose resulted in an average squared error (Euclidean distance between predictions and ground truth) of {\bf 53,\,285.03}, highlighting significant distances between the prediction and ground truth pose.
 
-Finally, let us delve into the explanation of the {\bf \OKS} metric. The MMPose prediction can be interpreted as a satisfactory result, with an {\bf \OKS} value of {\bf 0.66}, positioning it in the upper part of the interval. It is notable that the {\bf \OKS} metric demonstrates a stringent assessment criterion; even for highly similar poses, the value may not reach a high threshold, making it challenging to gauge similarity accurately.
+Finally, let us delve into the explanation of the {\bf \OKS} metric. The MMPose prediction can be interpreted as a satisfactory result, with an {\bf \OKS} value of {\bf 0.66}, positioning it in the upper part of the interval. Notably, the {\bf \OKS} metric demonstrates a stringent assessment criterion; even for highly similar poses, the value may not reach a high threshold, making it challenging to gauge similarity accurately.
 
-In the author's opinion, regarding this specific image, the COCO WholeBody annotation appears insufficient, while the MMPose model's estimation of the pose seems more accurate. This assertion may elucidate the low {\bf \OKS} value, despite the precision of the prediction.
+Regarding this specific image, the COCO WholeBody annotation appears insufficient, while the MMPose model's pose estimation seems more accurate. This assertion may elucidate the low {\bf \OKS} value despite the precision of the prediction.
 
 Conversely, the Unified Format prediction receives an {\bf \OKS} value of {\bf 0.00}, correctly indicating it as "not similar at all." This stark contrast underscores the divergence between the Unified Format prediction and the ground truth annotation.
 
 % ------- Sub-section ------- %
 \ppkap[subsection:evaluation-implementation]{Implementation of the Evaluation Process}
 
-This subsection provides a detailed description of the key concepts underlying the evaluation script, along with accompanying code examples. While the entire process has been outlined in the preceding section, this section delves into the specifics of its implementation.
+This subsection describes the evaluation script's fundamental concepts and includes code examples. While the preceding section outlines the entire process, this section delves into the specifics of its implementation.
 
-The core concept of the evaluation script revolves around iterating through the ground truth annotations for individual files and systematically comparing the corresponding detection instances within the images. For each image, the script compares the ground truth detection instances with the predicted ones, storing the results in a dictionary that catalogs all available pairs of instances along with their Intersection over Union (\IoU) metrics. Subsequently, the script selects pairs with the highest bounding box (\BBOX) overlap within the loop. These instances then undergo processing by a function that, for each keypoint, calculates the distance (refer to \in{Code}[code:euclidean-distance]) and supplies this value to the individual evaluation metric computations.
+The core concept of the evaluation script revolves around iterating through the ground truth annotations for individual files and systematically comparing the corresponding detection instances within the images. For each image, the script compares the ground truth detection instances with the predicted ones, storing the results in a dictionary cataloguing all available pairs of instances along with their Intersection over Union (\IoU) metrics. Subsequently, the script selects pairs with the highest bounding box (\BBOX) overlap within the loop. These instances then undergo processing by a function that, for each keypoint, calculates the distance (refer to \in{Code}[code:euclidean-distance]) and supplies this value to the individual evaluation metric computations.
 
 \sourcecode[][code:euclidean-distance]{Implementation of Euclidean Distance}{}{src:euclidean-distance}{}
 
 A~crucial aspect of the function for single-pose evaluation is its ability to skip invisible keypoints from the ground truth annotations. This exclusion enhances the credibility of the Object Keypoint Similarity (\OKS) metric by reducing the total number of keypoints, which is integral to the averaging process. Subsequently, this function propagates the aggregated results to higher levels of analysis.
 
-Another pivotal component of the evaluation process is the calculation of the \OKS\ metric, which involves determining the {\it k_values}—per-keypoint constants recommended by COCO in their documentation to fine-tune the calculation. The original constants provided by the COCO evaluation script are inadequate as they only cover 17 keypoints (the COCO dataset's standard), while our dataset features 27 keypoints in a Unified Format. To address this disparity, the {\it get_k_values()} function (refer to \in{Code}[code:oks-k-values]) computes the per-keypoint constants based on the averaged standard deviations obtained from the initial evaluation run. Upon processing the entire dataset (COCO evaluation subset), the errors (distances) between ground truth and prediction are averaged for each keypoint. Subsequently, these newly generated values are exported to a JSON file, and for subsequent evaluation runs, they serve as the basis for \OKS\ metric calculations.
+Another pivotal component of the evaluation process is calculating the \OKS\ metric, which involves determining the {\it k_values}—per-keypoint constants recommended by COCO in their documentation to fine-tune the calculation. The original constants provided by the COCO evaluation script are inadequate as they only cover 17 keypoints (the COCO dataset's standard), while our dataset features 27 keypoints in a Unified Format. To address this disparity, the {\it get_k_values()} function (refer to \in{Code}[code:oks-k-values]) computes the per-keypoint constants based on the averaged standard deviations obtained from the initial evaluation run. Upon processing the entire dataset (COCO evaluation subset), the errors (distances) between ground truth and prediction are averaged for each keypoint. Subsequently, these newly generated values are exported to a JSON file, and for subsequent evaluation runs, they serve as the basis for \OKS\ metric calculations.
 
 \sourcecode[][code:oks-k-values]{Function for Calculating Per-Keypoint Values for \OKS\ Metric}{}{src:oks-k-values}{}
 
 % ------- Section ------- %
 \pkap[section:problems-limitations]{Implementation Problems and Technical Limitations}
-Throughout the course of this thesis, there have been many technical limitations and implementation struggles. This section will list some of them.
+Throughout this thesis, there have been many technical limitations and implementation struggles. This section will list some of them.
 
-The initial plan was to utilize the {\bf BodyPoseNet} (NVIDIA, 2024) detection model from {\bf NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement BodyPoseNet detection script, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitated an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS {\bf Sonoma} on a {\bf 16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.
+The initial plan was to utilize the {\bf BodyPoseNet} (NVIDIA, 2024) detection model from {\bf NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement the BodyPoseNet detection script, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitated an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS {\bf Sonoma} on a {\bf 16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.
 
 \obrazkyvedlesebe[2*2][top]{compose-fig:mmpose-problem;compose-fig:posenet-problem;compose-fig:unified-problem;compose-fig:coco-problem}
-    {
-        MMPose;
-        PoseNet;
-        Unified Format;
-        COCO Annotations;
-    }
-    {
-        figures/instance-mapping-problem/000000065350-mmpose.jpg;
-        figures/instance-mapping-problem/000000065350-posenet.jpg;
-        figures/instance-mapping-problem/000000065350-unified.jpg;
-        figures/instance-mapping-problem/000000065350-coco.jpg;
-    }
-    {
-        height=10.5cc;
-        height=10.5cc;
-        height=10.5cc;
-        height=10.5cc;
-    }
+ {
+ MMPose;
+ PoseNet;
+ Unified Format;
+ COCO Annotations;
+ }
+ {
+ figures/instance-mapping-problem/000000065350-mmpose.jpg;
+ figures/instance-mapping-problem/000000065350-posenet.jpg;
+ figures/instance-mapping-problem/000000065350-unified.jpg;
+ figures/instance-mapping-problem/000000065350-coco.jpg;
+ }
+ {
+ height=10.5cc;
+ height=10.5cc;
+ height=10.5cc;
+ height=10.5cc;
+ }
 
-There are also some implementation limitations regarding the creation of the Unified Format. A~problem arises when averaging detections together, especially when some models do not provide \BBOX\ values. For instance, both PoseNet and MoveNet do not generate \BBOX\ information, making it challenging to map the appropriate detection instances for averaging. This issue is particularly pronounced in examples from the COCO evaluation subset, as illustrated in Figures \in[compose-fig:mmpose-problem], \in[compose-fig:posenet-problem], and \in[compose-fig:unified-problem].
+There are also some implementation limitations regarding the creation of the Unified Format. A~problem arises when averaging detections, primarily when some models do not provide \BBOX\ values. For instance, PoseNet and MoveNet do not generate \BBOX\ information, making it challenging to map the appropriate detection instances for averaging. This issue is particularly pronounced in examples from the COCO evaluation subset, as illustrated in Figures \in[compose-fig:mmpose-problem], \in[compose-fig:posenet-problem], and \in[compose-fig:unified-problem].
 
-In Figure \in[compose-fig:posenet-problem], for instance, the mapping of the jumping person from the PoseNet model in the middle of the figure is incorrectly associated with a different instance from the MMPose model, depicted as a person on the right. Consequently, the averaging of these two detections results in the placement of the detection in between in the Unified Format output. Although the unified version of the detection appears slightly distorted, it clearly demonstrates how the averaging process combines the original detections. In this specific case, the MoveNet model did not provide any results, prompting the unification script to consider only MMPose and PoseNet detections.
+In Figure \in[compose-fig:posenet-problem], for instance, the mapping of the jumping person from the PoseNet model in the middle of the Figure is incorrectly associated with a different instance from the MMPose model, depicted as a person on the right. Consequently, averaging these two detections results in the placement of the detection in between in the Unified Format output. Although the unified version of the detection appears slightly distorted, it demonstrates how the averaging process combines the original detections. In this case, the MoveNet model did not provide any results, prompting the unification script to consider only MMPose and PoseNet detections.
 
-These issues could be addressed by implementing a custom function that compares two instances from the detection scripts and returns a similarity constant. This constant would serve as a basis for determining if the two detection instances correspond. Utilizing the \BBOX\ information provided by the MMPose model, for example, could facilitate comparison by defining an area of overlap for individual keypoints from the other two models. If a certain percentage of keypoints fit into a \BBOX\ (for example, 65\%, similar to an \IoU\ threshold introduced in \in{Section}[section:evaluation]), the instances would be considered corresponding.
+These issues could be addressed by implementing a custom function that compares two instances from the detection scripts and returns a similarity constant. This constant would serve as a basis for determining if the two detection instances correspond. Utilizing the \BBOX\ information provided by the MMPose model, for example, could facilitate comparison by defining an area of overlap for individual keypoints from the other two models if a certain percentage of keypoints fit into a \BBOX\ (for example, 65\%, similar to an \IoU\ threshold introduced in \in{Section}[section:evaluation]), the instances would be considered corresponding.
 
-Another problem arose during the evaluation of detection performance. The {\bf \OKS} metric utilizes the object scale to normalize the value and mitigate the disproportionate influence of larger objects. Initially, the object scale is calculated as the product of {\it bbox_width} and {\it bbox_height} multiplication, which is then squared in the {\bf \OKS} formula. However, this approach yielded excessively high values, resulting in nearly perfect {\bf \OKS} values even for poses that were completely inaccurate. By eliminating the squaring process, the {\bf \OKS} values returned to a normal range, accurately representing the similarity between poses.
+Another problem arose during the evaluation of detection performance. The {\bf \OKS} metric utilizes the object scale to normalize the value and mitigate the disproportionate influence of larger objects. Initially, the object scale is calculated as the product of {\it bbox_width} and {\it bbox_height} multiplication, which is then squared in the {\bf \OKS} formula. However, this approach yielded excessively high values, resulting in nearly perfect {\bf \OKS} values even for completely inaccurate poses. By eliminating the squaring process, the {\bf \OKS} values returned to a normal range, accurately representing the similarity between poses.

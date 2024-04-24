@@ -108,7 +108,7 @@ Several \NN\ architectures have been developed for skeleton detection. The follo
  \item {\bf MMPose:} Library uses a \CNN\ for multiple human pose estimation.
 \stopitemize
 
-A comprehensive examination of each model and its unique characteristics will be undertaken. Within each section, essential insights into the models' qualities, details regarding their output formats, and a summarisation table will be provided to aid in understanding their performance. This comprehensive overview aims to clarify and facilitate a detailed evaluation of each model's capabilities within the study context.
+A~comprehensive examination of each model and its unique characteristics will be undertaken. Within each section, essential insights into the models' qualities, details regarding their output formats, and a summarisation table will be provided to aid in understanding their performance. This comprehensive overview aims to clarify and facilitate a detailed evaluation of each model's capabilities within the study context.
 
 % ------- Section ------- %
 \pkap[section:posenet]{PoseNet}
@@ -243,7 +243,7 @@ The rationale for a Unified Format is to combine insights from different models 
 
 % % ------- Section ------- %
 \pkap[section:metrics]{Metrics}
-In this section, we look at how to measure the model accuracy concerning the pose estimation effectively. Multiple metrics, such as {\bf Object Keypoint Similarity} (\OKS\), {\bf Average Percentage Error} (\APE\) and {\bf Mean Squared Error} (\MSE\) will be investigated for the usability for pose estimation evaluation.
+In this section, we look at how to measure the model accuracy concerning the pose estimation effectively. Multiple metrics, such as {\bf \OKS}, {\bf \APE} and {\bf \MSE} will be investigated for the usability for pose estimation evaluation.
 
 % ------- Sub-section ------- %
 \ppkap[subsection:oks]{Object Keypoint Similarity}
@@ -256,7 +256,7 @@ The \OKS\ metric calculates the similarity between predicted keypoints and their
  \stopformula
 \stopplaceformula
 
-Where $ d_i $ represents the Euclidean distance between the predicted keypoint $ i $ and its corresponding ground truth keypoint, $ s $ denotes the scale of the person in the image, $ k_i $ is a per-keypoint constant that controls the falloff, and $ \delta(i) $ is an indicator function that equals one if keypoint i is visible in both the prediction and ground truth and 0 otherwise (\scc COCO, 2024).
+where $ d_i $ represents the Euclidean distance between the predicted keypoint $ i $ and its corresponding ground truth keypoint, $ s $ denotes the scale of the person in the image, $ k_i $ is a per-keypoint constant that controls the falloff, and $ \delta(i) $ is an indicator function that equals one if keypoint i is visible in both the prediction and ground truth and 0 otherwise (\scc COCO, 2024).
 
 The \OKS\ metric ranges from 0 to 1, where a value closer to 1 indicates a higher similarity between predicted and ground truth keypoints.
 
