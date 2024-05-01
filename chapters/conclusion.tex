@@ -1,12 +1,58 @@
-\kap[chapter:conclusion]{Conclusion}
-The development of a {\bf Unified Format} for {\bf human pose estimation dataset creation} represents a significant advancement in {\bf simplifying and standardizing} the {\bf aggregation of results} from diverse \NN\ models. By addressing the variations in output formats among existing models like MoveNet, PoseNet, and MMPose, the Unified Format harmonizes these outputs into a cohesive structure. This achievement streamlines the dataset generation process, enabling the training of tailored models for specific detection tasks.
+\kap[chapter:conclusion]{Discussion and Conclusion}
 
-The evaluation of the Unified Format's performance revealed promising results, particularly in metrics like {\bf \APE} ({\bf 3.3\%}) and {\bf \MSE} ({\bf 1213.84}), where low values indicate close alignment between predicted and ground truth keypoints. The {\bf \OKS} metric ({\bf 0.23}), though helpful in measuring similarity, faced challenges because of strict evaluation standards and differences in predictions between models. Nonetheless, the Unified Format demonstrated {\bf satisfactory performance} accurately {\bf localizing keypoints}, especially when compared to individual model outputs. The low value of the OKS metric can be attributed to the fact that the selection of detection models prioritized ease of use and speed over maximum accuracy. In real-world applications, where creating specific datasets is paramount, employing more accurate models focused on precision rather than real-time usage would undoubtedly yield higher OKS scores.
+% ------- Section ------- %
+\pkap[section:discussion]{Discussion}
+Let us now proceed to summarise and discuss the work carried out. First, the successes that have contributed to its robustness will be highlighted. Subsequently, less prosperous areas will be addressed in a separate subsection.
 
-Despite the overall success of the Unified Format, several areas warrant further attention for refinement. Firstly, {\bf enhancing} the {\bf unification process} to better handle instances where individual models produce {\bf divergent results} could improve overall accuracy. This could involve refining the weighting scheme for averaging predictions or implementing {\bf adaptive strategies} to accommodate varying model outputs.
+The first notable achievement is the complete implementation of functional scripts and comprehensive documentation built from scratch. The most time-consuming aspect was preparing and fine-tuning scripts for running individual detection models. Throughout development, these scripts' design and functionality underwent several revisions. Another noteworthy aspect is the versatility of the created scripts. This primarily applies to the detection scripts but extends to the unification script and rendering. A rich selection of arguments for these scripts provides a certain degree of flexibility in their utilization, which may not necessarily be directly related to creating specialised datasets. The detection scripts offer the option to upload videos via webcam and perform real-time detection. However, this functionality applies only to MoveNet and PoseNet, optimised for real-time detection.
 
-Additionally, investigating techniques to mitigate errors introduced during the unification process, such as erroneous pose predictions, could lead to more robust dataset generation. Strategies like {\bf outlier detection} or {\bf dynamic thresholding} based on model confidence scores may help improve the quality of Unified Format outputs.
+Let us address areas where the performance could have been more satisfactory. It is worth mentioning that individual scripts lack comprehensive test coverage. This stemmed from the time constraints during the implementation phase when functionality took precedence over best practices such as writing tests. Therefore, future work should include test implementation for the scripts themselves to ensure functionality remains intact amid significant architectural changes. Further issues or areas of lesser success are elaborated on in the following subsection.
 
-Furthermore, exploring {\bf alternative evaluation metrics} or refining existing ones, mainly {\bf \OKS}, to better reflect the nuances of pose estimation accuracy could enhance the assessment process. This may involve adjusting keypoint similarity criteria or incorporating contextual information to account for pose variations in real-world scenarios.
+% ------- Section ------- %
+\ppkap[subsection:problems-limitations]{Technical Limitations and Implementation Problems}
+Throughout this thesis, there have been many technical limitations and im\-plementation struggles. This subsection will list some of them.
 
-In summary, the practical part of the thesis has successfully addressed the challenges associated with human pose estimation dataset creation by proposing and implementing a {\bf Unified Format}. This format facilitates the aggregation of outputs from multiple \NN\ models, streamlining the dataset generation process. Evaluation results indicate promising performance, with low \APE\ and \MSE\ values demonstrating close alignment between predicted and ground truth keypoints. While challenges remain, continued refinement and exploration of techniques offer opportunities to improve the Unified Format further and advance the field of human pose estimation.
+The initial plan was to utilise the \pojem{BodyPoseNet} (NVIDIA, 2024) detection model from \pojem{NVIDIA}, which supports multi-person detection and boasts high power and precision. However, after numerous unsuccessful attempts to implement the BodyPoseNet detection script, a decision was made to move forward with a different model to avoid further time constraints. The primary challenge was that BodyPoseNet necessitated an NVIDIA GPU unit in conjunction with the DeepStream toolkit. Unfortunately, the development environment for this thesis consisted of macOS \pojem{Sonoma} on a \pojem{16-inch MacBook Pro with M1 Max chip and 64GB of RAM}, which lacks an NVIDIA GPU. The initial attempts to implement BodyPoseNet detection involved a virtual machine running {\em Ubuntu 22.04} on {\em Parallels Desktop}. Subsequently, this same virtual machine environment was used for all other detection models explored. Once it was discovered that detection could be performed directly on the native MacBook environment, the virtual machine was no longer required.
+
+\obrazkyvedlesebe[2*2][top]{compose-fig:mmpose-problem;compose-fig:posenet-problem;compose-fig:unified-problem;compose-fig:coco-problem}
+ {
+ MMPose;
+ PoseNet;
+ Unified Format;
+ COCO Annotations;
+ }
+ {
+ figures/instance-mapping-problem/000000065350-mmpose.jpg;
+ figures/instance-mapping-problem/000000065350-posenet.jpg;
+ figures/instance-mapping-problem/000000065350-unified.jpg;
+ figures/instance-mapping-problem/000000065350-coco.jpg;
+ }
+ {
+ height=10.5cc;
+ height=10.5cc;
+ height=10.5cc;
+ height=10.5cc;
+ }
+
+There are also some implementation limitations regarding the creation of the Unified Format. A problem arises when averaging detections, primarily when some models do not provide \BBOX\ values. For instance, PoseNet and MoveNet do not generate \BBOX\ information, making it challenging to map the appropriate detection instances for averaging. This issue is particularly pronounced in examples from the COCO evaluation subset, as illustrated in Figures \in[compose-fig:mmpose-problem], \in[compose-fig:posenet-problem], and \in[compose-fig:unified-problem].
+
+In Figure \in[compose-fig:posenet-problem], for instance, the mapping of the jumping person from the PoseNet model in the middle of the Figure is incorrectly associated with a different instance from the MMPose model, depicted as a person on the right. Consequently, averaging these two detections results in the placement of the detection in between in the Unified Format output. Although the unified version of the detection appears slightly distorted, it demonstrates how the averaging process combines the original detections. In this case, the MoveNet model did not provide any results, prompting the unification script to consider only MMPose and PoseNet detections.
+
+These issues could be addressed by implementing a custom function that compares two instances from the detection scripts and returns a similarity constant. This constant would serve as a basis for determining if the two detection instances correspond. Utilizing the \BBOX\ information provided by the MMPose model, for example, could facilitate comparison by defining an area of overlap for individual keypoints from the other two models if a certain percentage of keypoints fit into a \BBOX\ (for example, 65\%, similar to an \IoU\ threshold introduced in \in{Section}[section:evaluation]), the instances would be considered corresponding.
+
+Another problem arose during the evaluation of detection performance. The \pojem{\OKS} metric utilises the object scale to normalise the value and mitigate the disproportionate influence of larger objects. Initially, the object scale is calculated as the product of {\it bbox_width} and {\it bbox_height} multiplication, which is then squared in the \pojem{\OKS} formula. However, this approach yielded excessively high values, resulting in nearly perfect \pojem{\OKS} values even for completely inaccurate poses. By eliminating the squaring process, the \pojem{\OKS} values returned to a normal range, accurately representing the similarity between poses.
+
+% ------- Section ------- %
+\pkap[section:conclusion]{Conclusion}
+
+The development of a \pojem{Unified Format} for \pojem{human pose estimation dataset creation} represents a significant advancement in \pojem{simplifying and standardizing} the \pojem{aggregation of results} from diverse \NN\ models. By addressing the variations in output formats among existing models like MoveNet, PoseNet, and MMPose, the Unified Format harmonises these outputs into a cohesive structure. This achievement streamlines the dataset generation process, en\-abling the training of tailored models for specific detection tasks.
+
+The evaluation of the Unified Format's performance revealed promising results, particularly in metrics like \pojem{\APE} ({\bf 3.3\%}) and \pojem{\MSE} ({\bf 1213.84}), where low values indicate close alignment between predicted and ground truth keypoints. The \pojem{\OKS} metric ({\bf 0.23}), though helpful in measuring similarity, faced challenges because of strict evaluation standards and differences in predictions between models. Nonetheless, the Unified Format demonstrated \pojem{satisfactory performance} accurately \pojem{localizing keypoints}, especially when compared to individual model outputs. The low value of the OKS metric can be attributed to the fact that the selection of detection models prioritised ease of use and speed over maximum accuracy. In real-world applications, where creating specific datasets is paramount, employing more accurate models focused on precision rather than real-time usage would undoubtedly yield higher OKS scores.
+
+Despite the overall success of the Unified Format, several areas warrant further attention for refinement. Firstly, \pojem{enhancing} the \pojem{unification process} to better handle instances where individual models produce \pojem{divergent results} could improve overall accuracy. This could involve refining the weighting scheme for averaging predictions or implementing \pojem{adaptive strategies} to accommodate varying model outputs.
+
+Additionally, investigating techniques to mitigate errors introduced during the unification process, such as erroneous pose predictions, could lead to more robust dataset generation. Strategies like \pojem{outlier detection} or \pojem{dynamic thresh\-olding} based on model confidence scores may help improve the quality of Unified Format outputs.
+
+Furthermore, exploring \pojem{alternative evaluation metrics} or refining existing ones, mainly \pojem{\OKS}, to better reflect the nuances of pose estimation accuracy could enhance the assessment process. This may involve adjusting keypoint similarity criteria or incorporating contextual information to account for pose variations in real-world scenarios.
+
+In summary, the practical part of the thesis has successfully addressed the challenges associated with human pose estimation dataset creation by proposing and implementing a \pojem{Unified Format}. This format facilitates the aggregation of outputs from multiple \NN\ models, streamlining the dataset generation process. Evaluation results indicate promising performance, with low \APE\ and \MSE\ values demonstrating close alignment between predicted and ground truth keypoints. While challenges remain, continued refinement and exploration of techniques offer opportunities to improve the Unified Format further and advance the field of human pose estimation.

@@ -2,7 +2,7 @@
 %%%%%%%%% Značkovací styl pro rychlou sazbu bibliografických citací Markup
 %%%%%%%%% Style for Fast Typesetting of Bibliographic References
 %%% ===================================================================================================================================================
-%%% Copyright 1999--2023 Tomáš Hála, konvoj@konvoj.cz, thala@mendelu.cz
+%%% Copyright 1999--2024 Tomáš Hála, konvoj@konvoj.cz, thala@mendelu.cz
 %%% http://www.konvoj.cz/styles/biblio/
 
 %%% Kódování: UTF-8
@@ -13,7 +13,7 @@
 %%% Odpovědnost: Užití stylu výhradně na vlastní odpovědnost uživatele stylu. Autor tohoto stylu nenese odpovědnost za vůbec, ale vůbec nic.
 %%% Citujete-li, použijte tento vzor:
 %%%	Hála, Tomáš. BIB.STY : Značkovací styl pro rychlou sazbu bibliografických citací [on-line].
-%%%        Verze 2.78. c2023 [cit. 20yy-mm-dd]. Dostupné na: http://www.konvoj.cz/styles/biblio/.
+%%%        Verze 2.80. c2024 [cit. 20yy-mm-dd]. Dostupné na: http://www.konvoj.cz/styles/biblio/.
 %%%
 %%% Encoding: UTF-8
 %%% Documentation: Unfinished version: www.konvoj.cz/styles/biblio/.
@@ -23,13 +23,15 @@
 %%% Responsibility: Author of this style does not bare responsiblity for usage of this style.
 %%% If cited, use the following:
 %%%	Hála, Tomáš. BIB.STY : Značkovací styl pro rychlou sazbu bibliografických citací [Markup Style for Fast Typesetting of Bibliographic References] [on-line].
-%%%        Verze 2.78. c2023 [cit. 20yy-mm-dd]. Available at: http://www.konvoj.cz/styles/biblio/.
+%%%        Version 2.80. c2024 [cit. 20yy-mm-dd]. Available at: http://www.konvoj.cz/styles/biblio/.
 %%%
 %%%  This work has the maintenance status `Maintained'.
 %%%  The Current Maintainer of this work is Tomáš Hála.
 %%%
-\def\BIBSTYversionnumber{2.78}
+\def\BIBSTYversionnumber{2.80}
 \def\BIBSTYversion{BIB.STY v. \BIBSTYversionnumber}
+%%% Version 2.80  version+supervisor: added to English; \publAI; changes: wwwtest/urltest; autorkorp; \bib@unskip, \bib@spacedelim
+%%% Version 2.79  doneC: autorne/autordokne
 %%% Version 2.78  doneS: biblVerze (\fi); publW: extra bibspace erase; \BIBSTYauthordocfullname; English interace: additions; \medium, \mediumadd
 %%% Version 2.77  doneS: space at version, online; doneC fontcitace
 %%% Version 2.76  bBibCTpar global
@@ -63,7 +65,6 @@
 \newif\ifBIBSTYvydaninepovinne\BIBSTYvydaninepovinnetrue
 \newif\ifBIBSTYediceuvadime\BIBSTYediceuvadimefalse
 \newif\ifBIBSTYpageabbr\BIBSTYpageabbrfalse
-
 
 %%% GENERAL DEFINTIONS FOR LATEX AND PLAIN
 
@@ -120,7 +121,7 @@
 
 %%% BASIC SETTINGS
 
-\gdef\BIBSTY@language{en}
+\gdef\BIBSTY@language{cs}
 \def\BIBSTY@uselanguage{\ifConTeXt\mainlanguage[\BIBSTY@language]\else\ifLaTeX \else\fi\fi}
 \def\BIBSTYmainlanguage[#1]{\gdef\BIBSTY@language{#1}}
 %\BIBSTYmainlanguage[cs]
@@ -130,8 +131,7 @@
 \def\az{\typesetAZ}
 
 \ifLaTeX % 
-%  \ifx\refname\undefined \message{TH} 
-%\providecommand{\refname}{Literatura}
+%  \ifx\refname\undefined \message{xxxxx} 
 %\providecommand{\refname}{Literatura}
 %\let\refname=\relax
 %\def\refname{Literatura}
@@ -151,7 +151,9 @@
   \sethyphenatedurlnormal{:=?&_}
   \sethyphenatedurlbefore{:=?&_}
   \sethyphenatedurlafter{:=?&_}
+\let\bib@unskip=\removeunwantedspaces
  \else
+\let\bib@unskip=\unskip
 \ifLaTeX % BASIC SETTINGS FOR LATEX
   \ifx\color\undefined\ifx\@onlypreamble\@notprerr\errmessage{Package "color" required.}\else\RequirePackage{color}\fi\fi
   \ifx\Urlmuskip\undefined\ifx\@onlypreamble\@notprerr\errmessage{Package "url" required.}\else\RequirePackage{url}\fi\fi
@@ -208,10 +210,8 @@
 
 % not documented:
 
-
 %%% Pomocné makropříkazy -- public
 
-\newif\ifbib@cdrom\bib@cdromfalse
 \newif\ifbib@cdrom\bib@cdromfalse
 \def\cdrom{\bib@cdromtrue}
 \let\CDROM=\cdrom
@@ -311,7 +311,9 @@
     \let\etal=\akol
     \let\nodot=\netecka
     \let\owner=\majitel
-	\let\site=\sidlo
+    \let\site=\sidlo
+    \let\version=\verze
+    \let\supervisor=\vedouci
     %%% BASIC SETTINGS
     \def\typesetAZ{\discretionary{}{to\kern0.3333em}{\endash}}
     \let\typesetTO=\typesetAZ
@@ -352,22 +354,23 @@
 \def\bib@authordelim{\ifbib@authorfullname;\else,\fi}
 %\def\bib@spaceisbn{\hbox to-2.5em{}}
 \def\bib@spaceisbn{\bib@space}%\hbox to -1.25\leftskip{}}
+\let\bib@spacedelim=\bib@space \ifConTeXt\definehspace[thick][.23em]\def\bib@spacedelim{\hspace[thick]}\fi
 \def\bib@null{}
 \def\bib@empty#1#2{\ifx\bib@null#1\BIBSTYerrmessage{#2}\else\if*#1\BIBSTYerrmessage{#2}\fi\fi}
 
-%%% TESTY / TESTS
+%%% TESTY POVINNÝCH PRVKŮ / TESTS
 
 \def\@autortest{\ifautor@bib\bib@empty{\Autori}{Není uveden autor./Missing author.}\fi}
 \def\@puvodcetest{\ifautor@bib\bib@empty{\Autori}{Není uveden autor nebo původce./Missing author or originator.}\fi}
 \def\@autordoktest{\bib@empty{\Autordoki}{Není uveden autor zdrojového dokumentu./Missing author of the source document.}} % ???
 \def\@majiteltest{\ifautor@bib\bib@empty{\Majitel}{Není uveden majitel patentu./Missing owner of the patent.}\fi}
 \def\@nazevtest{\bib@empty{\Nazev}{Není uveden název./Missing title.}}
+\def\@prompttest{\bib@empty{\Prompt}{Není uveden prompt./Missing prompt.}}
 \def\@nazevdoktest{\bib@empty{\Nazevdok}{Není uveden název zdrojového dokumentu./Missing title of the source document.}}
 \def\@vydtest{\ifBIBSTYvydaninepovinne\else\if@vtisku\else\bib@empty{\Vyd}{Není uvedeno vydání./Missing edition.}\fi\fi}
 \def\@verzetest{\bib@empty{\Verze}{Není uvedena verze./Missing version.}}
 \def\@roktest{\if@vtisku\else\bib@empty{\Rok}{Není uveden rok vydání./Missing year of publication.}\fi}
 \def\@roktestB{\if*\Rok Není uveden rok vydání./Missing year of publication.\fi}
-\def\@roktestBy{\iftrue\else\@casttext\fi}%
 \def\@nakltest{\if@vtisku\else\bib@empty{\Sidlo}{Není uvedeno sídlo nakladatele./Missing publisher's site.}\bib@empty{\Nakla}{Není uveden název nakladatele./Missing publisher's name.}\fi}
 \def\@isbntest{\if*\Isbn\message{Není uvedeno číslo ISBN./Missing ISBN.}\fi}
 \def\@issntest{\if*\Issn\message{Není uvedeno číslo ISSN./Missing ISSN.}\fi}
@@ -379,22 +382,19 @@
 \def\@thesistest{\bib@empty{\Thesis}{Není uveden typ práce./Missing type of thesis.}}
 \def\@podnazevtest{\bib@empty{\Podnazev}{Není uveden podnázev./Missing subtitle.}}
 \def\@rozsahtest{\bib@empty{\Rozsah}{Není uveden rozsah práce./Missing pages.}}
-%\def\@datcittest{\bib@empty{\Www}{\relax\bib@empty{\Datumcitace}{Není uvedeno datum citace./Missing date of citation.}}} %% 201611301648: toto nejde přepsat pro bib@empty kvůli složitější podmínce
-\def\@datcittest{\if*\Www\else\bib@empty{\Datumcitace}{Není uvedeno datum citace./Missing date of citation.}\fi}
 \def\@meritkotest{\bib@empty{\Meritko}{Není uvedeno měřítko./Missing scale.}}
-\def\@wwwtest{%\color[red]{\Www \Datumcitace}  %% 201611301403: toto nejde přepsat pro bib@empty kvůli složitější podmínce
-  \if@online{\if*\Www\BIBSTYerrmessage{Není uvedena dostupnost v síti./Missing URL.}\else\bib@empty{\Datumcitace}{Není uvedeno datum citace./Missing date of citation.}\fi}\fi\@datcittest}
 
-\def\@wwwtestx{%\color[red]{\Www \Datumcitace}
-  \bib@empty{\Www}{Není uvedena dostupnost v síti./Missing URL.}
-  \bib@empty{\Datumcitace}{Není uvedeno datum citace./Missing date of citation.}%\@datcittest
-}
+\def\@urltest{\bib@empty{\Www}{Není uvedena dostupnost v síti./Missing URL.}}
+\def\@datcittest{\bib@empty{\Datumcitace}{Není uvedeno datum citace./Missing date of citation.}}
+\def\@wwwtest{\if@online\@urltest\@datcittest\fi}
+
 \def\@issntestx{}%\if*\Issn\else\BIBSTYerrmessage{Obsahuje atribut ISSN./Extra ISSN.}\fi}
 %%%%%%%%%%%% !!!! 20140519
 
 \def\BIBSTY@testA{\@autortest\@nazevtest%\@vydtest
 	\@rozsahtest\@roktest\@nakltest\@isbntest\@wwwtest}
-\def\BIBSTY@testB{\@autortest\@nazevtest\@vydtest\@roktestB\@roktestBy\@nakltest\@issntest}
+\def\BIBSTY@testAI{\@autortest\@prompttest\@roktest\@wwwtest}
+\def\BIBSTY@testB{\@autortest\@nazevtest\@vydtest\@roktestB\@nakltest\@issntest}
 \def\BIBSTY@testC{\@autortest\@nazevdoktest\@vydtest\@casttest\@roktest\@nakltest\@isbntest\@umisttest}
 \def\BIBSTY@testD{\@autortest\@nazevtest%\@autordoktest
 	\@nazevdoktest%\@vydtest
@@ -418,7 +418,7 @@
 \def\BIBSTY@testW{\@autortest\@nazevtest%\@autordoktest
 	\@nazevdoktest%\@vydtest%\@nakltest
 	\@roktest%\@isbntest%\@umisttest%\@issntestx
-	\@wwwtestx}
+	\@wwwtest}
 \def\BIBSTY@testZ{\@nazevtest\@datcittest%\@wwwtest\@wwwtest
     }%\@nakltest
 
@@ -439,7 +439,8 @@
 
 \gdef\autor#1{\if*\Autori\gdef\Autori{#1}\else\if*\Autorii\gdef\Autorii{#1}\else
   \if*\Autoriii\gdef\Autoriii{#1}\else\BIBSTYtoomanyauthorstrue\BIBSTYmessage{Uvádějí se nejvýše tři autoři./More than three authors.}\fi\fi\fi}
-\def\autorkorp#1{\autor{{\fontautorkorp#1\ifbib@authorfullname\else\@Tecka\fi}}}
+%\def\autorkorp#1{\autor{{\fontautorkorp#1\ifbib@authorfullname\else\@Tecka\fi}}}
+\def\autorkorp#1{\autor{{\fontautorkorp#1\@Tecka}}}
 \def\majitel#1{{\gdef\Majitel{#1}\ifbib@authorfullname\else\@Tecka\fi}}
 \def\majitelkorp#1{\majitel{{\fontautorkorp#1\ifbib@authorfullname\else\@Tecka\fi}}}
 
@@ -507,7 +508,7 @@
 %\gdef\ismn#1{\gdef\@ismnbox{\fontISNtext\bib@ISNtextcase{ISMN}\penalty10000\ \hbox{#1}}}
 
 \gdef\biblISN{%nastavení ohraničení
-  \unskip\,\bib@space
+  \bib@unskip\bib@space%
   \ifConTeXt\def\typesetorbreak##1{\hbox{##1}}\fi
   \gdef\IsnBefore{(}\gdef\IsnAfter{.)}%
   \if A\biblTyp\gdef\IsnBefore{}\gdef\IsnAfter{.}\fi%
@@ -520,7 +521,7 @@
 %X1%
     \if*\Ismn%
 %X2%
-   \else\gdef\@isnbox{\typesetorbreak{\IsnBefore\@ismnbox\IsnAfter}\unskip}%
+   \else\gdef\@isnbox{\typesetorbreak{\IsnBefore\@ismnbox\IsnAfter}\bib@unskip}%
 %X3%
     \fi%
    \else
@@ -591,37 +592,38 @@
 
 %%% Definice výstupních elementů
 
-\def\biblDil{\if*\Dil\else\bib@space\Dil\unskip\@Tecka\fi}
+\def\biblDil{\if*\Dil\else\bib@space\Dil\bib@unskip\@Tecka\fi}
 
-\def\biblNazev{\Nazev\unskip\if*\Podnazev\else\bib@space:\bib@space\Podnazev\unskip\fi%
+\def\biblNazev{\Nazev\bib@unskip\if*\Podnazev\else\bib@spacedelim:\bib@spacedelim\Podnazev\bib@unskip\fi%
   \if G\biblTyp\else\if H\biblTyp\else % když ani G, ani H, ale proč vlastně?
-   \if@online\if*\Medium \def\Medium{on-line!}\if*\Nazevdok\biblMedium\fi%
+   \if@online\if*\Medium \def\Medium{on-line}\if*\Nazevdok\biblMedium\fi%
      \else\BIBSTYerrmessage{Medium je navíc \Medium}\fi%
     \else\biblMedium%není online
-   \fi\unskip%
+   \fi\bib@unskip%
   \fi\fi% G+H
   \if C\biblTyp\else\@Tecka\fi%
 }
 
+\def\biblPrompt{\def\Medium{prompt}\Prompt\biblMedium.}
 %  \def\BIBSTY@labelsurname{{{\expandafter\BIBSTY@onlysurname#2=\if#3*\else\BIBSTY@citedelim{#4}\expandafter\BIBSTY@onlysurname#3=\if#4*\else\BIBSTY@citedelim{*}\expandafter\BIBSTY@onlysurname#4=\fi\fi}}\citeetal}
 
-\def\biblNazevdok{\Nazevdok\unskip\if*\Podnazevdok\else\bib@space:\bib@space\Podnazevdok\unskip\fi\biblMedium\unskip\if E\biblTyp\else\if@tecka.\fi\fi}
+\def\biblNazevdok{\Nazevdok\bib@unskip\if*\Podnazevdok\else\bib@spacedelim:\bib@spacedelim\Podnazevdok\bib@unskip\fi\biblMedium\bib@unskip\if E\biblTyp\else\if@tecka.\fi\fi}
 \def\biblAutor{\ifautor@bib\Autori\if*\Autorii\else\bib@authordelim\bib@space\Autorii\if*\Autoriii\else\bib@authordelim\bib@space\Autoriii\fi\fi\ifBIBSTYtoomanyauthors\BIBSTYciteakol\else\ifbib@authorfullname.\fi\fi\bib@authorafterspace\fi}
 \def\biblAutorC{\ifautor@bib\Autori\if*\Autorii\else\bib@authordelim\bib@space\Autorii\if*\Autoriii\else\bib@authordelim\bib@space\Autoriii\fi\fi\ifbib@authorfullname.\fi\fi}
-\def\biblAutordok{\ifautor@bib\Autordoki\if*\Autordokii\else\bib@authordelim\bib@space\Autordokii\if*\Autordokiii\else\bib@authordelim\bib@space\Autordokiii\fi\fi\ifbib@authordokfullname.\fi\bib@space\fi}
+\def\biblAutordok{\ifautordok@bib\Autordoki\if*\Autordokii\else\bib@authordelim\bib@space\Autordokii\if*\Autordokiii\else\bib@authordelim\bib@space\Autordokiii\fi\fi\ifbib@authordokfullname.\fi\bib@space\fi}
 \def\biblMajitel{\Majitel\ifbib@authorfullname.\fi\bib@authorafterspace}
 
-\def\biblPodpov{\if*\Podpov\else\bib@space\Podpov\unskip\@Tecka\bib@space\fi}
+\def\biblPodpov{\if*\Podpov\else\bib@space\Podpov\bib@unskip\@Tecka\bib@space\fi}
 
-\def\@biblnakl{\Sidlo{}\bib@space:\bib@space\Nakla}
+\def\@biblnakl{\Sidlo{}\bib@spacedelim:\bib@spacedelim\Nakla}
 
 \def\biblNakl{%\ifNakladatel\if@vtisku
-%\unskip\penalty-9999\ %
+%\bib@unskip\penalty-9999\ %
 \if*\Sidlo\if*\Nakla\else{}\Nakla,\fi%
   \else\if*\Nakla{}\Sidlo\else\@biblnakl\fi,%
 \fi}
 
-\def\biblEdice{\ifBIBSTYediceuvadime Edice \Edice\unskip, sv.\,\Svazek\unskip\@Tecka\fi}
+\def\biblEdice{\ifBIBSTYediceuvadime Edice \Edice\bib@unskip, sv.\,\Svazek\bib@unskip\@Tecka\fi}
 
 \def\biblVyd{\if@vtisku\else\if*\Vyd%
 %{\ifBIBSTYvydaninepovinne
@@ -629,33 +631,32 @@
   \fi\fi} %
 \def\biblRok{\Rok}
 \def\biblMeritko{\meritkotext: \Meritko}
-\def\biblCit{\if@online\unskip%\bib@space
-	\Datumcitace\unskip%\bib@space
+\def\biblCit{\if@online\bib@unskip%\bib@space
+	\Datumcitace\bib@unskip%\bib@space
 	\fi}%
-\def\biblDatCit{\Datumcitace}
-% původní <=2.559: \def\biblUmist{\if@vtisku{} (\pressname)\else\if@online\else\unskip, \biblumistpagesname\,\Umist\fi\fi}
-%do 2.61\def\biblUmist{\if@vtisku{} (\pressname)\else\if@online\if0\the\UmistOd\else\unskip, \biblumistpagesname\,\Umist\fi
-\def\biblUmist{\if@vtisku{}(\pressname)\else\if@online\if0\BIBSTYgetcounter{UmistOd}\else\unskip, \biblumistpagesname\,\Umist\fi
+% původní <=2.559: \def\biblUmist{\if@vtisku{} (\pressname)\else\if@online\else\bib@unskip, \biblumistpagesname\,\Umist\fi\fi}
+%do 2.61\def\biblUmist{\if@vtisku{} (\pressname)\else\if@online\if0\the\UmistOd\else\bib@unskip, \biblumistpagesname\,\Umist\fi
+\def\biblUmist{\if@vtisku{}(\pressname)\else\if@online\if0\BIBSTYgetcounter{UmistOd}\else\bib@unskip, \biblumistpagesname\,\Umist\fi
    \biblCit\else, \biblumistpagesname\,\Umist.\fi\fi}
 
-\def\biblCast{\if@vtisku\else\if E\biblTyp\unskip,\bib@space\Cast\else\if C\biblTyp\if*\Cast\else\bib@space\Cast\fi\fi\fi\fi}
+\def\biblCast{\if@vtisku\else\if E\biblTyp\bib@unskip,\bib@space\Cast\else\if C\biblTyp\if*\Cast\else\bib@space\Cast\fi\fi\fi\fi}
 \def\biblThesis{(\Thesis.)}
 \def\biblVedouci{\vedouciprace: \Vedouci.}
-%\def\biblVerze{\unskip\bib@space{\fontverze\ifbib@verbreak\unskip\break\textVerze~\Verze\fi}\@Tecka}
-\def\biblVerze{\unskip\bib@space{\fontverze\ifbib@verbreak\unskip\break\fi\textVerze~\Verze}\@Tecka}
+%\def\biblVerze{\bib@unskip\bib@space{\fontverze\ifbib@verbreak\bib@unskip\break\textVerze~\Verze\fi}\@Tecka}
+\def\biblVerze{\bib@unskip\bib@space{\fontverze\ifbib@verbreak\bib@unskip\break\fi\textVerze~\Verze}\@Tecka}
 
 \def\biblMedium{%
  	\if*\Medium\xdef\Medium{\Mediumadd}\def\Mediumadd{*}\fi%
-	\if*\Medium\else\fontbibtext@medium\bib@space[\Medium\if*\Mediumadd\else\bib@space:\bib@space\Mediumadd\fi]\fi%
+	\if*\Medium\else{\fontbibtext@medium\bib@space[\Medium\if*\Mediumadd\else\bib@spacedelim:\bib@spacedelim\Mediumadd\fi]}\fi%
 	}
 
 \def\condbiblVerze{\if*\Verze\else\biblVerze.\fi}
 
-\def\biblPozn{\if*\Pozn\else\bib@space\Pozn\unskip\@Tecka\fi}
-\def\biblRozsah{\bib@space\Rozsah\unskip\ifBIBSTYpageabbr\else\@Tecka\fi}
+\def\biblPozn{\if*\Pozn\else\bib@space\Pozn\bib@unskip\@Tecka\fi}
+\def\biblRozsah{\bib@space\Rozsah\bib@unskip\ifBIBSTYpageabbr\else\@Tecka\fi}
 \def\condbiblRozsah{\if*\Rozsah\else\biblRozsah\fi}
-\def\biblWww{\if*\Www\else\bib@space\Www\unskip\@Tecka\fi}
-\def\biblDoi{\if*\Doi\else\bib@space\Doi\unskip\@Tecka\fi}
+\def\biblWww{\if*\Www\else\bib@space\Www\bib@unskip\@Tecka\fi}
+\def\biblDoi{\if*\Doi\else\bib@space\Doi\bib@unskip\@Tecka\fi}
 
 %%% Inicializace (příprava)
 
@@ -680,7 +681,7 @@
   \forEach{autori}{autorii}{autoriii}{autordoki}{autordokii}{autordokiii}
   {nazev}{podnazev}{nazevdok}{podnazevdok}{podpov}{vyd}{cast}{nakla}{sidlo}{rok}{meritko}
   {rozsah}{dil}{edice}{svazek}{pozn}{private}%{isbn}{issn}{ismn}%{www}
-  {vedouci}{thesis}{datumcitace}{verze}{ref}{majitel}{medium}{mediumadd}: % : je důležitá
+  {vedouci}{thesis}{datumcitace}{verze}{ref}{majitel}{medium}{mediumadd}{prompt}: % : je důležitá
   % Isxn vyřazeno kvůli CTX TL2017
   \gdef\Isbn{*}
   \gdef\Issn{*}%
@@ -749,7 +750,7 @@
     \def\BIBSTY@citedelim##1{\if##1*\ \spojkaa~\else, \fi}
   \fi
   \def\BIBSTY@labelsurname{{{\expandafter\BIBSTY@onlysurname#2=\if#3*\else\BIBSTY@citedelim{#4}\expandafter\BIBSTY@onlysurname#3=\if#4*\else\BIBSTY@citedelim{*}\expandafter\BIBSTY@onlysurname#4=\fi\fi}}\citeetal}
-  \def\BIBSTY@labelnamefirst{\unskip{{\expandafter\BIBSTY@namefirst#2=\if#3*\else\BIBSTY@citedelim{#4}\expandafter\BIBSTY@namefirst#3=\if#4*\else\BIBSTY@citedelim{*}\expandafter\BIBSTY@namefirst#4=\fi\fi}}\citeetal}
+  \def\BIBSTY@labelnamefirst{\bib@unskip{{\expandafter\BIBSTY@namefirst#2=\if#3*\else\BIBSTY@citedelim{#4}\expandafter\BIBSTY@namefirst#3=\if#4*\else\BIBSTY@citedelim{*}\expandafter\BIBSTY@namefirst#4=\fi\fi}}\citeetal}
   \def\BIBSTY@labelyear{#5}%
 %
   \ifConTeXt
@@ -768,9 +769,10 @@
 \fi\fi%
 }
 
-\forEachPubl{A}{B}{C}{D}{DA}{E}{EA}{G}{H}{M}{N}{O}{P}{S}{T}{X}{XX}{XY}{XA}{W}{Z}:
+\forEachPubl{A}{AI}{B}{C}{D}{DA}{E}{EA}{G}{H}{M}{N}{O}{P}{S}{T}{X}{XX}{XY}{XA}{W}{Z}:
 
 \def\BIBSTY@publA[#1]#2{\BIBSTY@init{A}#2{\BIBSTY@uselanguage\BIBSTY@testA\BIBSTY@doneA}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
+\def\BIBSTY@publAI[#1]#2{\BIBSTY@init{AI}#2{\BIBSTY@uselanguage\BIBSTY@testAI\BIBSTY@doneAI}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
 \def\BIBSTY@publB[#1]#2{\BIBSTY@init{B}#2{\BIBSTY@uselanguage\BIBSTY@testB\BIBSTY@doneB}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
 \def\BIBSTY@publC[#1]#2{\BIBSTY@init{C}#2{\BIBSTY@uselanguage\BIBSTY@testC\BIBSTY@doneC}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
 \def\BIBSTY@publD[#1]#2{\BIBSTY@init{D}#2{\BIBSTY@uselanguage\BIBSTY@testD\BIBSTY@doneD}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
@@ -790,25 +792,28 @@
 \def\BIBSTY@publXY[#1]#2#3{}
 \def\BIBSTY@publXA[#1]#2#3#4{}
 \def\BIBSTY@publW[#1]#2{\BIBSTY@init{W}#2{\BIBSTY@uselanguage\BIBSTY@testW\BIBSTY@doneW}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
+\def\BIBSTY@publZ[#1]#2{\BIBSTY@init{Z}#2{\BIBSTY@uselanguage\BIBSTY@testZ%\BIBSTY@doneZ
+	}\BIBSTY@doreference{#1}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
 
-%\def\BIBSTY@publZ[#1]#2{\BIBSTY@init{Z}#2{\BIBSTY@uselanguage\BIBSTY@testZ\BIBSTY@doreference{#1}\BIBSTY@doneZ}{\Autori}{\Autorii}{\Autoriii}{\Rok}}
-%\autor@bibfalse
+\autor@bibfalse
 
 %%% DEFINE OUTPUT / CITATION STYLE
 
-\xdef\eAutori{}
-\xdef\eRok{}
-
 \def\BIBSTY@doneA{\def\@tisk{\fontcitace{\fontautor\biblAutor}%
-  {\fontnazev\biblNazev}%
+ {\fontnazev\biblNazev}%
   \if@online{\condbiblVerze}\fi
   \bib@space\biblVyd\biblPodpov%
   \biblNakl\bib@space\biblRok. \if*\Datumcitace\else\bib@space\biblCit\fi%.
   \if*\Rozsah\else\bib@space\Rozsah\fi \biblEdice%
   \bib@space\ifLaTeX\hskip0.175em\null\fi\biblISN
-  \biblPozn%
-  \biblWww\biblDoi%
-  }\BIBSTYordertest\@bibakce{\@tisk\unskip}\@bibclear}
+  \biblPozn\biblWww\biblDoi%
+  }\BIBSTYordertest\@bibakce{\@tisk\bib@unskip}\@bibclear}
+
+\def\BIBSTY@doneAI{\def\@tisk{\fontcitace{\fontautor\biblAutor}%
+ {\fontnazev\biblPrompt}\biblVerze%
+  \bib@space\biblRok.\bib@space\biblCit%.
+  \biblPozn\biblWww%
+ }\BIBSTYordertest\@bibakce{\@tisk\bib@unskip}\@bibclear}
 
 \def\BIBSTY@doneB{\def\@tisk{\fontcitace{\fontautor\biblAutor}%
  {\fontnazev\biblNazevdok}\bib@space\biblVyd
@@ -816,16 +821,16 @@
   \biblNakl\bib@space\biblRok.\biblCit %.
   \if*\Rozsah.\else,\bib@space\Rozsah\fi%
   \bib@spaceisbn\bib@space\Issn%
-  \biblWww\biblDoi%
+  \biblPozn\biblWww\biblDoi%
   }\@bibakce{\@tisk}\@bibclear}
 
 \def\BIBSTY@doneC{\def\@tisk{\fontcitace{\fontautor\biblAutordok}\bib@space%
   {\fontnazev\biblNazevdok}\biblDil\bib@space%
-  \unskip\biblPodpov\bib@space\if*\Vyd\else\biblVyd\bib@space\fi%
+  \bib@unskip\biblPodpov\bib@space\if*\Vyd\else\biblVyd\bib@space\fi%
   \biblPodpov\bib@space\biblNakl\bib@space\biblRok.%
   \biblCast.\bib@space
 %
-  \fontcitace{\ifx\Autordoki\Autori\else{\fontautor\biblAutorC}\bib@space\fi}% dodělat mezeru pro jiné případy
+  {\ifx\Autordoki\Autori\else{\fontautor\biblAutorC}\bib@space\fi}% dodělat mezeru pro jiné případy
   {\fontnazev\biblNazev}\if*\Www\biblUmist\fi\biblCit%.dodo
   \biblPozn\biblWww\biblDoi%
   \bib@spaceisbn\biblISN%
@@ -875,8 +880,8 @@
 \def\BIBSTY@doneN{\def\@tisk{\fontcitace\ifautor@bib\if*\Autori\else{\fontautor\biblAutor}\fi\fi
  {\fontnazev\biblNazev} \biblVyd
   \biblNakl\bib@space\biblRok.%
-  \biblCit\biblPozn\condbiblRozsah%
-  \biblWww%
+  \biblCit%
+  \biblPozn\condbiblRozsah\biblWww\biblDoi%
 %  \if*\Isbn\else\bib@spaceisbn\bib@space\ISBN.\fi%
   }\@bibakce{\@tisk}\@bibclear}
 
@@ -903,15 +908,15 @@
 \def\BIBSTY@doneS{\def\@tisk{\fontcitace{\if*\Autori\else{\fontautor\biblAutor}\fi}%
   {\fontnazev\biblNazev}\bib@space%\if*\Vyd\else\biblVyd\fi{}
   %\if*\Verze\else
-	{\fontverze\biblVerze}%
-  \if*\Podnazev\else {\Podnazev}.\fi{}
+  {\fontverze\biblVerze}%
+%  \if*\Podnazev\else {\Podnazev}.\fi{}
 %\fi%\if*\Vyd\else\biblVyd\fi{}
   \biblPodpov\biblNakl\bib@space%\biblRok%
   \if*\Rok\biblCit\else\biblRok.%
   \fi%
-  \if@online\biblCit\fi\biblPozn%
+  \if@online\biblCit\fi%
 %  \if*\Rozsah\else\bib@space\Rozsah\fi%
-  \biblWww%
+  \biblPozn\biblWww%
   }\@bibakce{\@tisk}\@bibclear}
 
 \def\BIBSTY@doneT{\def\@tisk{\fontcitace{\fontautor\biblAutor}\bib@authorafterspace%
@@ -932,9 +937,7 @@
   \bib@space\biblCit%.
   %\bib@spaceisbn\bib@space\biblISN%
    \biblPozn%
-%  \if*\Pozn\else\bib@space\Pozn.\fi%
 %  \if*\Rozsah\else\bib@space\Rozsah\fi%
-%  \bib@space\biblWww%
   \biblWww%
   }\@bibakce{\@tisk}\@bibclear
 }
@@ -942,13 +945,9 @@
 \def\BIBSTY@doneX{\def\@tisk{\fontcitace{\fontautor\biblAutor}%
 \if*\Nazev\else{\fontnazev\biblNazev}\bib@space\fi%\if*\Vyd\else\biblVyd\fi{}
   \biblNakl\bib@space%\biblRok%
-  \if*\Rok\biblCit\else\biblRok.%
-   %\if@online	
-\biblCit%\fi%\@Tecka
+  \if*\Rok\biblCit\else\biblRok. \biblCit%\fi%\@Tecka
   \fi%
-  \if*\Pozn\else\bib@space\Pozn.\fi%
-  \if*\Rozsah\else\bib@space\Rozsah\fi%
-  \biblWww%
+  \biblPozn\condbiblRozsah\biblWww%
   }\@bibakce{\@tisk}\@bibclear}
 
 \def\BIBSTY@doneXX{\def\@tisk{\fontcitace{\if*\Autori\else{\fontautor\biblAutor}\fi}
@@ -964,12 +963,10 @@
 \def\BIBSTY@doneZ{\def\@tisk{\fontcitace\if*\Autori\else{\fontautor\biblAutor}\fi%
   {\fontnazev\biblNazev}%
   \if*\Rok\else\bib@space\Rok.\fi\bib@space%
-  \biblDatCit\bib@space%\@Tecka
+  \biblCit\bib@space%\@Tecka
   \biblPozn
-%  \if*\Pozn\else\Pozn.\bib@space\fi%
   \biblWww%
   }\@bibakce{\@tisk}\@bibclear}
-
 
 \def\bakprace{\gdef\Thesis{Bakalářská práce}}
 \def\dipprace{\gdef\Thesis{Diplomová práce}}
@@ -1131,7 +1128,6 @@
 \@bibclear
 
 %\ifConTeXt % kvůli TL2017
-\def\bib@spaceisbn{\hbox to 0.4em{}}
 \let\curisbn=\isbn
 \let\curissn=\issn
 \let\curismn=\ismn
@@ -1147,6 +1143,6 @@
 \endinput
 
 %%% ===================================================================================================================================================
-%%%%%%%%% Značkovací styl pro rychlou sazbu bibliografických citací Markup
-%%%%%%%%% Style for Fast Typesetting of Bibliographic References
+%%%%%%%%% Značkovací styl pro rychlou sazbu bibliografických citací 
+%%%%%%%%% Markup Style for Fast Typesetting of Bibliographic References
 %%% ===================================================================================================================================================
