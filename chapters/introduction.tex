@@ -1,10 +1,8 @@
 \kap{Introduction}
 
-\pkap[section:motivation]{Motivation and Basic Objectives of the Work}
-
 The field of computer vision has witnessed rapid evolution, serving as the foundation for understanding visual information in images and videos (\scc Szeliski, 2010). Within this context, the accurate detection of the human skeleton holds immense potential for applications ranging from autonomous systems to healthcare. The motivation driving this master's thesis is to provide an efficient method for creating specialised datasets for human skeleton detection under realistic conditions by applying existing neural networks (\NN\-s).
 
-The evolution of Human Pose Estimation has revolutionised its applicability in real-world scenarios such as smart surveillance, public safety, and medical assistance. However, despite achieving impressive accuracy rates on popular datasets, translating these results to real-world settings remains challenging due to the scarcity of high-quality datasets with human pose annotations. This scarcity arises from dataset creation's costly and time-consuming nature, resulting in real-world applications often being trained on datasets that may not adequately represent the deployment environment. (\scc Alinezhad Noghre et al., 2022)
+The evolution of Human Pose Estimation (\HPE\) has revolutionised its applicability in real-world scenarios such as smart surveillance, public safety, and medical assistance. However, despite achieving impressive accuracy rates on popular datasets, translating these results to real-world settings remains challenging due to the scarcity of high-quality datasets with human pose annotations. This scarcity arises from dataset creation's costly and time-consuming nature, resulting in real-world applications often being trained on datasets that may not adequately represent the deployment environment. (\scc Alinezhad Noghre et al., 2022)
 
 The disparity between training data and real-world inference data frequently leads to high-accuracy models failing to perform as expected in practical applications, particularly in scenarios involving crowded scenes, heavily occluded individuals, or subjects positioned at a significant distance from the camera. Existing datasets attempt to address specific challenges individually, but their varying skeletal structures and limited scope make them inadequate for training a unified model. (\scc Alinezhad Noghre et al., 2022)
 
@@ -15,8 +13,6 @@ Due to training in artificially created conditions, existing models for human sk
 
 This thesis introduces a cost-effective approach to generating datasets tai\-lored for real-world applications. This method offers flexibility, allowing any detection model to be utilised according to the specific requirements of the dataset. For instance, a combination of models designed for crowded scenes and long-distance detection would be employed in creating a dataset for detecting individuals in shopping malls, where subjects may be distant from the camera.
 
-\page
-\pkap[section:current-state]{Current State and Problem to Be Addressed}
 This thesis addresses the current limitations in accuracy and practicality associated with human skeleton detection training methodologies. A notable gap exists in the market for tools and methodologies specifically designed to train models for this task using pre-existing \NN\-s (\scc Yang et al., 2016). While existing tools focus on model optimisation, compression, and transfer learning, there is a lack of knowledge regarding approaches that combine these \NN\-s for specialised dataset generation.
 
 The objective is to tackle the issue outlined in the paper (\scc Alinezhad Noghre et al., 2022) and furnish a cost-efficient solution. The primary aim of this thesis can be delineated into four key components:
